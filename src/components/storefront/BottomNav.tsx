@@ -75,12 +75,27 @@ const ICONS: Record<TabKey, ReactNode> = {
   ),
   app: (
     <>
-      <rect className="bd" x="4" y="10.2" width="16" height="10.4" rx="2.6" />
-      <g className="lidp">
-        <rect className="ac" x="2.8" y="5.6" width="18.4" height="4.2" rx="1.8" />
-        <rect x="10.4" y="3.4" width="3.2" height="2.6" rx="1.1" fill={INK} />
-      </g>
-      <Eyes y={14.4} />
+      <rect className="bd" x="5.8" y="2.5" width="12.4" height="19" rx="2.8" />
+      <rect className="ac" x="7.2" y="4.6" width="9.6" height="12.8" rx="1.6" />
+      <line
+        x1="10.5"
+        y1="3.6"
+        x2="13.5"
+        y2="3.6"
+        stroke={INK}
+        strokeWidth="1.2"
+        strokeLinecap="round"
+      />
+      <line
+        x1="10.2"
+        y1="19.4"
+        x2="13.8"
+        y2="19.4"
+        stroke={INK}
+        strokeWidth="1.4"
+        strokeLinecap="round"
+      />
+      <Eyes y={11} />
     </>
   ),
   table: (

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useId, useRef, useState } from "react";
-import { Gamepad2, ImagePlus, Loader2, Sparkles, Upload, X } from "lucide-react";
+import { Gamepad2, ImagePlus, Loader2, Smartphone, Upload, X } from "lucide-react";
 import type { CategoryType, GameRate, PlatformType } from "@/types/game";
 import {
   type AdminGameFormState,
@@ -22,7 +22,7 @@ const CATEGORY_OPTIONS: {
   Icon: React.ComponentType<{ className?: string }>;
 }[] = [
   { value: "game", label: "หมวดเกม (Game)", Icon: Gamepad2 },
-  { value: "app", label: "หมวดแอป (App)", Icon: Sparkles },
+  { value: "app", label: "หมวดแอป (App)", Icon: Smartphone },
 ];
 
 const PLATFORM_OPTIONS: { value: PlatformType; label: string }[] = [

@@ -1,5 +1,5 @@
 import React from "react";
-import { Gamepad2, Sparkles } from "lucide-react";
+import { Gamepad2, Smartphone } from "lucide-react";
 import type { GameRate, PlatformType } from "@/types/game";
 
 export interface ProductRateCardProps {
@@ -91,7 +91,7 @@ export function ProductRateCard({ game }: ProductRateCardProps) {
             }`}
           >
             {isApp ? (
-              <Sparkles aria-hidden="true" className="h-3 w-3 text-[#d81b60] sm:h-3.5 sm:w-3.5" />
+              <Smartphone aria-hidden="true" className="h-3 w-3 text-[#d81b60] sm:h-3.5 sm:w-3.5" />
             ) : (
               <Gamepad2 aria-hidden="true" className="h-3 w-3 text-[#d81b60] sm:h-3.5 sm:w-3.5" />
             )}

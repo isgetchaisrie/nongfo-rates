@@ -18,7 +18,7 @@ import {
   Plus,
   QrCode,
   Save,
-  Sparkles,
+  Smartphone,
   Trash2,
   Upload,
   User,
@@ -695,7 +695,7 @@ export function AdminDashboardClient({
                     </>
                   ) : (
                     <>
-                      <Sparkles className="h-6 w-6 text-[#be1253]" />
+                      <Smartphone className="h-6 w-6 text-[#be1253]" />
                       <span>รายการเรทราคา หมวดแอป ({displayedGames.length} แอป)</span>
                     </>
                   )}
@@ -1200,7 +1200,7 @@ export function AdminDashboardClient({
                 }`}
               >
                 <div className="relative">
-                  <Sparkles className="h-5 w-5 transition-transform group-hover:scale-110" />
+                  <Smartphone className="h-5 w-5 transition-transform group-hover:scale-110" />
                   <span className="absolute -top-1.5 -right-2.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#be1253] px-1 text-[9px] font-bold text-white">
                     {counts.app}
                   </span>
