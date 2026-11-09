@@ -2,7 +2,14 @@
 
 import React, { useMemo, useState } from "react";
 import Link from "next/link";
-import { Gamepad2, LayoutGrid, Lock, RotateCcw, Sparkles } from "lucide-react";
+import {
+  Gamepad2,
+  LayoutGrid,
+  Lock,
+  RotateCcw,
+  Sparkles,
+  Table2,
+} from "lucide-react";
 import type { GameRate } from "@/types/game";
 import { CatMascot } from "@/components/mascot/CatMascot";
 import { CatFloatingWidget } from "@/components/mascot/CatFloatingWidget";
@@ -39,6 +46,7 @@ export function RateBoardClient({ initialGames }: RateBoardClientProps) {
   const [query, setQuery] = useState("");
   const [platform, setPlatform] = useState<FilterPlatform>("all");
   const [category, setCategory] = useState<FilterCategory>("all");
+  const [viewMode, setViewMode] = useState<"grid" | "table">("grid");
 
   const counts = useMemo(
     () => computePlatformCounts(initialGames, query, category),
@@ -328,23 +336,151 @@ export function RateBoardClient({ initialGames }: RateBoardClientProps) {
                 counts={counts}
               />
 
-              <p
-                aria-live="polite"
-                className="rounded-full border border-[#F8BBD0]/60 bg-white px-3 py-1 text-xs font-bold text-[#6d5246] tabular-nums"
-              >
-                แสดง {visibleGames.length} รายการ
-              </p>
+              <div className="flex flex-wrap items-center gap-2">
+                <div
+                  role="group"
+                  aria-label="สลับมุมมองการ์ดหรือตาราง"
+                  className="inline-flex items-center rounded-full border border-[#F8BBD0]/70 bg-[#FFFDF9] p-1 shadow-xs"
+                >
+                  <button
+                    type="button"
+                    aria-pressed={viewMode === "grid"}
+                    onClick={() => setViewMode("grid")}
+                    className={`inline-flex h-8 items-center gap-1.5 rounded-full px-3 text-xs font-bold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#e11d68] ${
+                      viewMode === "grid"
+                        ? "bg-[#FCE4EC] text-[#b81452] shadow-xs"
+                        : "text-[#6d5246] hover:text-[#4a352c]"
+                    }`}
+                  >
+                    <LayoutGrid aria-hidden="true" className="h-3.5 w-3.5" />
+                    <span>การ์ด</span>
+                  </button>
+                  <button
+                    type="button"
+                    aria-pressed={viewMode === "table"}
+                    onClick={() => setViewMode("table")}
+                    className={`inline-flex h-8 items-center gap-1.5 rounded-full px-3 text-xs font-bold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#e11d68] ${
+                      viewMode === "table"
+                        ? "bg-[#FCE4EC] text-[#b81452] shadow-xs"
+                        : "text-[#6d5246] hover:text-[#4a352c]"
+                    }`}
+                  >
+                    <Table2 aria-hidden="true" className="h-3.5 w-3.5" />
+                    <span>ตาราง</span>
+                  </button>
+                </div>
+
+                <p
+                  aria-live="polite"
+                  className="rounded-full border border-[#F8BBD0]/60 bg-white px-3 py-1 text-xs font-bold text-[#6d5246] tabular-nums"
+                >
+                  แสดง {visibleGames.length} รายการ
+                </p>
+              </div>
             </div>
           </div>
         </section>
 
         {visibleGames.length > 0 ? (
           <section aria-label="รายการเรทราคาเกมและแอป">
-            <div className="grid grid-cols-2 gap-3 pt-1 sm:gap-6 sm:pt-2 lg:grid-cols-3 xl:grid-cols-4">
-              {visibleGames.map((game) => (
-                <ProductRateCard key={game.id} game={game} />
-              ))}
-            </div>
+            {viewMode === "grid" ? (
+              <div className="grid grid-cols-2 gap-3 pt-1 sm:gap-6 sm:pt-2 lg:grid-cols-3 xl:grid-cols-4">
+                {visibleGames.map((game) => (
+                  <ProductRateCard key={game.id} game={game} />
+                ))}
+              </div>
+            ) : (
+              <div className="glass-card overflow-hidden rounded-[24px] border border-[#F8BBD0]/70 sm:rounded-[32px]">
+                <div className="overflow-x-auto">
+                  <table className="w-full border-collapse text-left">
+                    <thead>
+                      <tr className="border-b border-[#F8BBD0]/60 bg-[#FCE4EC]/75 font-[var(--font-mali)] text-xs font-bold text-[#4a352c] sm:text-sm">
+                        <th scope="col" className="py-3 pr-2 pl-3.5 sm:py-3.5 sm:pl-6">
+                          รายชื่อเกม / แอป
+                        </th>
+                        <th
+                          scope="col"
+                          className="w-24 px-2 py-3 text-center sm:w-36 sm:px-4 sm:py-3.5"
+                        >
+                          เรท iOS
+                        </th>
+                        <th
+                          scope="col"
+                          className="w-24 py-3 pr-3.5 pl-2 text-center sm:w-36 sm:py-3.5 sm:pr-6 sm:pl-4"
+                        >
+                          เรท Android
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-[#F8BBD0]/40 bg-white/85">
+                      {visibleGames.map((game, idx) => {
+                        const hasIos =
+                          game.priceIos !== null && game.priceIos > 0;
+                        const hasAndroid =
+                          game.priceAndroid !== null && game.priceAndroid > 0;
+                        const isApp = game.category === "app";
+
+                        return (
+                          <tr
+                            key={game.id}
+                            className={`transition-colors hover:bg-[#FCE4EC]/35 ${
+                              idx % 2 === 1 ? "bg-[#FFFDF9]/90" : "bg-white/90"
+                            }`}
+                          >
+                            <td className="py-2.5 pr-2 pl-3.5 sm:py-3 sm:pl-6">
+                              <div className="flex items-center gap-2.5 sm:gap-3.5">
+                                <img
+                                  src={game.image}
+                                  alt={game.name}
+                                  loading="lazy"
+                                  className="h-10 w-10 shrink-0 rounded-xl border-2 border-white bg-[#FCE4EC]/40 object-cover shadow-xs sm:h-12 sm:w-12 sm:rounded-2xl"
+                                />
+                                <div className="min-w-0">
+                                  <p className="font-[var(--font-mali)] text-xs font-bold leading-snug text-[#4a352c] sm:text-base">
+                                    {game.name}
+                                  </p>
+                                  <span
+                                    className={`mt-0.5 inline-flex items-center gap-1 rounded-full border border-[#F8BBD0]/60 px-2 py-0.5 text-xs font-bold ${
+                                      isApp
+                                        ? "bg-[#FFFDE7] text-[#5c4338]"
+                                        : "bg-[#FCE4EC]/70 text-[#5c4338]"
+                                    }`}
+                                  >
+                                    {isApp ? "แอป" : "เกม"}
+                                  </span>
+                                </div>
+                              </div>
+                            </td>
+                            <td className="px-2 py-2.5 text-center sm:px-4 sm:py-3">
+                              {hasIos ? (
+                                <span className="inline-flex min-w-14 items-center justify-center rounded-xl border border-white bg-[#FCE4EC] px-2.5 py-1 font-[var(--font-fredoka)] text-sm font-bold text-[#b81452] shadow-xs tabular-nums sm:min-w-20 sm:rounded-2xl sm:px-3 sm:py-1.5 sm:text-lg">
+                                  ฿{game.priceIos}
+                                </span>
+                              ) : (
+                                <span className="font-[var(--font-fredoka)] text-sm font-bold text-[#84685b] tabular-nums">
+                                  —
+                                </span>
+                              )}
+                            </td>
+                            <td className="py-2.5 pr-3.5 pl-2 text-center sm:py-3 sm:pr-6 sm:pl-4">
+                              {hasAndroid ? (
+                                <span className="inline-flex min-w-14 items-center justify-center rounded-xl border border-white bg-[#E0F2F1] px-2.5 py-1 font-[var(--font-fredoka)] text-sm font-bold text-[#0f5137] shadow-xs tabular-nums sm:min-w-20 sm:rounded-2xl sm:px-3 sm:py-1.5 sm:text-lg">
+                                  ฿{game.priceAndroid}
+                                </span>
+                              ) : (
+                                <span className="font-[var(--font-fredoka)] text-sm font-bold text-[#4b6e5f] tabular-nums">
+                                  —
+                                </span>
+                              )}
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
           </section>
         ) : (
           <section
