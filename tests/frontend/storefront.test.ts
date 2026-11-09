@@ -173,15 +173,13 @@ describe("computePlatformCounts and computeCategoryCounts", () => {
 });
 
 describe("BottomNav, PaymentAccountSection, and ContactAdminSection", () => {
-  it("renders the 5 bottom tabs including บัญชี and ติดต่อแอดมิน", () => {
+  it("renders the 4 bottom tabs without standalone table tab", () => {
     const html = renderToStaticMarkup(
       React.createElement(BottomNav, {
         activeSection: "account",
         onSelectSection: () => {},
         category: "all",
         onSelectCategory: () => {},
-        viewMode: "grid",
-        onSetViewMode: () => {},
         gameCount: 38,
         appCount: 15,
       }),
@@ -190,7 +188,7 @@ describe("BottomNav, PaymentAccountSection, and ContactAdminSection", () => {
     expect(html).toContain("บัญชี");
     expect(html).toContain("หมวดเกม");
     expect(html).toContain("หมวดแอป");
-    expect(html).toContain("ตารางเรท");
+    expect(html).not.toContain("ตารางเรท");
     expect(html).toContain("ติดต่อแอดมิน");
   });
 

@@ -309,11 +309,11 @@ export function RateBoardClient({ initialGames }: RateBoardClientProps) {
                 <SearchBar value={query} onChange={setQuery} />
               </div>
 
-              {/* Category tabs shown on md+ since BottomNav handles categories on mobile */}
+              {/* Category tabs */}
               <div
                 role="group"
                 aria-label="กรองตามหมวดหมู่ เกม หรือ แอป"
-                className="hidden flex-wrap items-center gap-2 md:inline-flex"
+                className="flex flex-wrap items-center gap-1.5 sm:gap-2"
               >
                 {CATEGORY_TABS.map(({ id, label, Icon }) => {
                   const isActive = category === id;
@@ -324,16 +324,16 @@ export function RateBoardClient({ initialGames }: RateBoardClientProps) {
                       type="button"
                       aria-pressed={isActive}
                       onClick={() => setCategory(id)}
-                      className={`inline-flex h-11 items-center gap-2 rounded-full border px-4 text-sm font-bold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#e11d68] focus-visible:ring-offset-2 ${
+                      className={`inline-flex h-9 items-center gap-1.5 rounded-full border px-3 text-xs font-bold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#e11d68] focus-visible:ring-offset-2 sm:h-11 sm:gap-2 sm:px-4 sm:text-sm ${
                         isActive
                           ? "border-white bg-[#FCE4EC] text-[#4a352c] shadow-[0_6px_16px_-4px_rgba(244,143,177,0.55)]"
                           : "border-[#F8BBD0]/60 bg-[#FFFDF9] text-[#6d5246] hover:bg-[#FCE4EC]/50 hover:text-[#4a352c]"
                       }`}
                     >
-                      <Icon className="h-4 w-4 shrink-0 text-[#d81b60]" />
+                      <Icon className="h-3.5 w-3.5 shrink-0 text-[#d81b60] sm:h-4 sm:w-4" />
                       <span>{label}</span>
                       <span
-                        className={`inline-flex min-w-6 items-center justify-center rounded-full px-2 py-0.5 font-[var(--font-fredoka)] text-xs font-bold tabular-nums ${
+                        className={`inline-flex min-w-5 items-center justify-center rounded-full px-1.5 py-0.5 font-[var(--font-fredoka)] text-xs font-bold tabular-nums sm:min-w-6 sm:px-2 ${
                           isActive
                             ? "bg-white text-[#b81452]"
                             : "bg-[#FCE4EC] text-[#b81452]"
@@ -347,44 +347,44 @@ export function RateBoardClient({ initialGames }: RateBoardClientProps) {
               </div>
             </div>
 
-            <div className="flex items-center justify-between gap-2 border-t border-[#F8BBD0]/40 pt-2 sm:flex-wrap sm:gap-3 sm:pt-3">
+            <div className="flex flex-wrap items-center justify-between gap-2 border-t border-[#F8BBD0]/40 pt-2 sm:gap-3 sm:pt-3">
               <PlatformSwitcher
                 value={platform}
                 onChange={setPlatform}
                 counts={counts}
               />
 
-              <div className="flex items-center gap-2">
-                {/* View mode toggle shown on md+ since BottomNav has the table toggle on mobile */}
+              <div className="flex flex-wrap items-center gap-2">
+                {/* View mode toggle - filter between Card and Table view */}
                 <div
                   role="group"
                   aria-label="สลับมุมมองการ์ดหรือตาราง"
-                  className="hidden items-center rounded-full border border-[#F8BBD0]/70 bg-[#FFFDF9] p-1 shadow-xs md:inline-flex"
+                  className="inline-flex items-center rounded-full border border-[#F8BBD0]/70 bg-[#FFFDF9] p-0.5 shadow-xs sm:p-1"
                 >
                   <button
                     type="button"
                     aria-pressed={viewMode === "grid"}
                     onClick={() => setViewMode("grid")}
-                    className={`inline-flex h-8 items-center gap-1.5 rounded-full px-3 text-xs font-bold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#e11d68] ${
+                    className={`inline-flex h-8 items-center gap-1.5 rounded-full px-2.5 text-xs font-bold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#e11d68] sm:px-3 ${
                       viewMode === "grid"
-                        ? "bg-[#FCE4EC] text-[#b81452] shadow-xs"
+                        ? "border border-white bg-[#FCE4EC] text-[#b81452] shadow-xs"
                         : "text-[#6d5246] hover:text-[#4a352c]"
                     }`}
                   >
-                    <LayoutGrid aria-hidden="true" className="h-3.5 w-3.5" />
+                    <LayoutGrid aria-hidden="true" className="h-3.5 w-3.5 text-[#d81b60]" />
                     <span>การ์ด</span>
                   </button>
                   <button
                     type="button"
                     aria-pressed={viewMode === "table"}
                     onClick={() => setViewMode("table")}
-                    className={`inline-flex h-8 items-center gap-1.5 rounded-full px-3 text-xs font-bold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#e11d68] ${
+                    className={`inline-flex h-8 items-center gap-1.5 rounded-full px-2.5 text-xs font-bold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#e11d68] sm:px-3 ${
                       viewMode === "table"
-                        ? "bg-[#FCE4EC] text-[#b81452] shadow-xs"
+                        ? "border border-white bg-[#FCE4EC] text-[#b81452] shadow-xs"
                         : "text-[#6d5246] hover:text-[#4a352c]"
                     }`}
                   >
-                    <Table2 aria-hidden="true" className="h-3.5 w-3.5" />
+                    <Table2 aria-hidden="true" className="h-3.5 w-3.5 text-[#d81b60]" />
                     <span>ตาราง</span>
                   </button>
                 </div>
@@ -537,8 +537,6 @@ export function RateBoardClient({ initialGames }: RateBoardClientProps) {
         onSelectSection={setActiveSection}
         category={category}
         onSelectCategory={setCategory}
-        viewMode={viewMode}
-        onSetViewMode={setViewMode}
         gameCount={categoryCounts.game ?? 0}
         appCount={categoryCounts.app ?? 0}
       />

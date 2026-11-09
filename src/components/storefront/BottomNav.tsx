@@ -10,8 +10,6 @@ export interface BottomNavProps {
   onSelectSection: (section: StorefrontSection) => void;
   category: FilterCategory;
   onSelectCategory: (category: FilterCategory) => void;
-  viewMode: "grid" | "table";
-  onSetViewMode: (mode: "grid" | "table") => void;
   gameCount: number;
   appCount: number;
 }
@@ -141,17 +139,12 @@ export function BottomNav({
   onSelectSection,
   category,
   onSelectCategory,
-  viewMode,
-  onSetViewMode,
   gameCount,
   appCount,
 }: BottomNavProps) {
   const isAccountActive = activeSection === "account";
-  const isGameActive =
-    activeSection === "rates" && category === "game" && viewMode === "grid";
-  const isAppActive =
-    activeSection === "rates" && category === "app" && viewMode === "grid";
-  const isTableActive = activeSection === "rates" && viewMode === "table";
+  const isGameActive = activeSection === "rates" && category === "game";
+  const isAppActive = activeSection === "rates" && category === "app";
   const isContactActive = activeSection === "contact";
 
   const scrollTop = () => {
@@ -169,7 +162,7 @@ export function BottomNav({
         paddingBottom: "calc(0.35rem + env(safe-area-inset-bottom, 0px))",
       }}
     >
-      <div className="grid grid-cols-5">
+      <div className="grid grid-cols-4">
         <button
           type="button"
           data-active={isAccountActive}
@@ -191,7 +184,6 @@ export function BottomNav({
           onClick={() => {
             onSelectSection("rates");
             onSelectCategory("game");
-            onSetViewMode("grid");
             scrollTop();
           }}
           className={tabClass}
@@ -207,29 +199,12 @@ export function BottomNav({
           onClick={() => {
             onSelectSection("rates");
             onSelectCategory("app");
-            onSetViewMode("grid");
             scrollTop();
           }}
           className={tabClass}
         >
           <TabFace k="app" badge={appCount} />
           <span>หมวดแอป</span>
-        </button>
-
-        <button
-          type="button"
-          data-active={isTableActive}
-          aria-pressed={isTableActive}
-          onClick={() => {
-            onSelectSection("rates");
-            onSelectCategory("all");
-            onSetViewMode("table");
-            scrollTop();
-          }}
-          className={tabClass}
-        >
-          <TabFace k="table" />
-          <span>ตารางเรท</span>
         </button>
 
         <button
