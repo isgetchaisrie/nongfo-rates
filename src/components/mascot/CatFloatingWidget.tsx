@@ -82,10 +82,10 @@ export function CatFloatingWidget({ defaultOpen = false }: { defaultOpen?: boole
         onClick={handleCycleTip}
         aria-expanded={isOpen}
         aria-label="แตะเพื่อดูเคล็ดลับจากน้องแมว Nongfo"
-        className="group flex items-center gap-2 rounded-full border-2 border-white bg-[#FCE4EC] p-1.5 pr-4 text-xs font-bold text-[#4a352c] shadow-[0_10px_28px_-8px_rgba(158,136,119,0.3)] transition-all hover:-translate-y-0.5 hover:bg-[#F8BBD0]"
+        className="group flex items-center gap-2 rounded-full border-2 border-white bg-[#FCE4EC] p-1.5 text-xs font-bold text-[#4a352c] shadow-[0_10px_28px_-8px_rgba(158,136,119,0.3)] transition-all hover:-translate-y-0.5 hover:bg-[#F8BBD0] sm:pr-4"
       >
         <CatMascot variant="badge" className="h-9 w-9 shrink-0" />
-        <span className="text-[#4a352c] group-hover:text-[#b81452]">
+        <span className="hidden text-[#4a352c] group-hover:text-[#b81452] sm:inline">
           เมี๊ยว~ เช็กเรทไว
         </span>
       </button>

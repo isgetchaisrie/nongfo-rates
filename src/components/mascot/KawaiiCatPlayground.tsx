@@ -46,6 +46,8 @@ interface RoamingKittyConfig {
   col: number;
   row: number;
   size: number;
+  mobileSize: number;
+  showOnMobile: boolean;
   naturalFacing: "left" | "right";
   initialX: number; // vw %
   initialY: number; // vh %
@@ -73,11 +75,13 @@ const ROAMING_KITTIES: RoamingKittyConfig[] = [
     col: 1,
     row: 3,
     size: 74,
+    mobileSize: 48,
+    showOnMobile: true,
     naturalFacing: "right",
-    initialX: 6,
-    initialY: 78,
-    initialTargetX: 84,
-    initialTargetY: 22,
+    initialX: 10,
+    initialY: 90,
+    initialTargetX: 78,
+    initialTargetY: 91,
     speedPctPerSec: 4.2,
   },
   {
@@ -87,11 +91,13 @@ const ROAMING_KITTIES: RoamingKittyConfig[] = [
     col: 0,
     row: 3,
     size: 72,
+    mobileSize: 46,
+    showOnMobile: true,
     naturalFacing: "right",
-    initialX: 88,
-    initialY: 18,
-    initialTargetX: 12,
-    initialTargetY: 64,
+    initialX: 84,
+    initialY: 12,
+    initialTargetX: 16,
+    initialTargetY: 10,
     speedPctPerSec: 3.8,
   },
   {
@@ -101,6 +107,8 @@ const ROAMING_KITTIES: RoamingKittyConfig[] = [
     col: 4,
     row: 3,
     size: 76,
+    mobileSize: 46,
+    showOnMobile: false,
     naturalFacing: "left",
     initialX: 14,
     initialY: 32,
@@ -115,6 +123,8 @@ const ROAMING_KITTIES: RoamingKittyConfig[] = [
     col: 3,
     row: 3,
     size: 70,
+    mobileSize: 44,
+    showOnMobile: false,
     naturalFacing: "right",
     initialX: 82,
     initialY: 72,
@@ -129,12 +139,14 @@ const ROAMING_KITTIES: RoamingKittyConfig[] = [
     col: 0,
     row: 4,
     size: 74,
+    mobileSize: 48,
+    showOnMobile: true,
     naturalFacing: "right",
-    initialX: 45,
-    initialY: 85,
-    initialTargetX: 8,
-    initialTargetY: 42,
-    speedPctPerSec: 4.6,
+    initialX: 48,
+    initialY: 92,
+    initialTargetX: 14,
+    initialTargetY: 89,
+    speedPctPerSec: 4.4,
   },
   {
     id: "galaxy-star",
@@ -143,6 +155,8 @@ const ROAMING_KITTIES: RoamingKittyConfig[] = [
     col: 5,
     row: 3,
     size: 70,
+    mobileSize: 44,
+    showOnMobile: false,
     naturalFacing: "left",
     initialX: 90,
     initialY: 48,
@@ -152,8 +166,8 @@ const ROAMING_KITTIES: RoamingKittyConfig[] = [
   },
 ];
 
-// Curated scenic waypoints around the viewport so cats tour top, sides, middle, and bottom naturally
-const TOUR_WAYPOINTS: Array<{ x: number; y: number }> = [
+// Desktop full-page tour waypoints
+const DESKTOP_TOUR_WAYPOINTS: Array<{ x: number; y: number }> = [
   { x: 4, y: 14 },
   { x: 18, y: 10 },
   { x: 82, y: 12 },
@@ -170,22 +184,46 @@ const TOUR_WAYPOINTS: Array<{ x: number; y: number }> = [
   { x: 74, y: 52 },
 ];
 
-function pickNextWaypoint(currentX: number, currentY: number, seed: number) {
-  const candidates = TOUR_WAYPOINTS.filter(
-    (wp) => Math.hypot(wp.x - currentX, wp.y - currentY) > 25,
+// Mobile edge-only waypoints so cats patrol the top/bottom/outer borders without blocking price cards in the center
+const MOBILE_PERIMETER_WAYPOINTS: Array<{ x: number; y: number }> = [
+  { x: 12, y: 9 },
+  { x: 48, y: 8 },
+  { x: 86, y: 10 },
+  { x: 88, y: 89 },
+  { x: 52, y: 92 },
+  { x: 16, y: 91 },
+  { x: 8, y: 48 },
+  { x: 91, y: 52 },
+];
+
+function pickNextWaypoint(
+  currentX: number,
+  currentY: number,
+  seed: number,
+  isMobile: boolean,
+) {
+  const waypoints = isMobile
+    ? MOBILE_PERIMETER_WAYPOINTS
+    : DESKTOP_TOUR_WAYPOINTS;
+  const candidates = waypoints.filter(
+    (wp) => Math.hypot(wp.x - currentX, wp.y - currentY) > 22,
   );
-  const pool = candidates.length > 0 ? candidates : TOUR_WAYPOINTS;
+  const pool = candidates.length > 0 ? candidates : waypoints;
   const chosen = pool[Math.abs(Math.floor(seed)) % pool.length];
-  const jitterX = ((seed * 17) % 7) - 3.5;
-  const jitterY = ((seed * 29) % 7) - 3.5;
+  const jitterX = ((seed * 17) % 5) - 2.5;
+  const jitterY = ((seed * 29) % 4) - 2;
   return {
-    x: Math.min(92, Math.max(3, chosen.x + jitterX)),
-    y: Math.min(88, Math.max(8, chosen.y + jitterY)),
+    x: Math.min(92, Math.max(5, chosen.x + jitterX)),
+    y: Math.min(93, Math.max(7, chosen.y + jitterY)),
   };
 }
 
 export function KawaiiCatPlayground() {
   const [activeSpeech, setActiveSpeech] = useState<string | null>(null);
+  const [isPaused, setIsPaused] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const isMobileRef = useRef(false);
+
   const [kitties, setKitties] = useState<KittyLiveState[]>(() =>
     ROAMING_KITTIES.map((k, idx) => ({
       x: k.initialX,
@@ -202,6 +240,20 @@ export function KawaiiCatPlayground() {
   const tickCountRef = useRef(0);
 
   useEffect(() => {
+    if (typeof window === "undefined") return;
+    const updateViewport = () => {
+      const mobile = window.innerWidth < 768;
+      isMobileRef.current = mobile;
+      setIsMobile(mobile);
+    };
+    updateViewport();
+    window.addEventListener("resize", updateViewport);
+    return () => window.removeEventListener("resize", updateViewport);
+  }, []);
+
+  useEffect(() => {
+    if (isPaused) return;
+
     const prefersReducedMotion =
       typeof window !== "undefined" &&
       typeof window.matchMedia === "function" &&
@@ -236,6 +288,7 @@ export function KawaiiCatPlayground() {
               state.x,
               state.y,
               tickCountRef.current + idx * 19 + now * 0.01,
+              isMobileRef.current,
             );
             return {
               ...state,
@@ -255,7 +308,8 @@ export function KawaiiCatPlayground() {
             return {
               ...state,
               mode: "idle",
-              idleRemainingSec: 1.8 + ((idx * 0.7 + tickCountRef.current) % 1.8),
+              idleRemainingSec:
+                1.8 + ((idx * 0.7 + tickCountRef.current) % 1.8),
             };
           }
 
@@ -281,72 +335,89 @@ export function KawaiiCatPlayground() {
 
     animationFrameId = requestAnimationFrame(step);
     return () => cancelAnimationFrame(animationFrameId);
-  }, []);
+  }, [isPaused]);
 
   return (
-    <div
-      aria-label="สนามวิ่งเล่นน้องแมว Nongfo ทัวร์รอบหน้าเว็บ"
-      className="pointer-events-none fixed inset-0 z-30 overflow-hidden"
-    >
-      {ROAMING_KITTIES.map((kitty, idx) => {
-        const live = kitties[idx];
-        const shouldFlipX = live.facing !== kitty.naturalFacing;
-        const bobOffsetPx =
-          live.mode === "walking"
-            ? -Math.abs(Math.sin(live.stepPhase)) * 7
-            : Math.sin(live.stepPhase) * 2;
-        const tiltDeg =
-          live.mode === "walking" ? Math.sin(live.stepPhase) * 4.5 : 0;
+    <>
+      <div
+        aria-label="สนามวิ่งเล่นน้องแมว Nongfo ทัวร์รอบหน้าเว็บ"
+        className="pointer-events-none fixed inset-0 z-30 overflow-hidden"
+      >
+        {!isPaused &&
+          ROAMING_KITTIES.map((kitty, idx) => {
+            if (isMobile && !kitty.showOnMobile) {
+              return null;
+            }
+            const live = kitties[idx];
+            const shouldFlipX = live.facing !== kitty.naturalFacing;
+            const spriteSize = isMobile ? kitty.mobileSize : kitty.size;
+            const bobOffsetPx =
+              live.mode === "walking"
+                ? -Math.abs(Math.sin(live.stepPhase)) * (isMobile ? 4.5 : 7)
+                : Math.sin(live.stepPhase) * 2;
+            const tiltDeg =
+              live.mode === "walking" ? Math.sin(live.stepPhase) * 4.5 : 0;
 
-        return (
-          <div
-            key={kitty.id}
-            style={{
-              left: `${live.x}%`,
-              top: `${live.y}%`,
-              transform: "translate(-50%, -50%)",
-            }}
-            className="cat-roam-tour pointer-events-auto absolute flex flex-col items-center will-change-[left,top]"
-          >
-            {activeSpeech === kitty.id && (
-              <div className="mb-1 whitespace-nowrap rounded-full border border-[#F8BBD0] bg-white/95 px-3 py-1 text-xs font-bold text-[#4a352c] shadow-sm">
-                {kitty.quote}
+            return (
+              <div
+                key={kitty.id}
+                style={{
+                  left: `${live.x}%`,
+                  top: `${live.y}%`,
+                  transform: "translate(-50%, -50%)",
+                }}
+                className="cat-roam-tour pointer-events-none sm:pointer-events-auto absolute flex flex-col items-center will-change-[left,top]"
+              >
+                {activeSpeech === kitty.id && (
+                  <div className="mb-1 whitespace-nowrap rounded-full border border-[#F8BBD0] bg-white/95 px-2.5 py-0.5 text-xs font-bold text-[#4a352c] shadow-sm">
+                    {kitty.quote}
+                  </div>
+                )}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setActiveSpeech((prev) =>
+                      prev === kitty.id ? null : kitty.id,
+                    );
+                    setKitties((prev) =>
+                      prev.map((item, i) =>
+                        i === idx
+                          ? { ...item, mode: "idle", idleRemainingSec: 3.2 }
+                          : item,
+                      ),
+                    );
+                  }}
+                  aria-label={`ทักทาย${kitty.name}`}
+                  style={{
+                    transform: `translateY(${bobOffsetPx.toFixed(1)}px) rotate(${tiltDeg.toFixed(1)}deg)`,
+                  }}
+                  className="cat-trot pointer-events-auto group relative flex items-center justify-center p-0.5 transition-transform hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#e11d68]"
+                >
+                  <KawaiiCatSprite
+                    col={kitty.col}
+                    row={kitty.row}
+                    size={spriteSize}
+                    flipX={shouldFlipX}
+                    label={kitty.name}
+                  />
+                  <span className="pointer-events-none absolute -top-2 -right-1 hidden rounded-full border border-white bg-[#FCE4EC] px-2 py-0.5 text-xs font-bold text-[#b81452] opacity-0 shadow-xs transition-opacity group-hover:opacity-100 sm:inline-block">
+                    เมี๊ยว!
+                  </span>
+                </button>
               </div>
-            )}
-            <button
-              type="button"
-              onClick={() => {
-                setActiveSpeech((prev) =>
-                  prev === kitty.id ? null : kitty.id,
-                );
-                setKitties((prev) =>
-                  prev.map((item, i) =>
-                    i === idx
-                      ? { ...item, mode: "idle", idleRemainingSec: 3.2 }
-                      : item,
-                  ),
-                );
-              }}
-              aria-label={`ทักทาย${kitty.name}`}
-              style={{
-                transform: `translateY(${bobOffsetPx.toFixed(1)}px) rotate(${tiltDeg.toFixed(1)}deg)`,
-              }}
-              className="cat-trot group relative flex items-center justify-center p-0.5 transition-transform hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#e11d68]"
-            >
-              <KawaiiCatSprite
-                col={kitty.col}
-                row={kitty.row}
-                size={kitty.size}
-                flipX={shouldFlipX}
-                label={kitty.name}
-              />
-              <span className="pointer-events-none absolute -top-2 -right-1 rounded-full border border-white bg-[#FCE4EC] px-2 py-0.5 text-xs font-bold text-[#b81452] opacity-0 shadow-xs transition-opacity group-hover:opacity-100">
-                เมี๊ยว!
-              </span>
-            </button>
-          </div>
-        );
-      })}
-    </div>
+            );
+          })}
+      </div>
+
+      {/* Quick toggle button at bottom-left so mobile/desktop users can hide/show roaming cats anytime */}
+      <button
+        type="button"
+        onClick={() => setIsPaused((prev) => !prev)}
+        aria-pressed={isPaused}
+        className="fixed bottom-4 left-4 z-40 inline-flex items-center gap-1.5 rounded-full border-2 border-white bg-[#FFFDE7]/95 px-3 py-1.5 text-xs font-bold text-[#4a352c] shadow-sm backdrop-blur-xs transition-all hover:bg-[#FCE4EC] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#e11d68]"
+      >
+        <span>{isPaused ? "แสดงน้องแมวเดินเล่น" : "พักน้องแมวเดินเล่น"}</span>
+      </button>
+    </>
   );
 }

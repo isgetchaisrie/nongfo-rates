@@ -44,17 +44,17 @@ export function ProductRateCard({ game }: ProductRateCardProps) {
   const isApp = game.category === "app";
 
   return (
-    <article className="neko-card group flex flex-col rounded-[32px] p-4">
+    <article className="neko-card group flex flex-col rounded-[24px] p-2.5 sm:rounded-[32px] sm:p-4">
       <svg
         aria-hidden="true"
         viewBox="0 0 24 24"
         fill="currentColor"
-        className="pointer-events-none absolute -right-2 -top-2 z-20 h-6 w-6 text-[#f8bbd0] drop-shadow-xs anim-float-1"
+        className="pointer-events-none absolute -right-1.5 -top-1.5 z-20 h-5 w-5 text-[#f8bbd0] drop-shadow-xs anim-float-1 sm:-right-2 sm:-top-2 sm:h-6 sm:w-6"
       >
         <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
       </svg>
 
-      <div className="relative p-1.5">
+      <div className="relative p-1 sm:p-1.5">
         <svg
           aria-hidden="true"
           className="pointer-events-none absolute inset-0 h-full w-full"
@@ -65,8 +65,8 @@ export function ProductRateCard({ game }: ProductRateCardProps) {
             y="2"
             width="calc(100% - 4px)"
             height="calc(100% - 4px)"
-            rx="24"
-            ry="24"
+            rx="20"
+            ry="20"
             fill="none"
             stroke="#F8BBD0"
             strokeWidth="2"
@@ -76,7 +76,7 @@ export function ProductRateCard({ game }: ProductRateCardProps) {
           />
         </svg>
 
-        <div className="relative aspect-square w-full overflow-hidden rounded-[22px] border-[3px] border-white bg-[#FCE4EC]/40 shadow-xs">
+        <div className="relative aspect-square w-full overflow-hidden rounded-[16px] border-2 border-white bg-[#FCE4EC]/40 shadow-xs sm:rounded-[22px] sm:border-[3px]">
           <img
             src={game.image}
             alt={game.name}
@@ -84,37 +84,37 @@ export function ProductRateCard({ game }: ProductRateCardProps) {
             className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
           />
           <span
-            className={`absolute left-2.5 top-2.5 inline-flex items-center gap-1 rounded-full border border-white px-2.5 py-1 text-xs font-bold shadow-xs ${
+            className={`absolute left-1.5 top-1.5 inline-flex items-center gap-1 rounded-full border border-white px-2 py-0.5 text-xs font-bold shadow-xs sm:left-2.5 sm:top-2.5 sm:px-2.5 sm:py-1 ${
               isApp
                 ? "bg-[#FFFDE7]/95 text-[#5c4338]"
                 : "bg-[#FCE4EC]/95 text-[#5c4338]"
             }`}
           >
             {isApp ? (
-              <Sparkles aria-hidden="true" className="h-3.5 w-3.5 text-[#d81b60]" />
+              <Sparkles aria-hidden="true" className="h-3 w-3 text-[#d81b60] sm:h-3.5 sm:w-3.5" />
             ) : (
-              <Gamepad2 aria-hidden="true" className="h-3.5 w-3.5 text-[#d81b60]" />
+              <Gamepad2 aria-hidden="true" className="h-3 w-3 text-[#d81b60] sm:h-3.5 sm:w-3.5" />
             )}
             <span>{isApp ? "แอป" : "เกม"}</span>
           </span>
-          <span className="absolute right-2.5 top-2.5 inline-flex items-center rounded-full border border-[#F8BBD0] bg-white/95 px-2.5 py-1 text-xs font-bold text-[#5c4338] shadow-xs">
+          <span className="absolute right-2.5 top-2.5 hidden items-center rounded-full border border-[#F8BBD0] bg-white/95 px-2.5 py-1 text-xs font-bold text-[#5c4338] shadow-xs sm:inline-flex">
             {PLATFORM_LABELS[game.platform]}
           </span>
         </div>
       </div>
 
-      <h2 className="mt-3.5 mb-3 line-clamp-2 min-h-[3.25rem] px-1 font-[var(--font-mali)] text-lg font-bold leading-snug text-[#4a352c]">
+      <h2 className="mt-2.5 mb-2 line-clamp-2 min-h-[2.5rem] px-1 font-[var(--font-mali)] text-sm font-bold leading-snug text-[#4a352c] sm:mt-3.5 sm:mb-3 sm:min-h-[3.25rem] sm:text-lg">
         {game.name}
       </h2>
 
-      <dl className="mt-auto grid grid-cols-2 gap-2.5">
-        <div className="relative overflow-hidden rounded-2xl border border-white bg-gradient-to-br from-[#FCE4EC] to-[#FFF0F6] p-3 shadow-xs">
-          <dt className="flex items-center gap-1.5 text-xs font-bold text-[#6d5246]">
+      <dl className="mt-auto grid grid-cols-2 gap-1.5 sm:gap-2.5">
+        <div className="relative overflow-hidden rounded-xl border border-white bg-gradient-to-br from-[#FCE4EC] to-[#FFF0F6] p-2 shadow-xs sm:rounded-2xl sm:p-3">
+          <dt className="flex items-center gap-1 text-xs font-bold text-[#6d5246] sm:gap-1.5">
             <MiniIosIcon />
             <span>iOS</span>
           </dt>
           <dd
-            className={`mt-1 font-[var(--font-fredoka)] text-xl font-bold tabular-nums ${
+            className={`mt-0.5 font-[var(--font-fredoka)] text-base font-bold tabular-nums sm:mt-1 sm:text-xl ${
               hasIos ? "text-[#b81452]" : "text-[#84685b]"
             }`}
           >
@@ -122,13 +122,13 @@ export function ProductRateCard({ game }: ProductRateCardProps) {
           </dd>
         </div>
 
-        <div className="relative overflow-hidden rounded-2xl border border-white bg-gradient-to-br from-[#E8F0FE] to-[#E0F2F1] p-3 shadow-xs">
-          <dt className="flex items-center gap-1.5 text-xs font-bold text-[#134e3a]">
+        <div className="relative overflow-hidden rounded-xl border border-white bg-gradient-to-br from-[#E8F0FE] to-[#E0F2F1] p-2 shadow-xs sm:rounded-2xl sm:p-3">
+          <dt className="flex items-center gap-1 text-xs font-bold text-[#134e3a] sm:gap-1.5">
             <MiniAndroidIcon />
             <span>Android</span>
           </dt>
           <dd
-            className={`mt-1 font-[var(--font-fredoka)] text-xl font-bold tabular-nums ${
+            className={`mt-0.5 font-[var(--font-fredoka)] text-base font-bold tabular-nums sm:mt-1 sm:text-xl ${
               hasAndroid ? "text-[#0f5137]" : "text-[#4b6e5f]"
             }`}
           >

@@ -86,16 +86,16 @@ export function PlatformSwitcher({
             type="button"
             aria-pressed={isActive}
             onClick={() => onChange(id)}
-            className={`inline-flex h-11 items-center gap-2 rounded-full border px-4 text-sm font-bold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#e11d68] focus-visible:ring-offset-2 ${
+            className={`inline-flex h-9 items-center gap-1.5 rounded-full border px-3 text-xs font-bold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#e11d68] focus-visible:ring-offset-2 sm:h-11 sm:gap-2 sm:px-4 sm:text-sm ${
               isActive
                 ? "border-white bg-[#FCE4EC] text-[#4a352c] shadow-[0_6px_16px_-4px_rgba(244,143,177,0.5)]"
                 : "border-[#F8BBD0]/60 bg-white/90 text-[#6d5246] hover:bg-[#FCE4EC]/50 hover:text-[#4a352c]"
             }`}
           >
-            <Icon className="h-4 w-4 shrink-0 text-[#d81b60]" />
+            <Icon className="h-3.5 w-3.5 shrink-0 text-[#d81b60] sm:h-4 sm:w-4" />
             <span>{label}</span>
             <span
-              className={`inline-flex min-w-6 items-center justify-center rounded-full px-2 py-0.5 font-[var(--font-fredoka)] text-xs font-bold tabular-nums ${
+              className={`inline-flex min-w-5 items-center justify-center rounded-full px-1.5 py-0.5 font-[var(--font-fredoka)] text-xs font-bold tabular-nums sm:min-w-6 sm:px-2 ${
                 isActive
                   ? "bg-white text-[#b81452]"
                   : "bg-[#FCE4EC] text-[#b81452]"
