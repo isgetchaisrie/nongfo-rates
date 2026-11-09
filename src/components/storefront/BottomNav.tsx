@@ -1,14 +1,17 @@
 "use client";
 
 import React, { type ReactNode } from "react";
-import Link from "next/link";
 import type { FilterCategory } from "./filterGames";
 
+export type StorefrontSection = "account" | "rates" | "contact";
+
 export interface BottomNavProps {
+  activeSection: StorefrontSection;
+  onSelectSection: (section: StorefrontSection) => void;
   category: FilterCategory;
   onSelectCategory: (category: FilterCategory) => void;
   viewMode: "grid" | "table";
-  onToggleViewMode: () => void;
+  onSetViewMode: (mode: "grid" | "table") => void;
   gameCount: number;
   appCount: number;
 }
@@ -134,17 +137,28 @@ const tabClass =
   "bnav-tab relative flex min-h-14 flex-col items-center justify-start gap-0.5 rounded-2xl pt-1 text-xs font-semibold text-[#6d5246] data-[active=true]:font-extrabold data-[active=true]:text-[#4a352c] cursor-pointer select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#e11d68]";
 
 export function BottomNav({
+  activeSection,
+  onSelectSection,
   category,
   onSelectCategory,
   viewMode,
-  onToggleViewMode,
+  onSetViewMode,
   gameCount,
   appCount,
 }: BottomNavProps) {
-  const isHomeActive = category === "all" && viewMode === "grid";
-  const isGameActive = category === "game";
-  const isAppActive = category === "app";
-  const isTableActive = viewMode === "table";
+  const isAccountActive = activeSection === "account";
+  const isGameActive =
+    activeSection === "rates" && category === "game" && viewMode === "grid";
+  const isAppActive =
+    activeSection === "rates" && category === "app" && viewMode === "grid";
+  const isTableActive = activeSection === "rates" && viewMode === "table";
+  const isContactActive = activeSection === "contact";
+
+  const scrollTop = () => {
+    if (typeof window !== "undefined") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
 
   return (
     <nav
@@ -158,28 +172,28 @@ export function BottomNav({
       <div className="grid grid-cols-5">
         <button
           type="button"
-          data-active={isHomeActive}
-          aria-pressed={isHomeActive}
+          data-active={isAccountActive}
+          aria-pressed={isAccountActive}
           onClick={() => {
-            onSelectCategory("all");
-            if (viewMode === "table") {
-              onToggleViewMode();
-            }
-            if (typeof window !== "undefined") {
-              window.scrollTo({ top: 0, behavior: "smooth" });
-            }
+            onSelectSection("account");
+            scrollTop();
           }}
           className={tabClass}
         >
           <TabFace k="home" />
-          <span>หน้าแรก</span>
+          <span>บัญชี</span>
         </button>
 
         <button
           type="button"
           data-active={isGameActive}
           aria-pressed={isGameActive}
-          onClick={() => onSelectCategory("game")}
+          onClick={() => {
+            onSelectSection("rates");
+            onSelectCategory("game");
+            onSetViewMode("grid");
+            scrollTop();
+          }}
           className={tabClass}
         >
           <TabFace k="game" badge={gameCount} />
@@ -190,7 +204,12 @@ export function BottomNav({
           type="button"
           data-active={isAppActive}
           aria-pressed={isAppActive}
-          onClick={() => onSelectCategory("app")}
+          onClick={() => {
+            onSelectSection("rates");
+            onSelectCategory("app");
+            onSetViewMode("grid");
+            scrollTop();
+          }}
           className={tabClass}
         >
           <TabFace k="app" badge={appCount} />
@@ -201,17 +220,31 @@ export function BottomNav({
           type="button"
           data-active={isTableActive}
           aria-pressed={isTableActive}
-          onClick={onToggleViewMode}
+          onClick={() => {
+            onSelectSection("rates");
+            onSelectCategory("all");
+            onSetViewMode("table");
+            scrollTop();
+          }}
           className={tabClass}
         >
           <TabFace k="table" />
-          <span>{viewMode === "table" ? "แบบตาราง" : "ตารางเรท"}</span>
+          <span>ตารางเรท</span>
         </button>
 
-        <Link href="/admin" className={tabClass}>
+        <button
+          type="button"
+          data-active={isContactActive}
+          aria-pressed={isContactActive}
+          onClick={() => {
+            onSelectSection("contact");
+            scrollTop();
+          }}
+          className={tabClass}
+        >
           <TabFace k="admin" />
-          <span>แอดมิน</span>
-        </Link>
+          <span>ติดต่อแอดมิน</span>
+        </button>
       </div>
 
       {/* Shown automatically only when Netlify's free-tier badge (#nl-badge-frame) is present in DOM */}

@@ -1,3 +1,5 @@
+import React from "react";
+import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import type { GameRate } from "@/types/game";
 import {
@@ -5,6 +7,9 @@ import {
   computePlatformCounts,
   filterGames,
 } from "@/components/storefront/filterGames";
+import { BottomNav } from "@/components/storefront/BottomNav";
+import { PaymentAccountSection } from "@/components/storefront/PaymentAccountSection";
+import { ContactAdminSection } from "@/components/storefront/ContactAdminSection";
 
 const sampleGames: GameRate[] = [
   {
@@ -164,5 +169,45 @@ describe("computePlatformCounts and computeCategoryCounts", () => {
       android: 1,
       both: 0,
     });
+  });
+});
+
+describe("BottomNav, PaymentAccountSection, and ContactAdminSection", () => {
+  it("renders the 5 bottom tabs including บัญชี and ติดต่อแอดมิน", () => {
+    const html = renderToStaticMarkup(
+      React.createElement(BottomNav, {
+        activeSection: "account",
+        onSelectSection: () => {},
+        category: "all",
+        onSelectCategory: () => {},
+        viewMode: "grid",
+        onSetViewMode: () => {},
+        gameCount: 38,
+        appCount: 15,
+      }),
+    );
+
+    expect(html).toContain("บัญชี");
+    expect(html).toContain("หมวดเกม");
+    expect(html).toContain("หมวดแอป");
+    expect(html).toContain("ตารางเรท");
+    expect(html).toContain("ติดต่อแอดมิน");
+  });
+
+  it("renders Pattida payment account details and ContactAdminSection channels", () => {
+    const paymentHtml = renderToStaticMarkup(
+      React.createElement(PaymentAccountSection),
+    );
+    expect(paymentHtml).toContain("Pattida");
+    expect(paymentHtml).toContain("151-8-83098-4");
+    expect(paymentHtml).toContain("096-018-0967");
+    expect(paymentHtml).toContain("ยินยอมซื้อขายFb Pat Pattida");
+
+    const contactHtml = renderToStaticMarkup(
+      React.createElement(ContactAdminSection),
+    );
+    expect(contactHtml).toContain("Pat Pattida");
+    expect(contactHtml).toContain("Thitima Nongfo");
+    expect(contactHtml).toContain("@709qwuff");
   });
 });

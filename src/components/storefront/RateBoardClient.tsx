@@ -24,7 +24,9 @@ import {
 import { SearchBar } from "./SearchBar";
 import { PlatformSwitcher } from "./PlatformSwitcher";
 import { ProductRateCard } from "./ProductRateCard";
-import { BottomNav } from "./BottomNav";
+import { BottomNav, type StorefrontSection } from "./BottomNav";
+import { PaymentAccountSection } from "./PaymentAccountSection";
+import { ContactAdminSection } from "./ContactAdminSection";
 
 export interface RateBoardClientProps {
   initialGames: GameRate[];
@@ -41,6 +43,8 @@ const CATEGORY_TABS: Array<{
 ];
 
 export function RateBoardClient({ initialGames }: RateBoardClientProps) {
+  const [activeSection, setActiveSection] =
+    useState<StorefrontSection>("account");
   const [query, setQuery] = useState("");
   const [platform, setPlatform] = useState<FilterPlatform>("all");
   const [category, setCategory] = useState<FilterCategory>("all");
@@ -140,7 +144,21 @@ export function RateBoardClient({ initialGames }: RateBoardClientProps) {
       </header>
 
       <main className="relative z-10 mx-auto max-w-7xl px-3 pt-3 pb-40 sm:px-6 sm:pt-8 lg:px-8 lg:pb-28">
-        <section className="glass-card relative mb-3.5 rounded-[24px] p-2.5 sm:mb-8 sm:rounded-[40px] sm:p-6">
+        {activeSection === "account" && (
+          <PaymentAccountSection
+            onExploreRates={() => {
+              setActiveSection("rates");
+              setCategory("all");
+              setViewMode("grid");
+            }}
+          />
+        )}
+
+        {activeSection === "contact" && <ContactAdminSection />}
+
+        {activeSection === "rates" && (
+          <>
+            <section className="glass-card relative mb-3.5 rounded-[24px] p-2.5 sm:mb-8 sm:rounded-[40px] sm:p-6">
           <svg
             aria-hidden="true"
             className="anim-float-1 pointer-events-none absolute -left-2 -top-3 z-20 h-6 w-6 text-[#F8BBD0] drop-shadow-xs sm:-top-4 sm:h-9 sm:w-9"
@@ -508,17 +526,19 @@ export function RateBoardClient({ initialGames }: RateBoardClientProps) {
               <span>ดูรายการทั้งหมดเลยน้า</span>
             </button>
           </section>
+            )}
+          </>
         )}
       </main>
 
       <CatFloatingWidget />
       <BottomNav
+        activeSection={activeSection}
+        onSelectSection={setActiveSection}
         category={category}
         onSelectCategory={setCategory}
         viewMode={viewMode}
-        onToggleViewMode={() =>
-          setViewMode((prev) => (prev === "grid" ? "table" : "grid"))
-        }
+        onSetViewMode={setViewMode}
         gameCount={categoryCounts.game ?? 0}
         appCount={categoryCounts.app ?? 0}
       />
