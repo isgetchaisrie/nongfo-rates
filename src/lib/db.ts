@@ -288,8 +288,20 @@ function getDb(): DatabaseSync {
     }
   }
 
-  fs.mkdirSync(path.dirname(targetPath), { recursive: true });
-  const db = new DatabaseSync(targetPath);
+  let db: DatabaseSync;
+  let actualPath = targetPath;
+  try {
+    fs.mkdirSync(path.dirname(targetPath), { recursive: true });
+    db = new DatabaseSync(targetPath);
+  } catch {
+    actualPath = "/tmp/nuggetkub-rates.db";
+    try {
+      db = new DatabaseSync(actualPath);
+    } catch {
+      actualPath = ":memory:";
+      db = new DatabaseSync(":memory:");
+    }
+  }
 
   db.exec(`
     CREATE TABLE IF NOT EXISTS games (
