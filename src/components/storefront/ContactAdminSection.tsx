@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import Link from "next/link";
 import { KawaiiCatSprite } from "@/components/mascot/KawaiiCatPlayground";
 
@@ -31,69 +31,11 @@ function LineIcon({ className }: { className?: string }) {
 }
 
 export function ContactAdminSection() {
-  const [toastMessage, setToastMessage] = useState<string | null>(null);
-
-  const showToast = (msg: string) => {
-    setToastMessage(msg);
-    window.setTimeout(() => {
-      setToastMessage((current) => (current === msg ? null : current));
-    }, 2500);
-  };
-
-  const handleCopy = async (text: string, label: string) => {
-    try {
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        await navigator.clipboard.writeText(text);
-      } else {
-        const textArea = document.createElement("textarea");
-        textArea.value = text;
-        textArea.style.position = "fixed";
-        textArea.style.left = "-999999px";
-        document.body.appendChild(textArea);
-        textArea.focus();
-        textArea.select();
-        document.execCommand("copy");
-        document.body.removeChild(textArea);
-      }
-    } catch {
-      // Ignore fallback error
-    }
-    showToast(label);
-  };
-
   return (
     <section
       aria-label="โปรไฟล์ติดต่อแอดมิน Nongfo"
       className="mx-auto w-full max-w-[440px] space-y-4 pt-1 pb-6"
     >
-      {/* Floating Toast */}
-      <div
-        role="status"
-        aria-live="polite"
-        className={`pointer-events-none fixed bottom-24 left-1/2 z-50 flex -translate-x-1/2 items-center gap-2 rounded-full border border-[#F8BBD0]/40 bg-[#5c4338] px-5 py-2.5 text-sm font-semibold text-white shadow-xl transition-all duration-300 ${
-          toastMessage
-            ? "translate-y-0 opacity-100"
-            : "translate-y-4 opacity-0"
-        }`}
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          strokeWidth={2.5}
-          stroke="currentColor"
-          className="h-5 w-5 text-[#F8BBD0]"
-          aria-hidden="true"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-          />
-        </svg>
-        <span>{toastMessage ?? "คัดลอกแล้ว"}</span>
-      </div>
-
       {/* Profile Card (Linktree / Bio style) */}
       <div className="glass-card relative z-10 overflow-hidden rounded-[36px] p-5 text-center shadow-lg sm:p-6">
         {/* Ambient cute floating stars & hearts */}
@@ -212,62 +154,6 @@ export function ContactAdminSection() {
               </span>
             </div>
           </a>
-
-          {/* Button 3: Facebook Pat Pattida (ตามระบุในโน้ตสลิป) */}
-          <a
-            href="https://www.facebook.com/search/top/?q=Pat%20Pattida"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group relative flex w-full cursor-pointer items-center justify-between gap-3 rounded-2xl border border-[#F8BBD0]/80 bg-[#FFFDF9] p-3 text-left shadow-xs transition-all hover:bg-[#FCE4EC]/50 hover:shadow-sm active:scale-98"
-          >
-            <div className="flex items-center gap-3">
-              <div className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-[#FCE4EC] text-[#b81452]">
-                <FacebookIcon className="h-5 w-5" />
-              </div>
-              <div className="min-w-0">
-                <div className="text-xs font-medium text-[#6d5246]">
-                  Facebook แม่ค้า (ตามที่ระบุในโน้ตสลิป)
-                </div>
-                <div className="font-[var(--font-mali)] text-sm font-bold text-[#4a352c]">
-                  Pat Pattida
-                </div>
-              </div>
-            </div>
-
-            <span className="shrink-0 text-xs font-bold text-[#b81452] group-hover:underline">
-              ค้นหาเฟซ ↗
-            </span>
-          </a>
-        </div>
-
-        {/* Quick copy chips */}
-        <div className="mt-4 flex flex-wrap items-center justify-center gap-2 border-t border-[#F8BBD0]/40 pt-3">
-          <button
-            type="button"
-            onClick={() => handleCopy("Thitima Nongfo", "คัดลอกชื่อเฟซ Thitima Nongfo แล้วค่ะ")}
-            className="inline-flex cursor-pointer items-center gap-1 rounded-full border border-[#F8BBD0]/60 bg-white px-3 py-1 text-xs font-bold text-[#5c4338] shadow-2xs hover:bg-[#FCE4EC] active:scale-95"
-          >
-            <span>คัดลอกชื่อ: Thitima Nongfo</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => handleCopy("@709qwuff", "คัดลอกไอดี LINE @709qwuff แล้วค่ะ")}
-            className="inline-flex cursor-pointer items-center gap-1 rounded-full border border-[#F8BBD0]/60 bg-white px-3 py-1 text-xs font-bold text-[#0f5137] shadow-2xs hover:bg-[#E0F2F1] active:scale-95"
-          >
-            <span>คัดลอก LINE: @709qwuff</span>
-          </button>
-        </div>
-
-        {/* 3 Steps Ordering Guide */}
-        <div className="mt-4 rounded-2xl border border-dashed border-[#F8BBD0] bg-[#FFFDF9]/90 p-3.5 text-left text-xs leading-relaxed text-[#5c4338]">
-          <div className="mb-1 font-bold text-[#b81452]">
-            ขั้นตอนสั่งซื้อไวๆ กับแอดมิน
-          </div>
-          <ol className="list-inside list-decimal space-y-0.5 font-medium text-[#5c4338]">
-            <li>เลือกดูราคาเกมหรือแอปจากแท็บ <strong>หมวดเกม / หมวดแอป</strong></li>
-            <li>สแกน QR หรือคัดลอกเลขบัญชีที่แท็บ <strong>บัญชี</strong> พร้อมใส่โน้ตสลิป</li>
-            <li>กดปุ่มทักแชทด้านบน ส่งรูปสลิป + ชื่อเกมและระบบ (iOS / Android) ได้เลยค่า</li>
-          </ol>
         </div>
       </div>
 
