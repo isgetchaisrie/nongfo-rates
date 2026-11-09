@@ -24,7 +24,7 @@ export function CatFloatingWidget({ defaultOpen = false }: { defaultOpen?: boole
   return (
     <aside
       aria-label="ผู้ช่วยน้องแมว Nongfo"
-      className="fixed bottom-5 right-5 z-40 flex flex-col items-end gap-2.5"
+      className="fixed bottom-5 right-5 z-40 flex flex-col items-end gap-2.5 max-md:bottom-24"
     >
       {isOpen && (
         <div

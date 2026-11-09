@@ -24,6 +24,7 @@ import {
 import { SearchBar } from "./SearchBar";
 import { PlatformSwitcher } from "./PlatformSwitcher";
 import { ProductRateCard } from "./ProductRateCard";
+import { BottomNav } from "./BottomNav";
 
 export interface RateBoardClientProps {
   initialGames: GameRate[];
@@ -508,6 +509,16 @@ export function RateBoardClient({ initialGames }: RateBoardClientProps) {
       </main>
 
       <CatFloatingWidget />
+      <BottomNav
+        category={category}
+        onSelectCategory={setCategory}
+        viewMode={viewMode}
+        onToggleViewMode={() =>
+          setViewMode((prev) => (prev === "grid" ? "table" : "grid"))
+        }
+        gameCount={categoryCounts.game ?? 0}
+        appCount={categoryCounts.app ?? 0}
+      />
     </div>
   );
 }

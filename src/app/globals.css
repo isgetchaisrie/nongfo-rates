@@ -326,6 +326,55 @@ h3,
   animation: mascotFloat 4.2s var(--ease-out-expo) infinite;
 }
 
+/* Bottom Navigation (Nuggetkub sleepy-to-awake kawaii tabs) */
+.bnav-tab .bnav-ico {
+  transition:
+    transform 280ms var(--ease-out-expo),
+    background-color 200ms ease,
+    box-shadow 200ms ease;
+}
+.bnav-tab svg .bd {
+  fill: var(--butter-cream);
+}
+.bnav-tab svg .ac {
+  fill: var(--accent-pink);
+}
+.bnav-tab svg .bd,
+.bnav-tab svg .ac {
+  stroke: #4a352c;
+  stroke-width: 1.7;
+  stroke-linejoin: round;
+}
+.bnav-tab svg .awk {
+  display: none;
+}
+.bnav-tab[data-active="true"] .bnav-ico,
+.bnav-tab[aria-current="page"] .bnav-ico {
+  background-color: var(--candy-pink);
+  border: 2px solid #4a352c;
+  box-shadow: 0 6px 14px -3px rgba(184, 20, 82, 0.25);
+  transform: translateY(-4px);
+}
+.bnav-tab[data-active="true"] svg .bd,
+.bnav-tab[aria-current="page"] svg .bd {
+  fill: #ffffff;
+}
+.bnav-tab[data-active="true"] svg .ac,
+.bnav-tab[aria-current="page"] svg .ac {
+  fill: var(--butter-cream);
+}
+.bnav-tab[data-active="true"] svg .awk,
+.bnav-tab[aria-current="page"] svg .awk {
+  display: inline;
+}
+.bnav-tab[data-active="true"] svg .slp,
+.bnav-tab[aria-current="page"] svg .slp {
+  display: none;
+}
+.bnav-tab:active .bnav-ico {
+  transform: translateY(-1px) scale(0.93);
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
