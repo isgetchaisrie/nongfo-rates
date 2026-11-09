@@ -9,8 +9,8 @@ const MASCOT_TIPS = [
   "พิมพ์ชื่อเกมที่ช่องค้นหาเพื่อเช็กเรทไวๆ ได้เลย!",
 ] as const;
 
-export function CatFloatingWidget() {
-  const [isOpen, setIsOpen] = useState(true);
+export function CatFloatingWidget({ defaultOpen = false }: { defaultOpen?: boolean } = {}) {
+  const [isOpen, setIsOpen] = useState(defaultOpen);
   const [tipIndex, setTipIndex] = useState(0);
 
   const handleCycleTip = () => {

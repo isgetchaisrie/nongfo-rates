@@ -14,7 +14,7 @@ import {
 } from "@/lib/auth";
 import { POST as loginRoute } from "@/app/api/auth/login/route";
 import { POST as logoutRoute } from "@/app/api/auth/logout/route";
-import { validateAndSaveUpload } from "@/app/api/upload/route";
+import { validateAndSaveUpload } from "@/lib/upload";
 
 describe("Admin auth and rate limiting", () => {
   beforeEach(() => {

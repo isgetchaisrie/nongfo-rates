@@ -4,7 +4,7 @@ import { createGame, listGames } from "@/lib/db";
 import { validateGameInput } from "@/lib/validation";
 import type { PlatformType } from "@/types/game";
 
-export async function GET(request?: Request) {
+export async function GET(request: Request) {
   let query: string | undefined;
   let platform: "all" | PlatformType | undefined;
 
