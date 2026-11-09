@@ -1,1 +1,131 @@
 @import "tailwindcss";
+
+:root {
+  --bg-canvas: #fff6f9;
+  --bg-surface: #ffffff;
+  --bg-card: #ffffff;
+  --bg-elevated: #fff0f5;
+  --tile-ios: #fff0f6;
+  --tile-ios-border: #ffc2da;
+  --tile-android: #eefbf5;
+  --tile-android-border: #b8f0d6;
+  --pink-primary: #e11d68;
+  --pink-hover: #be1253;
+  --pink-soft: #ff85b3;
+  --pink-blush: #ffd6e5;
+  --ink-main: #2d1622;
+  --ink-muted: #6e485b;
+  --android-ink: #0f5137;
+  --border-pastel: #ffd6e5;
+  --shadow-card: 0 10px 28px -8px rgba(190, 18, 83, 0.10), 0 2px 6px -1px rgba(45, 22, 34, 0.04);
+  --shadow-card-hover: 0 18px 36px -10px rgba(190, 18, 83, 0.16), 0 4px 10px -2px rgba(45, 22, 34, 0.06);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+html {
+  background-color: var(--bg-canvas);
+  color: var(--ink-main);
+  caret-color: var(--pink-primary);
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  background-color: var(--bg-canvas);
+  color: var(--ink-main);
+  font-family: var(--font-prompt), system-ui, -apple-system, sans-serif;
+  text-underline-offset: 0.2em;
+}
+
+h1,
+h2,
+h3,
+.font-display {
+  font-family: var(--font-mali), var(--font-prompt), system-ui, sans-serif;
+  text-wrap: balance;
+}
+
+.font-price,
+.tabular-nums {
+  font-family: var(--font-fredoka), var(--font-prompt), system-ui, sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+
+::selection {
+  background-color: #ffd6e5;
+  color: #2d1622;
+}
+
+:focus-visible {
+  outline: 2px solid var(--pink-primary);
+  outline-offset: 2px;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-elevated);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--pink-soft);
+  border-radius: 9999px;
+  border: 2px solid var(--bg-elevated);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--pink-primary);
+}
+
+.bg-pastel-canvas {
+  background-color: var(--bg-canvas);
+  background-image:
+    radial-gradient(circle at 16px 16px, rgba(255, 133, 179, 0.14) 2px, transparent 2.5px),
+    radial-gradient(circle at 48px 48px, rgba(225, 29, 104, 0.08) 2px, transparent 2.5px);
+  background-size: 64px 64px;
+}
+
+.card-bento {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-pastel);
+  box-shadow: var(--shadow-card);
+  transition:
+    transform 280ms var(--ease-out-expo),
+    box-shadow 280ms var(--ease-out-expo),
+    border-color 280ms var(--ease-out-expo);
+}
+
+.card-bento:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-card-hover);
+  border-color: var(--pink-soft);
+}
+
+@keyframes mascotFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+.animate-mascot-float {
+  animation: mascotFloat 4.2s var(--ease-out-expo) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .animate-mascot-float,
+  .card-bento {
+    animation: none !important;
+    transition: none !important;
+  }
+}
