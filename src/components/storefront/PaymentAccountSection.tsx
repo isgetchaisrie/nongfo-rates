@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { CatMascot } from "@/components/mascot/CatMascot";
 import { KawaiiCatSprite } from "@/components/mascot/KawaiiCatPlayground";
 
 export interface PaymentAccountSectionProps {
@@ -75,7 +76,7 @@ export function PaymentAccountSection({
   return (
     <section
       aria-label="บัญชีชำระเงิน Pattida Payment"
-      className="mx-auto w-full max-w-[430px] space-y-4 pt-1 pb-4"
+      className="mx-auto w-full space-y-4 pt-1 pb-4"
     >
       {/* Floating Copy / Download Toast */}
       <div
@@ -105,39 +106,140 @@ export function PaymentAccountSection({
         <span>{toastMessage ?? "คัดลอกแล้ว"}</span>
       </div>
 
-      {/* Pattida Payment Header */}
-      <div className="relative pt-1 pb-1 text-center">
-        <div className="mb-1 flex items-center justify-center gap-2">
-          <KawaiiCatSprite col={1} row={3} size={42} className="anim-float-1" />
-          <h1 className="font-[var(--font-mali)] text-3xl font-bold tracking-tight text-[#5c4338] flex items-center justify-center gap-2">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-              className="anim-pulse h-6 w-6 text-[#F8BBD0]"
-              aria-hidden="true"
-            >
-              <path d="M11.645 20.91l-.007-.003-.022-.012a15.247 15.247 0 01-.383-.218 25.18 25.18 0 01-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0112 5.052 5.5 5.5 0 0116.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 01-4.244 3.17 15.247 15.247 0 01-.383.219l-.022.012-.007.004-.003.001a.752.752 0 01-.704 0l-.003-.001z" />
-            </svg>
-            <span>Pattida</span>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-              className="anim-pulse h-6 w-6 -scale-x-100 text-[#F8BBD0]"
-              aria-hidden="true"
-            >
-              <path d="M11.645 20.91l-.007-.003-.022-.012a15.247 15.247 0 01-.383-.218 25.18 25.18 0 01-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0112 5.052 5.5 5.5 0 0116.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 01-4.244 3.17 15.247 15.247 0 01-.383.219l-.022.012-.007.004-.003.001a.752.752 0 01-.704 0l-.003-.001z" />
-            </svg>
-          </h1>
-          <KawaiiCatSprite col={0} row={3} size={42} className="anim-float-2" />
+      {/* Hero Header Card (Matching RateBoard Hero with บัญชี text) */}
+      <div className="glass-card relative mb-3.5 rounded-[24px] p-2.5 sm:mb-6 sm:rounded-[40px] sm:p-6">
+        <svg
+          aria-hidden="true"
+          className="anim-float-1 pointer-events-none absolute -left-2 -top-3 z-20 h-6 w-6 text-[#F8BBD0] drop-shadow-xs sm:-top-4 sm:h-9 sm:w-9"
+          fill="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+        </svg>
+        <svg
+          aria-hidden="true"
+          className="anim-float-2 pointer-events-none absolute -right-1.5 top-4 z-20 h-5 w-5 text-[#F8BBD0] drop-shadow-xs sm:-right-2 sm:top-6 sm:h-7 sm:w-7"
+          fill="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
+        </svg>
+
+        <div className="relative rounded-[20px] p-3 sm:rounded-[34px] sm:p-6">
+          <svg
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 h-full w-full"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <rect
+              x="2"
+              y="2"
+              width="calc(100% - 4px)"
+              height="calc(100% - 4px)"
+              rx="18"
+              ry="18"
+              fill="none"
+              stroke="#F8BBD0"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="animate-dash"
+            />
+          </svg>
+
+          <div className="flex flex-row items-center justify-between gap-3 md:gap-6">
+            <div className="min-w-0 flex-1 text-left">
+              <h1 className="font-[var(--font-mali)] text-lg font-bold leading-snug text-[#4a352c] sm:text-3xl lg:text-4xl">
+                บัญชี{" "}
+                <span className="relative mt-1 inline-block rounded-xl border border-[#F8BBD0] bg-[#FCE4EC] px-2.5 py-0.5 text-[#b81452] sm:rounded-2xl sm:px-3.5">
+                  ชำระเงิน Pattida
+                  <svg
+                    aria-hidden="true"
+                    className="anim-float-3 absolute -right-2 -top-2 h-4 w-4 text-[#f06292] sm:-right-2.5 sm:-top-2.5 sm:h-5 sm:w-5"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                  </svg>
+                </span>
+              </h1>
+              <p className="mt-1.5 max-w-[65ch] text-xs font-medium leading-relaxed text-[#6d5246] sm:mt-3 sm:text-base">
+                ช่องทางชำระเงินของร้าน Nongfo สแกน QR Code หรือคัดลอกเลขบัญชีธนาคารกสิกรไทย / วอเลท พร้อมคัดลอกข้อความโน้ตสลิปด้านล่างได้เลยน้า~
+              </p>
+            </div>
+
+            <div className="relative flex shrink-0 items-center justify-center">
+              <div className="anim-float-1 absolute -left-4 -top-3 z-20 sm:-left-7 sm:-top-6">
+                <KawaiiCatSprite
+                  col={1}
+                  row={3}
+                  size={40}
+                  label="น้องแมวชมพูพาสเทล Nongfo"
+                  className="sm:scale-125"
+                />
+              </div>
+              <div className="anim-float-2 absolute -bottom-2 -left-3 z-20 sm:-bottom-4 sm:-left-6">
+                <KawaiiCatSprite
+                  col={0}
+                  row={3}
+                  size={38}
+                  label="น้องแมวโบว์ม่วงพาสเทล Nongfo"
+                  className="sm:scale-125"
+                />
+              </div>
+              <div className="anim-float-3 absolute -right-3 -top-3 z-20 sm:-right-6 sm:-top-5">
+                <KawaiiCatSprite
+                  col={4}
+                  row={3}
+                  size={38}
+                  label="น้องแมวสายรุ้งพาสเทล Nongfo"
+                  className="sm:scale-125"
+                />
+              </div>
+              <div className="rounded-[20px] border-2 border-white bg-[#FFFDE7]/85 p-1.5 shadow-sm sm:rounded-[28px] sm:border-4 sm:p-2.5">
+                <CatMascot
+                  variant="hero"
+                  label="น้องแมว Nongfo ต้อนรับสู่หน้าบัญชีชำระเงิน"
+                  className="animate-mascot-float h-16 w-16 sm:h-36 sm:w-36"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Cute Interactive Kawaii Cat Parade Strip */}
+          <div className="mt-4 flex flex-wrap items-center justify-between gap-2.5 border-t border-[#F8BBD0]/45 pt-3.5 sm:mt-5 sm:pt-4">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-white bg-[#FCE4EC] px-3 py-1 text-center text-xs font-bold text-[#4a352c] shadow-xs sm:px-3.5">
+              แก๊งน้องแมว Nongfo พร้อมต้อนรับ เช็กชื่อบัญชีและแปะสลิปทุกครั้งน้า~
+            </span>
+            <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
+              {[
+                { col: 0, row: 0, label: "น้องแมวขาวจั๊วะ" },
+                { col: 0, row: 3, label: "น้องแมวโบว์ม่วง" },
+                { col: 1, row: 3, label: "น้องแมวซากุระชมพู" },
+                { col: 2, row: 3, label: "น้องแมวฟ้าพาสเทล" },
+                { col: 3, row: 3, label: "น้องแมวมินต์กระดิ่งทอง" },
+                { col: 4, row: 3, label: "น้องแมวสายรุ้งพาสเทล" },
+                { col: 5, row: 3, label: "น้องแมวกาแล็กซีดาววิ้ง" },
+              ].map((cat, idx) => (
+                <div
+                  key={`${cat.col}-${cat.row}`}
+                  className={idx % 2 === 0 ? "anim-float-1" : "anim-float-2"}
+                >
+                  <KawaiiCatSprite
+                    col={cat.col}
+                    row={cat.row}
+                    size={42}
+                    label={cat.label}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
-        <p className="text-xs font-bold tracking-widest text-[#e11d68]/80 uppercase">
-          payment • ช่องทางชำระเงินร้าน Nongfo
-        </p>
       </div>
 
       {/* Main Pattistore Glass Card */}
+      <div className="mx-auto max-w-[430px] space-y-4">
       <div className="glass-card relative z-10 rounded-[40px] p-3">
         <svg
           aria-hidden="true"
@@ -609,6 +711,7 @@ export function PaymentAccountSection({
             <span aria-hidden="true">→</span>
           </button>
         )}
+      </div>
       </div>
     </section>
   );

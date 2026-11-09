@@ -258,12 +258,12 @@ export function RateBoardClient({ initialGames }: RateBoardClientProps) {
               </div>
             </div>
 
-            {/* Cute Interactive Kawaii Cat Parade Strip (Desktop/Tablet) */}
-            <div className="mt-5 hidden flex-wrap items-center justify-between gap-2.5 border-t border-[#F8BBD0]/45 pt-4 sm:flex">
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-white bg-[#FCE4EC] px-3.5 py-1 text-center text-xs font-bold text-[#4a352c] shadow-xs">
+            {/* Cute Interactive Kawaii Cat Parade Strip */}
+            <div className="mt-4 flex flex-wrap items-center justify-between gap-2.5 border-t border-[#F8BBD0]/45 pt-3.5 sm:mt-5 sm:pt-4">
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-white bg-[#FCE4EC] px-3 py-1 text-center text-xs font-bold text-[#4a352c] shadow-xs sm:px-3.5">
                 แก๊งน้องแมว Nongfo พร้อมต้อนรับเลือกชมเกมและแอปแท้ราคาน่ารัก~
               </span>
-              <div className="flex flex-wrap items-center justify-center gap-3">
+              <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
                 {[
                   { col: 0, row: 0, label: "น้องแมวขาวจั๊วะ" },
                   { col: 0, row: 3, label: "น้องแมวโบว์ม่วง" },
