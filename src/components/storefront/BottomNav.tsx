@@ -214,10 +214,10 @@ export function BottomNav({
         </Link>
       </div>
 
-      {/* Reserved lower shelf on mobile/tablet so the fixed bottom-right Netlify badge (63px tall) never covers the 5 tab buttons */}
+      {/* Shown automatically only when Netlify's free-tier badge (#nl-badge-frame) is present in DOM */}
       <div
         aria-hidden="true"
-        className="mt-1 flex h-15 items-center border-t border-[#F8BBD0]/50 px-3 lg:hidden"
+        className="bnav-netlify-shelf mt-1 h-15 items-center border-t border-[#F8BBD0]/50 px-3"
       >
         <span className="inline-flex items-center gap-1.5 rounded-full bg-[#FCE4EC]/70 px-2.5 py-1 text-xs font-bold text-[#6d5246]">
           <span className="h-2 w-2 rounded-full bg-[#e11d68]" />
