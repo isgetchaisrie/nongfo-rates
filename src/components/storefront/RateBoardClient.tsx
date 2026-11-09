@@ -162,10 +162,10 @@ export function RateBoardClient({
 
         {activeSection === "rates" && (
           <>
-            <section className="gingham-frame relative mb-3.5 rounded-[28px] p-2.5 sm:mb-8 sm:rounded-[44px] sm:p-3.5 border-3 border-white shadow-[0_12px_36px_rgba(244,143,177,0.3)]">
+            <section className="gingham-frame relative mb-3.5 rounded-[28px] p-2.5 sm:mb-8 sm:rounded-[44px] sm:p-3.5 border-3 border-white shadow-[0_8px_28px_rgba(244,143,177,0.22)]">
           <svg
             aria-hidden="true"
-            className="anim-float-1 pointer-events-none absolute -left-2 -top-3 z-20 h-6 w-6 text-[#F8BBD0] drop-shadow-xs sm:-top-4 sm:h-9 sm:w-9"
+            className="pointer-events-none absolute -left-1.5 -top-2.5 z-20 h-6 w-6 text-[#F8BBD0] drop-shadow-xs sm:-top-3.5 sm:h-8 sm:w-8"
             fill="currentColor"
             viewBox="0 0 24 24"
           >
@@ -173,7 +173,7 @@ export function RateBoardClient({
           </svg>
           <svg
             aria-hidden="true"
-            className="anim-float-2 pointer-events-none absolute -right-1.5 top-4 z-20 h-5 w-5 text-[#F8BBD0] drop-shadow-xs sm:-right-2 sm:top-6 sm:h-7 sm:w-7"
+            className="pointer-events-none absolute -right-1 top-4 z-20 h-5 w-5 text-[#F8BBD0] drop-shadow-xs sm:-right-1.5 sm:top-5 sm:h-6 sm:w-6"
             fill="currentColor"
             viewBox="0 0 24 24"
           >
@@ -190,7 +190,7 @@ export function RateBoardClient({
                     เกมและแอปแท้
                     <svg
                       aria-hidden="true"
-                      className="anim-float-3 absolute -right-2 -top-2 h-4 w-4 text-[#f06292] sm:-right-2.5 sm:-top-2.5 sm:h-5 sm:w-5"
+                      className="absolute -right-2 -top-2 h-4 w-4 text-[#f06292] sm:-right-2.5 sm:-top-2.5 sm:h-5 sm:w-5 drop-shadow-xs"
                       fill="currentColor"
                       viewBox="0 0 24 24"
                     >
@@ -276,7 +276,7 @@ export function RateBoardClient({
 
         <section
           aria-label="ค้นหาและกรองรายการเกมและแอป"
-          className="gingham-frame sticky top-2 z-20 mb-4 rounded-[26px] p-2 sm:top-3 sm:mb-8 sm:rounded-[32px] sm:p-2.5 border-3 border-white shadow-[0_12px_36px_rgba(244,143,177,0.25)]"
+          className="gingham-frame sticky top-2 z-20 mb-4 rounded-[26px] p-2 sm:top-3 sm:mb-8 sm:rounded-[32px] sm:p-2.5 border-3 border-white shadow-[0_8px_24px_rgba(244,143,177,0.2)]"
         >
           <div className="rounded-[20px] border-2 border-white bg-white/95 p-2 sm:rounded-[26px] sm:p-3 shadow-xs backdrop-blur-md">
             <div className="flex flex-col gap-2.5">

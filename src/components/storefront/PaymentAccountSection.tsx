@@ -114,10 +114,10 @@ export function PaymentAccountSection({
       </div>
 
       {/* Hero Header Card (Matching RateBoard Hero with บัญชี text) */}
-      <div className="gingham-frame relative mb-3.5 rounded-[28px] p-2.5 sm:mb-6 sm:rounded-[44px] sm:p-3.5 border-3 border-white shadow-[0_12px_36px_rgba(244,143,177,0.3)]">
+      <div className="gingham-frame relative mb-3.5 rounded-[28px] p-2.5 sm:mb-6 sm:rounded-[44px] sm:p-3.5 border-3 border-white shadow-[0_8px_28px_rgba(244,143,177,0.22)]">
         <svg
           aria-hidden="true"
-          className="anim-float-1 pointer-events-none absolute -left-2 -top-3 z-20 h-6 w-6 text-[#F8BBD0] drop-shadow-xs sm:-top-4 sm:h-9 sm:w-9"
+          className="pointer-events-none absolute -left-1.5 -top-2.5 z-20 h-6 w-6 text-[#F8BBD0] drop-shadow-xs sm:-top-3.5 sm:h-8 sm:w-8"
           fill="currentColor"
           viewBox="0 0 24 24"
         >
@@ -125,7 +125,7 @@ export function PaymentAccountSection({
         </svg>
         <svg
           aria-hidden="true"
-          className="anim-float-2 pointer-events-none absolute -right-1.5 top-4 z-20 h-5 w-5 text-[#F8BBD0] drop-shadow-xs sm:-right-2 sm:top-6 sm:h-7 sm:w-7"
+          className="pointer-events-none absolute -right-1 top-4 z-20 h-5 w-5 text-[#F8BBD0] drop-shadow-xs sm:-right-1.5 sm:top-5 sm:h-6 sm:w-6"
           fill="currentColor"
           viewBox="0 0 24 24"
         >
@@ -142,7 +142,7 @@ export function PaymentAccountSection({
                   ชำระเงิน Pattida
                   <svg
                     aria-hidden="true"
-                    className="anim-float-3 absolute -right-2 -top-2 h-4 w-4 text-[#f06292] sm:-right-2.5 sm:-top-2.5 sm:h-5 sm:w-5"
+                    className="absolute -right-2 -top-2 h-4 w-4 text-[#f06292] sm:-right-2.5 sm:-top-2.5 sm:h-5 sm:w-5 drop-shadow-xs"
                     fill="currentColor"
                     viewBox="0 0 24 24"
                   >
@@ -227,10 +227,10 @@ export function PaymentAccountSection({
 
       {/* Main Pattistore Glass Card */}
       <div className="mx-auto max-w-[430px] space-y-4">
-      <div className="gingham-frame relative z-10 rounded-[36px] p-2.5 sm:rounded-[44px] sm:p-3.5 border-3 border-white shadow-[0_12px_36px_rgba(244,143,177,0.3)]">
+      <div className="gingham-frame relative z-10 rounded-[36px] p-2.5 sm:rounded-[44px] sm:p-3.5 border-3 border-white shadow-[0_8px_28px_rgba(244,143,177,0.22)]">
         <svg
           aria-hidden="true"
-          className="anim-float-1 pointer-events-none absolute -top-4 -left-2 z-20 h-9 w-9 text-[#F8BBD0] drop-shadow-xs"
+          className="pointer-events-none absolute -top-3 -left-1.5 z-20 h-7 w-7 text-[#F8BBD0] drop-shadow-xs"
           fill="currentColor"
           viewBox="0 0 24 24"
         >
@@ -238,7 +238,7 @@ export function PaymentAccountSection({
         </svg>
         <svg
           aria-hidden="true"
-          className="anim-float-2 pointer-events-none absolute top-[25%] -right-3 z-20 h-7 w-7 text-[#F8BBD0] drop-shadow-xs"
+          className="pointer-events-none absolute top-[25%] -right-2 z-20 h-6 w-6 text-[#F8BBD0] drop-shadow-xs"
           fill="currentColor"
           viewBox="0 0 24 24"
         >
@@ -306,7 +306,7 @@ export function PaymentAccountSection({
               <span className="relative inline-block rounded-lg border border-[#F8BBD0]/40 bg-[#FCE4EC] px-2.5 py-0.5 font-bold text-[#4a352c]">
                 {currentSettings.accountName}
                 <svg
-                  className="anim-float-3 absolute -top-2 -right-2.5 h-4 w-4 text-[#F8BBD0]"
+                  className="absolute -top-1.5 -right-2 h-3.5 w-3.5 text-[#F8BBD0]"
                   fill="currentColor"
                   viewBox="0 0 24 24"
                   aria-hidden="true"
@@ -314,7 +314,7 @@ export function PaymentAccountSection({
                   <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
                 </svg>
               </span>
-              <span> เท่านั้น !</span>
+              <span> (โปรดตรวจสอบก่อนโอนน้า)</span>
             </p>
 
             <div className="inline-flex items-center justify-center gap-1.5 rounded-full border border-[#F8BBD0] bg-white px-4 py-2 text-xs font-semibold text-[#5c4338] shadow-xs">
@@ -614,7 +614,7 @@ export function PaymentAccountSection({
                 โอนผิด โอนใหม่ ไม่โอนคืน
                 <br />
                 <span className="font-normal text-[#6d5246]">
-                  เช็คบัญชีและชื่อก่อนโอนทุกครั้งนะคะ !
+                  เช็คบัญชีและชื่อผู้รับก่อนโอนทุกครั้งนะคะ
                 </span>
               </div>
             </div>

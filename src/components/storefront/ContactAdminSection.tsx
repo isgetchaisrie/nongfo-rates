@@ -53,11 +53,11 @@ export function ContactAdminSection({ settings }: ContactAdminSectionProps) {
       className="mx-auto w-full max-w-[440px] space-y-4 pt-1 pb-6"
     >
       {/* Profile Card (Linktree / Bio style) */}
-      <div className="gingham-frame relative z-10 overflow-hidden rounded-[36px] p-2.5 sm:p-3.5 border-3 border-white shadow-[0_12px_36px_rgba(244,143,177,0.3)] text-center">
-        {/* Ambient cute floating stars & hearts */}
+      <div className="gingham-frame relative z-10 overflow-hidden rounded-[36px] p-2.5 sm:p-3.5 border-3 border-white shadow-[0_8px_28px_rgba(244,143,177,0.22)] text-center">
+        {/* Ambient cute static stars & hearts */}
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute -left-2 -top-2 h-7 w-7 text-[#F8BBD0] anim-float-1"
+          className="pointer-events-none absolute -left-1 -top-1 h-6 w-6 text-[#F8BBD0] drop-shadow-xs"
         >
           <svg viewBox="0 0 24 24" fill="currentColor">
             <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
@@ -65,7 +65,7 @@ export function ContactAdminSection({ settings }: ContactAdminSectionProps) {
         </div>
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute -right-2 top-6 h-6 w-6 text-[#F8BBD0] anim-float-2"
+          className="pointer-events-none absolute -right-1 top-5 h-5 w-5 text-[#F8BBD0] drop-shadow-xs"
         >
           <svg viewBox="0 0 24 24" fill="currentColor">
             <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
@@ -76,15 +76,10 @@ export function ContactAdminSection({ settings }: ContactAdminSectionProps) {
         {/* Center Circular Profile Avatar */}
         <div className="relative mx-auto mt-1 mb-3.5 flex w-fit items-center justify-center">
           <div className="relative">
-            {/* Animated Ring */}
-            <div
-              aria-hidden="true"
-              className="absolute -inset-2 rounded-full bg-gradient-to-tr from-[#F8BBD0] via-[#FFFDE7] to-[#FCE4EC] opacity-80 blur-xs"
-            />
             <img
               src={currentSettings.adminAvatar || "/admin-profile.jpg"}
               alt={`แอดมิน ${currentSettings.adminName}`}
-              className="relative h-28 w-28 rounded-full border-4 border-white object-cover shadow-[0_8px_24px_rgba(244,143,177,0.45)] sm:h-32 sm:w-32"
+              className="relative h-28 w-28 rounded-full border-4 border-white object-cover shadow-[0_8px_24px_rgba(244,143,177,0.35)] sm:h-32 sm:w-32"
             />
 
             {/* Little Kawaii Cat Mascot Badge */}
