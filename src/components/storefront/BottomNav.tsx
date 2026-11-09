@@ -150,7 +150,7 @@ export function BottomNav({
     <nav
       data-bottom-nav
       aria-label="เมนูแท็บด้านล่าง"
-      className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-5 rounded-t-3xl border-t-[2.5px] border-[#4a352c] bg-[#FFFDF9]/95 px-1.5 pt-1.5 shadow-[0_-8px_20px_rgba(74,53,44,0.12)] backdrop-blur-md md:hidden"
+      className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-5 rounded-t-3xl border-t-[2.5px] border-[#4a352c] bg-[#FFFDF9]/95 px-1.5 pt-1.5 shadow-[0_-8px_20px_rgba(74,53,44,0.12)] backdrop-blur-md md:bottom-3 md:left-1/2 md:right-auto md:w-full md:max-w-md md:-translate-x-1/2 md:rounded-3xl md:border-[2.5px]"
       style={{
         paddingBottom: "calc(0.5rem + env(safe-area-inset-bottom, 0px))",
       }}

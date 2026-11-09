@@ -18,7 +18,7 @@ export function SearchBar({
     <div className="relative w-full">
       <Search
         aria-hidden="true"
-        className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-[#b81452]"
+        className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#b81452] sm:left-4 sm:h-5 sm:w-5"
       />
       <input
         type="search"
@@ -26,7 +26,7 @@ export function SearchBar({
         onChange={(event) => onChange(event.target.value)}
         placeholder={placeholder}
         aria-label="ค้นหาชื่อเกมหรือแอป"
-        className="h-12 w-full rounded-full border-2 border-[#F8BBD0]/75 bg-[#FFFDF9] pl-11 pr-11 text-base font-medium text-[#4a352c] placeholder:text-[#7c6155] shadow-[0_6px_18px_-10px_rgba(158,136,119,0.2)] transition-colors duration-200 focus:border-[#f06292] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#F8BBD0]/50"
+        className="h-10 w-full rounded-full border-2 border-[#F8BBD0]/75 bg-[#FFFDF9] pl-10 pr-10 text-sm font-medium text-[#4a352c] placeholder:text-[#7c6155] shadow-[0_6px_18px_-10px_rgba(158,136,119,0.2)] transition-colors duration-200 focus:border-[#f06292] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#F8BBD0]/50 sm:h-12 sm:pl-11 sm:pr-11 sm:text-base"
       />
       {value.length > 0 && (
         <button

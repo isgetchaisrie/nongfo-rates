@@ -112,18 +112,18 @@ export function RateBoardClient({ initialGames }: RateBoardClientProps) {
       </div>
 
       <header className="relative z-10 border-b border-[#F8BBD0]/60 bg-white/85 backdrop-blur-md">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-2 px-3.5 py-3 sm:gap-4 sm:px-6 sm:py-3.5 lg:px-8">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-2 px-3.5 py-2.5 sm:gap-4 sm:px-6 sm:py-3.5 lg:px-8">
           <div className="flex items-center gap-2.5 sm:gap-3">
             <CatMascot
               variant="badge"
               label="มาสคอตน้องแมว Nongfo"
-              className="h-9 w-9 shrink-0 sm:h-10 sm:w-10"
+              className="h-8 w-8 shrink-0 sm:h-10 sm:w-10"
             />
             <div className="flex flex-wrap items-center gap-2">
-              <span className="font-[var(--font-mali)] text-lg font-bold tracking-tight text-[#4a352c] sm:text-xl">
+              <span className="font-[var(--font-mali)] text-base font-bold tracking-tight text-[#4a352c] sm:text-xl">
                 Nongfo Rates
               </span>
-              <span className="hidden items-center rounded-full border border-white bg-[#FCE4EC] px-3 py-0.5 text-xs font-bold text-[#b81452] shadow-xs tabular-nums sm:inline-flex">
+              <span className="inline-flex items-center rounded-full border border-white bg-[#FCE4EC] px-2.5 py-0.5 text-xs font-bold text-[#b81452] shadow-xs tabular-nums sm:px-3">
                 ทั้งหมด {initialGames.length} รายการ
               </span>
             </div>
@@ -131,7 +131,7 @@ export function RateBoardClient({ initialGames }: RateBoardClientProps) {
 
           <Link
             href="/admin"
-            className="inline-flex items-center gap-1.5 rounded-full border border-white bg-[#FCE4EC] px-3 py-1.5 text-xs font-bold text-[#5c4338] shadow-xs transition-all hover:bg-[#F8BBD0] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#e11d68] sm:px-4 sm:py-2"
+            className="hidden items-center gap-1.5 rounded-full border border-white bg-[#FCE4EC] px-3 py-1.5 text-xs font-bold text-[#5c4338] shadow-xs transition-all hover:bg-[#F8BBD0] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#e11d68] md:inline-flex sm:px-4 sm:py-2"
           >
             <Lock aria-hidden="true" className="h-3.5 w-3.5 text-[#b81452]" />
             <span>สำหรับแอดมิน</span>
@@ -139,11 +139,11 @@ export function RateBoardClient({ initialGames }: RateBoardClientProps) {
         </div>
       </header>
 
-      <main className="relative z-10 mx-auto max-w-7xl px-3 pt-4 pb-24 sm:px-6 sm:pt-8 lg:px-8">
-        <section className="glass-card relative mb-5 rounded-[28px] p-3 sm:mb-8 sm:rounded-[40px] sm:p-6">
+      <main className="relative z-10 mx-auto max-w-7xl px-3 pt-3 pb-28 sm:px-6 sm:pt-8 lg:px-8">
+        <section className="glass-card relative mb-3.5 rounded-[24px] p-2.5 sm:mb-8 sm:rounded-[40px] sm:p-6">
           <svg
             aria-hidden="true"
-            className="anim-float-1 pointer-events-none absolute -left-2 -top-4 z-20 h-9 w-9 text-[#F8BBD0] drop-shadow-xs"
+            className="anim-float-1 pointer-events-none absolute -left-2 -top-3 z-20 h-6 w-6 text-[#F8BBD0] drop-shadow-xs sm:-top-4 sm:h-9 sm:w-9"
             fill="currentColor"
             viewBox="0 0 24 24"
           >
@@ -151,14 +151,14 @@ export function RateBoardClient({ initialGames }: RateBoardClientProps) {
           </svg>
           <svg
             aria-hidden="true"
-            className="anim-float-2 pointer-events-none absolute -right-2 top-6 z-20 h-7 w-7 text-[#F8BBD0] drop-shadow-xs"
+            className="anim-float-2 pointer-events-none absolute -right-1.5 top-4 z-20 h-5 w-5 text-[#F8BBD0] drop-shadow-xs sm:-right-2 sm:top-6 sm:h-7 sm:w-7"
             fill="currentColor"
             viewBox="0 0 24 24"
           >
             <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
           </svg>
 
-          <div className="relative rounded-[22px] p-3 sm:rounded-[34px] sm:p-6">
+          <div className="relative rounded-[20px] p-3 sm:rounded-[34px] sm:p-6">
             <svg
               aria-hidden="true"
               className="pointer-events-none absolute inset-0 h-full w-full"
@@ -169,8 +169,8 @@ export function RateBoardClient({ initialGames }: RateBoardClientProps) {
                 y="2"
                 width="calc(100% - 4px)"
                 height="calc(100% - 4px)"
-                rx="22"
-                ry="22"
+                rx="18"
+                ry="18"
                 fill="none"
                 stroke="#F8BBD0"
                 strokeWidth="2.5"
@@ -180,15 +180,15 @@ export function RateBoardClient({ initialGames }: RateBoardClientProps) {
               />
             </svg>
 
-            <div className="flex flex-col items-center justify-between gap-4 md:flex-row md:gap-6">
-              <div className="max-w-2xl text-center md:text-left">
-                <h1 className="font-[var(--font-mali)] text-xl font-bold leading-tight text-[#4a352c] sm:text-3xl lg:text-4xl">
+            <div className="flex flex-row items-center justify-between gap-3 md:gap-6">
+              <div className="min-w-0 flex-1 text-left">
+                <h1 className="font-[var(--font-mali)] text-lg font-bold leading-snug text-[#4a352c] sm:text-3xl lg:text-4xl">
                   ตารางเรทราคา{" "}
-                  <span className="relative inline-block rounded-2xl border border-[#F8BBD0] bg-[#FCE4EC] px-2.5 py-0.5 text-[#b81452] sm:px-3">
+                  <span className="relative inline-block rounded-xl border border-[#F8BBD0] bg-[#FCE4EC] px-2 py-0.5 text-[#b81452] sm:rounded-2xl sm:px-3">
                     เกมและแอปแท้
                     <svg
                       aria-hidden="true"
-                      className="anim-float-3 absolute -right-2.5 -top-2.5 h-5 w-5 text-[#f06292]"
+                      className="anim-float-3 absolute -right-2 -top-2 h-4 w-4 text-[#f06292] sm:-right-2.5 sm:-top-2.5 sm:h-5 sm:w-5"
                       fill="currentColor"
                       viewBox="0 0 24 24"
                     >
@@ -196,53 +196,56 @@ export function RateBoardClient({ initialGames }: RateBoardClientProps) {
                     </svg>
                   </span>
                 </h1>
-                <p className="mt-2 max-w-[65ch] text-xs font-medium leading-relaxed text-[#6d5246] sm:mt-3 sm:text-base">
-                  เช็กเรทราคาเกมและแอปมือถือระบบ iOS และ Android ของร้าน Nongfo
-                  ได้ทันที เลือกดูแยกหมวดเกมหรือแอป และกรองตามระบบปฏิบัติการที่ใช้งานได้เลยน้า
+                <p className="mt-1.5 max-w-[65ch] text-xs font-medium leading-relaxed text-[#6d5246] sm:mt-3 sm:text-base">
+                  เช็กเรทราคาเกมและแอปมือถือ iOS & Android ของร้าน Nongfo แท้ 100%
+                  เลือกหมวดหรือสลับตารางจากแถบด้านล่างได้เลยน้า~
                 </p>
               </div>
 
-              <div className="relative flex shrink-0 scale-90 items-center justify-center sm:scale-100">
-                <div className="anim-float-1 absolute -left-6 -top-5 z-20 sm:-left-7 sm:-top-6">
+              <div className="relative flex shrink-0 items-center justify-center">
+                <div className="anim-float-1 absolute -left-4 -top-3 z-20 sm:-left-7 sm:-top-6">
                   <KawaiiCatSprite
                     col={1}
                     row={3}
-                    size={56}
+                    size={40}
                     label="น้องแมวชมพูพาสเทล Nongfo"
+                    className="sm:scale-125"
                   />
                 </div>
-                <div className="anim-float-2 absolute -bottom-3 -left-5 z-20 sm:-bottom-4 sm:-left-6">
+                <div className="anim-float-2 absolute -bottom-2 -left-3 z-20 sm:-bottom-4 sm:-left-6">
                   <KawaiiCatSprite
                     col={0}
                     row={3}
-                    size={52}
+                    size={38}
                     label="น้องแมวโบว์ม่วงพาสเทล Nongfo"
+                    className="sm:scale-125"
                   />
                 </div>
-                <div className="anim-float-3 absolute -right-5 -top-4 z-20 sm:-right-6 sm:-top-5">
+                <div className="anim-float-3 absolute -right-3 -top-3 z-20 sm:-right-6 sm:-top-5">
                   <KawaiiCatSprite
                     col={4}
                     row={3}
-                    size={54}
+                    size={38}
                     label="น้องแมวสายรุ้งพาสเทล Nongfo"
+                    className="sm:scale-125"
                   />
                 </div>
-                <div className="rounded-[24px] border-4 border-white bg-[#FFFDE7]/85 p-2 shadow-sm sm:rounded-[28px] sm:p-2.5">
+                <div className="rounded-[20px] border-2 border-white bg-[#FFFDE7]/85 p-1.5 shadow-sm sm:rounded-[28px] sm:border-4 sm:p-2.5">
                   <CatMascot
                     variant="hero"
                     label="น้องแมว Nongfo ต้อนรับสู่ตารางเรทราคาเกม"
-                    className="animate-mascot-float h-24 w-24 sm:h-36 sm:w-36"
+                    className="animate-mascot-float h-16 w-16 sm:h-36 sm:w-36"
                   />
                 </div>
               </div>
             </div>
 
-            {/* Cute Interactive Kawaii Cat Parade Strip */}
-            <div className="mt-4 flex flex-wrap items-center justify-center gap-2 border-t border-[#F8BBD0]/45 pt-3 sm:mt-5 sm:gap-2.5 sm:pt-4 md:justify-between">
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-white bg-[#FCE4EC] px-3 py-1 text-center text-xs font-bold text-[#4a352c] shadow-xs sm:px-3.5">
+            {/* Cute Interactive Kawaii Cat Parade Strip (Desktop/Tablet) */}
+            <div className="mt-5 hidden flex-wrap items-center justify-between gap-2.5 border-t border-[#F8BBD0]/45 pt-4 sm:flex">
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-white bg-[#FCE4EC] px-3.5 py-1 text-center text-xs font-bold text-[#4a352c] shadow-xs">
                 แก๊งน้องแมว Nongfo พร้อมต้อนรับเลือกชมเกมและแอปแท้ราคาน่ารัก~
               </span>
-              <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-3">
+              <div className="flex flex-wrap items-center justify-center gap-3">
                 {[
                   { col: 0, row: 0, label: "น้องแมวขาวจั๊วะ" },
                   { col: 0, row: 3, label: "น้องแมวโบว์ม่วง" },
@@ -254,9 +257,7 @@ export function RateBoardClient({ initialGames }: RateBoardClientProps) {
                 ].map((cat, idx) => (
                   <div
                     key={`${cat.col}-${cat.row}`}
-                    className={`${idx % 2 === 0 ? "anim-float-1" : "anim-float-2"} ${
-                      idx >= 5 ? "hidden sm:block" : ""
-                    }`}
+                    className={idx % 2 === 0 ? "anim-float-1" : "anim-float-2"}
                   >
                     <KawaiiCatSprite
                       col={cat.col}
@@ -273,7 +274,7 @@ export function RateBoardClient({ initialGames }: RateBoardClientProps) {
 
         <section
           aria-label="ค้นหาและกรองรายการเกมและแอป"
-          className="glass-card relative z-20 mb-6 rounded-[24px] p-3 sm:mb-10 sm:rounded-[32px] sm:p-4 md:sticky md:top-3"
+          className="glass-card sticky top-2 z-20 mb-4 rounded-[22px] p-2.5 sm:top-3 sm:mb-10 sm:rounded-[32px] sm:p-4"
         >
           <div className="pointer-events-none absolute -top-8 right-7 z-30 hidden sm:block">
             <KawaiiCatSprite
@@ -284,16 +285,17 @@ export function RateBoardClient({ initialGames }: RateBoardClientProps) {
               className="anim-float-1"
             />
           </div>
-          <div className="flex flex-col gap-2.5 sm:gap-3.5">
+          <div className="flex flex-col gap-2 sm:gap-3.5">
             <div className="flex flex-col gap-2.5 lg:flex-row lg:items-center lg:justify-between">
               <div className="w-full lg:max-w-md">
                 <SearchBar value={query} onChange={setQuery} />
               </div>
 
+              {/* Category tabs shown on md+ since BottomNav handles categories on mobile */}
               <div
                 role="group"
                 aria-label="กรองตามหมวดหมู่ เกม หรือ แอป"
-                className="inline-flex flex-wrap items-center gap-1.5 sm:gap-2"
+                className="hidden flex-wrap items-center gap-2 md:inline-flex"
               >
                 {CATEGORY_TABS.map(({ id, label, Icon }) => {
                   const isActive = category === id;
@@ -304,16 +306,16 @@ export function RateBoardClient({ initialGames }: RateBoardClientProps) {
                       type="button"
                       aria-pressed={isActive}
                       onClick={() => setCategory(id)}
-                      className={`inline-flex h-9 items-center gap-1.5 rounded-full border px-3 text-xs font-bold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#e11d68] focus-visible:ring-offset-2 sm:h-11 sm:gap-2 sm:px-4 sm:text-sm ${
+                      className={`inline-flex h-11 items-center gap-2 rounded-full border px-4 text-sm font-bold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#e11d68] focus-visible:ring-offset-2 ${
                         isActive
                           ? "border-white bg-[#FCE4EC] text-[#4a352c] shadow-[0_6px_16px_-4px_rgba(244,143,177,0.55)]"
                           : "border-[#F8BBD0]/60 bg-[#FFFDF9] text-[#6d5246] hover:bg-[#FCE4EC]/50 hover:text-[#4a352c]"
                       }`}
                     >
-                      <Icon className="h-3.5 w-3.5 shrink-0 text-[#d81b60] sm:h-4 sm:w-4" />
+                      <Icon className="h-4 w-4 shrink-0 text-[#d81b60]" />
                       <span>{label}</span>
                       <span
-                        className={`inline-flex min-w-5 items-center justify-center rounded-full px-1.5 py-0.5 font-[var(--font-fredoka)] text-xs font-bold tabular-nums sm:min-w-6 sm:px-2 ${
+                        className={`inline-flex min-w-6 items-center justify-center rounded-full px-2 py-0.5 font-[var(--font-fredoka)] text-xs font-bold tabular-nums ${
                           isActive
                             ? "bg-white text-[#b81452]"
                             : "bg-[#FCE4EC] text-[#b81452]"
@@ -327,18 +329,19 @@ export function RateBoardClient({ initialGames }: RateBoardClientProps) {
               </div>
             </div>
 
-            <div className="flex flex-wrap items-center justify-between gap-2 border-t border-[#F8BBD0]/40 pt-2.5 sm:gap-3 sm:pt-3">
+            <div className="flex items-center justify-between gap-2 border-t border-[#F8BBD0]/40 pt-2 sm:flex-wrap sm:gap-3 sm:pt-3">
               <PlatformSwitcher
                 value={platform}
                 onChange={setPlatform}
                 counts={counts}
               />
 
-              <div className="flex flex-wrap items-center gap-2">
+              <div className="flex items-center gap-2">
+                {/* View mode toggle shown on md+ since BottomNav has the table toggle on mobile */}
                 <div
                   role="group"
                   aria-label="สลับมุมมองการ์ดหรือตาราง"
-                  className="inline-flex items-center rounded-full border border-[#F8BBD0]/70 bg-[#FFFDF9] p-1 shadow-xs"
+                  className="hidden items-center rounded-full border border-[#F8BBD0]/70 bg-[#FFFDF9] p-1 shadow-xs md:inline-flex"
                 >
                   <button
                     type="button"
@@ -370,9 +373,9 @@ export function RateBoardClient({ initialGames }: RateBoardClientProps) {
 
                 <p
                   aria-live="polite"
-                  className="rounded-full border border-[#F8BBD0]/60 bg-white px-3 py-1 text-xs font-bold text-[#6d5246] tabular-nums"
+                  className="shrink-0 rounded-full border border-[#F8BBD0]/60 bg-white px-2.5 py-1 text-xs font-bold text-[#6d5246] tabular-nums sm:px-3"
                 >
-                  แสดง {visibleGames.length} รายการ
+                  {visibleGames.length} รายการ
                 </p>
               </div>
             </div>
