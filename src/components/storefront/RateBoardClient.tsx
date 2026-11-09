@@ -106,12 +106,12 @@ export function RateBoardClient({ initialGames }: RateBoardClientProps) {
           <div className="flex items-center gap-3">
             <CatMascot
               variant="badge"
-              label="มาสคอตน้องแมว Nuggetkub"
+              label="มาสคอตน้องแมว Nongfo"
               className="h-10 w-10 shrink-0"
             />
             <div className="flex flex-wrap items-center gap-2.5">
               <span className="font-[var(--font-mali)] text-xl font-bold tracking-tight text-[#4a352c]">
-                Nuggetkub Rates
+                Nongfo Rates
               </span>
               <span className="inline-flex items-center rounded-full border border-white bg-[#FCE4EC] px-3 py-0.5 text-xs font-bold text-[#b81452] shadow-xs tabular-nums">
                 ทั้งหมด {initialGames.length} รายการ
@@ -187,7 +187,7 @@ export function RateBoardClient({ initialGames }: RateBoardClientProps) {
                   </span>
                 </h1>
                 <p className="mt-3 max-w-[65ch] text-base font-medium leading-relaxed text-[#6d5246]">
-                  เช็กเรทราคาเกมและแอปมือถือระบบ iOS และ Android ของร้าน Nuggetkub
+                  เช็กเรทราคาเกมและแอปมือถือระบบ iOS และ Android ของร้าน Nongfo
                   ได้ทันที เลือกดูแยกหมวดเกมหรือแอป และกรองตามระบบปฏิบัติการที่ใช้งานได้เลยน้า
                 </p>
               </div>
@@ -195,7 +195,7 @@ export function RateBoardClient({ initialGames }: RateBoardClientProps) {
               <div className="shrink-0 rounded-[28px] border-4 border-white bg-[#FFFDE7]/70 p-2 shadow-sm">
                 <CatMascot
                   variant="hero"
-                  label="น้องแมว Nuggetkub ต้อนรับสู่ตารางเรทราคาเกม"
+                  label="น้องแมว Nongfo ต้อนรับสู่ตารางเรทราคาเกม"
                   className="animate-mascot-float h-32 w-32 sm:h-36 sm:w-36"
                 />
               </div>

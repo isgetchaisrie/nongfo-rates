@@ -64,7 +64,7 @@ export default function AdminLoginPage() {
             <CatMascot
               variant="admin"
               className="h-16 w-16"
-              label="มาสคอตแอดมิน Nuggetkub"
+              label="มาสคอตแอดมิน Nongfo"
             />
           </div>
 
@@ -75,7 +75,7 @@ export default function AdminLoginPage() {
             เข้าสู่ระบบจัดการเรทราคา
           </h1>
           <p className="mt-1.5 text-sm font-medium text-[#6d5246]">
-            สำหรับเจ้าของร้าน Nuggetkub เพื่อเพิ่ม แก้ไข หรือลบเรทราคาเกมและแอป
+            สำหรับเจ้าของร้าน Nongfo เพื่อเพิ่ม แก้ไข หรือลบเรทราคาเกมและแอป
           </p>
         </div>
 

@@ -104,14 +104,14 @@ describe("CatMascot & PawSparkle SVG artwork components", () => {
         React.createElement(MascotModule.CatMascot, {
           variant,
           className: `test-${variant}`,
-          label: `Nuggetkub ${variant} cat`,
+          label: `Nongfo ${variant} cat`,
         })
       );
 
       expect(html).toContain("<svg");
       expect(html).toContain(`data-variant="${variant}"`);
       expect(html).toContain(`test-${variant}`);
-      expect(html).toContain(`Nuggetkub ${variant} cat`);
+      expect(html).toContain(`Nongfo ${variant} cat`);
       expect(html).toContain("<path");
     }
   });
@@ -139,6 +139,6 @@ describe("CatFloatingWidget interactive helper", () => {
     expect(html).toContain("right-5");
     expect(html).toContain("z-40");
     expect(html).toContain("<svg");
-    expect(html).toContain("Nuggetkub");
+    expect(html).toContain("Nongfo");
   });
 });

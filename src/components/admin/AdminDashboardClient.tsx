@@ -170,7 +170,7 @@ export function AdminDashboardClient({
               <CatMascot
                 variant="admin"
                 className="h-11 w-11"
-                label="มาสคอตแมวแอดมิน Nuggetkub"
+                label="มาสคอตแมวแอดมิน Nongfo"
               />
             </div>
             <div>

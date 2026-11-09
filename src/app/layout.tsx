@@ -24,9 +24,9 @@ const fredoka = Fredoka({
 });
 
 export const metadata: Metadata = {
-  title: "Nuggetkub Rates · เรทราคาเกมและแอปแท้ iOS & Android",
+  title: "Nongfo Rates · เรทราคาเกมและแอปแท้ iOS & Android",
   description:
-    "ตารางเรทราคาเกมและแอปแท้ iOS และ Android ของร้าน Nuggetkub อัปเดตล่าสุด ดูง่าย แยกตามระบบชัดเจน",
+    "ตารางเรทราคาเกมและแอปแท้ iOS และ Android ของร้าน Nongfo อัปเดตล่าสุด ดูง่าย แยกตามระบบชัดเจน",
 };
 
 export default function RootLayout({

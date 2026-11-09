@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { CatMascot, PawSparkle } from "./CatMascot";
 
 const MASCOT_TIPS = [
-  "เรทราคาอัปเดตล่าสุดจากร้าน Nuggetkub แท้ 100%",
+  "เรทราคาอัปเดตล่าสุดจากร้าน Nongfo แท้ 100%",
   "กดสลับดูเฉพาะ iOS หรือ Android ได้ที่แถบด้านบนน้า เมี๊ยว~",
   "พิมพ์ชื่อเกมที่ช่องค้นหาเพื่อเช็กเรทไวๆ ได้เลย!",
 ] as const;
@@ -23,7 +23,7 @@ export function CatFloatingWidget({ defaultOpen = false }: { defaultOpen?: boole
 
   return (
     <aside
-      aria-label="ผู้ช่วยน้องแมว Nuggetkub"
+      aria-label="ผู้ช่วยน้องแมว Nongfo"
       className="fixed bottom-5 right-5 z-40 flex flex-col items-end gap-2.5"
     >
       {isOpen && (
@@ -35,7 +35,7 @@ export function CatFloatingWidget({ defaultOpen = false }: { defaultOpen?: boole
           <div className="flex items-start justify-between gap-3">
             <div className="flex items-center gap-1.5 font-bold text-[#b81452]">
               <PawSparkle className="h-4 w-4 shrink-0" />
-              <span>น้องแมว Nuggetkub</span>
+              <span>น้องแมว Nongfo</span>
             </div>
             <button
               type="button"
@@ -81,7 +81,7 @@ export function CatFloatingWidget({ defaultOpen = false }: { defaultOpen?: boole
         type="button"
         onClick={handleCycleTip}
         aria-expanded={isOpen}
-        aria-label="แตะเพื่อดูเคล็ดลับจากน้องแมว Nuggetkub"
+        aria-label="แตะเพื่อดูเคล็ดลับจากน้องแมว Nongfo"
         className="group flex items-center gap-2 rounded-full border-2 border-white bg-[#FCE4EC] p-1.5 pr-4 text-xs font-bold text-[#4a352c] shadow-[0_10px_28px_-8px_rgba(158,136,119,0.3)] transition-all hover:-translate-y-0.5 hover:bg-[#F8BBD0]"
       >
         <CatMascot variant="badge" className="h-9 w-9 shrink-0" />

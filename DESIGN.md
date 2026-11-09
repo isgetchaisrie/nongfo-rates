@@ -1,5 +1,5 @@
 ---
-name: Nuggetkub Rates
+name: Nongfo Rates
 description: Cute pastel-pink bento rate showcase with custom kawaii cat mascots and high-contrast iOS/Android price tiles
 colors:
   bg-canvas: "#fff6f9"
@@ -85,13 +85,13 @@ components:
     padding: "16px"
 ---
 
-# Design System: Nuggetkub Rates
+# Design System: Nongfo Rates
 
 ## Overview
 
 **Creative North Star: "The Strawberry Calico Arcade Counter"**
 
-Nuggetkub Rates pairs the welcoming warmth of a pastel-pink stationery & game boutique with the crisp, zero-ambiguity data clarity of a mobile rate board. Visitors arrive for one job—checking iOS and Android game prices in seconds—and are greeted by **Nuggetkub Cat**, an original strawberry-calico cartoon mascot rendered in crisp vector line art.
+Nongfo Rates pairs the welcoming warmth of a pastel-pink stationery & game boutique with the crisp, zero-ambiguity data clarity of a mobile rate board. Visitors arrive for one job—checking iOS and Android game prices in seconds—and are greeted by **Nongfo Cat**, an original strawberry-calico cartoon mascot rendered in crisp vector line art.
 
 Every surface is tinted from the strawberry-milk and cocoa-plum family rather than generic cool grays. Information density stays intentionally focused: every game card presents only the game cover, platform badge, title, and side-by-side iOS/Android THB price tiles.
 
@@ -138,7 +138,7 @@ The palette balances soft strawberry-milk surfaces against high-contrast berry r
 **Character:** `Mali` brings friendly, approachable shop-mascot charm to hero titles and section headings, while `Prompt` and `Fredoka` keep game titles, search inputs, and THB numerals razor-sharp on mobile screens.
 
 ### Hierarchy
-- **Display** (`700`, `clamp(1.75rem, 3.5vw, 2.5rem)`, line-height `1.2`): Hero banner headline (`Nuggetkub Rates`).
+- **Display** (`700`, `clamp(1.75rem, 3.5vw, 2.5rem)`, line-height `1.2`): Hero banner headline (`Nongfo Rates`).
 - **Headline** (`700`, `1.375rem–1.5rem`, line-height `1.3`): Section headers, modal titles, and empty-state headings.
 - **Title** (`600`, `1.0625rem–1.125rem`, line-height `1.35`): Game title on each `ProductRateCard`.
 - **Body** (`400–500`, `0.9375rem–1rem`, line-height `1.6`, max measure `65ch`): Search input, helper bubble tips, and admin table cells.

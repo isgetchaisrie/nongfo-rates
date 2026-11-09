@@ -7,10 +7,10 @@ export interface CatMascotProps {
 }
 
 const DEFAULT_LABELS: Record<NonNullable<CatMascotProps["variant"]>, string> = {
-  hero: "น้องแมว Nuggetkub สวมหูฟังถือเครื่องเกมพกพา",
-  empty: "น้องแมว Nuggetkub กำลังส่องแว่นขยายหาเกม",
-  admin: "น้องแมวแอดมิน Nuggetkub สวมแว่นถือสมุดเช็กเรทราคา",
-  badge: "สัญลักษณ์น้องแมว Nuggetkub",
+  hero: "น้องแมว Nongfo สวมหูฟังถือเครื่องเกมพกพา",
+  empty: "น้องแมว Nongfo กำลังส่องแว่นขยายหาเกม",
+  admin: "น้องแมวแอดมิน Nongfo สวมแว่นถือสมุดเช็กเรทราคา",
+  badge: "สัญลักษณ์น้องแมว Nongfo",
 };
 
 export function PawSparkle({ className = "w-5 h-5" }: { className?: string }) {
