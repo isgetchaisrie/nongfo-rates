@@ -44,54 +44,86 @@ export function ProductRateCard({ game }: ProductRateCardProps) {
   const isApp = game.category === "app";
 
   return (
-    <article className="flex flex-col rounded-3xl border border-[#ffd6e5] bg-white p-4 shadow-[0_12px_28px_-14px_rgba(225,29,104,0.16)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_36px_-14px_rgba(225,29,104,0.24)]">
-      <div className="relative aspect-square w-full overflow-hidden rounded-2xl border border-[#ffe4ee] bg-[#fff0f6]">
-        <img
-          src={game.image}
-          alt={game.name}
-          loading="lazy"
-          className="h-full w-full object-cover"
-        />
-        <span
-          className={`absolute left-3 top-3 inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-xs font-semibold shadow-[0_4px_12px_-4px_rgba(45,22,34,0.14)] ${
-            isApp
-              ? "border-[#fbcfe8] bg-[#fff0f6]/95 text-[#be1253]"
-              : "border-[#ffd6e5] bg-white/95 text-[#2d1622]"
-          }`}
+    <article className="neko-card group flex flex-col rounded-[32px] p-4">
+      <svg
+        aria-hidden="true"
+        viewBox="0 0 24 24"
+        fill="currentColor"
+        className="pointer-events-none absolute -right-2 -top-2 z-20 h-6 w-6 text-[#f8bbd0] drop-shadow-xs anim-float-1"
+      >
+        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+      </svg>
+
+      <div className="relative p-1.5">
+        <svg
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 h-full w-full"
+          xmlns="http://www.w3.org/2000/svg"
         >
-          {isApp ? (
-            <Sparkles aria-hidden="true" className="h-3.5 w-3.5 text-[#e11d68]" />
-          ) : (
-            <Gamepad2 aria-hidden="true" className="h-3.5 w-3.5 text-[#e11d68]" />
-          )}
-          <span>{isApp ? "แอป" : "เกม"}</span>
-        </span>
-        <span className="absolute right-3 top-3 inline-flex items-center rounded-full border border-[#ffd6e5] bg-white/95 px-3 py-1 text-xs font-semibold text-[#2d1622] shadow-[0_4px_12px_-4px_rgba(45,22,34,0.14)]">
-          {PLATFORM_LABELS[game.platform]}
-        </span>
+          <rect
+            x="2"
+            y="2"
+            width="calc(100% - 4px)"
+            height="calc(100% - 4px)"
+            rx="24"
+            ry="24"
+            fill="none"
+            stroke="#F8BBD0"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="animate-dash"
+          />
+        </svg>
+
+        <div className="relative aspect-square w-full overflow-hidden rounded-[22px] border-[3px] border-white bg-[#FCE4EC]/40 shadow-xs">
+          <img
+            src={game.image}
+            alt={game.name}
+            loading="lazy"
+            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+          />
+          <span
+            className={`absolute left-2.5 top-2.5 inline-flex items-center gap-1 rounded-full border border-white px-2.5 py-1 text-xs font-bold shadow-xs ${
+              isApp
+                ? "bg-[#FFFDE7]/95 text-[#5c4338]"
+                : "bg-[#FCE4EC]/95 text-[#5c4338]"
+            }`}
+          >
+            {isApp ? (
+              <Sparkles aria-hidden="true" className="h-3.5 w-3.5 text-[#d81b60]" />
+            ) : (
+              <Gamepad2 aria-hidden="true" className="h-3.5 w-3.5 text-[#d81b60]" />
+            )}
+            <span>{isApp ? "แอป" : "เกม"}</span>
+          </span>
+          <span className="absolute right-2.5 top-2.5 inline-flex items-center rounded-full border border-[#F8BBD0] bg-white/95 px-2.5 py-1 text-xs font-bold text-[#5c4338] shadow-xs">
+            {PLATFORM_LABELS[game.platform]}
+          </span>
+        </div>
       </div>
 
-      <h2 className="mt-4 mb-3 line-clamp-2 min-h-[3.25rem] font-[var(--font-mali)] text-lg font-bold leading-snug text-[#2d1622]">
+      <h2 className="mt-3.5 mb-3 line-clamp-2 min-h-[3.25rem] px-1 font-[var(--font-mali)] text-lg font-bold leading-snug text-[#4a352c]">
         {game.name}
       </h2>
 
       <dl className="mt-auto grid grid-cols-2 gap-2.5">
-        <div className="rounded-2xl border border-[#ffc2da] bg-[#fff0f6] p-3">
-          <dt className="flex items-center gap-1.5 text-xs font-semibold text-[#6e485b]">
+        <div className="relative overflow-hidden rounded-2xl border border-white bg-gradient-to-br from-[#FCE4EC] to-[#FFF0F6] p-3 shadow-xs">
+          <dt className="flex items-center gap-1.5 text-xs font-bold text-[#6d5246]">
             <MiniIosIcon />
             <span>iOS</span>
           </dt>
           <dd
             className={`mt-1 font-[var(--font-fredoka)] text-xl font-bold tabular-nums ${
-              hasIos ? "text-[#be1253]" : "text-[#6e485b]"
+              hasIos ? "text-[#b81452]" : "text-[#84685b]"
             }`}
           >
             {hasIos ? `฿${game.priceIos}` : "—"}
           </dd>
         </div>
 
-        <div className="rounded-2xl border border-[#b8f0d6] bg-[#eefbf5] p-3">
-          <dt className="flex items-center gap-1.5 text-xs font-semibold text-[#0f5137]">
+        <div className="relative overflow-hidden rounded-2xl border border-white bg-gradient-to-br from-[#E8F0FE] to-[#E0F2F1] p-3 shadow-xs">
+          <dt className="flex items-center gap-1.5 text-xs font-bold text-[#134e3a]">
             <MiniAndroidIcon />
             <span>Android</span>
           </dt>

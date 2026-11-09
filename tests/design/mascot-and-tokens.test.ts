@@ -41,6 +41,17 @@ describe("Pastel Pink Design System Tokens (globals.css)", () => {
       expect(css).toContain(token);
     }
 
+    // Pattistore + Kawaii Mashup tokens & classes
+    expect(css).toContain("--candy-pink: #fce4ec;");
+    expect(css).toContain("--butter-cream: #fffde7;");
+    expect(css).toContain("--cocoa-brown: #9e8877;");
+    expect(css).toContain("--pastel-blue: #e8f0fe;");
+    expect(css).toContain("--mint-blue: #e0f2f1;");
+    expect(css).toContain("--accent-pink: #f8bbd0;");
+    expect(css).toContain(".glass-card");
+    expect(css).toContain(".neko-card");
+    expect(css).toContain(".animate-dash");
+
     // Browser surfaces & utilities required by Craft Floor
     expect(css).toContain("::selection");
     expect(css).toContain("::-webkit-scrollbar");

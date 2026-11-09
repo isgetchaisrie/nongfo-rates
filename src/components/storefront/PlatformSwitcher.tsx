@@ -86,19 +86,19 @@ export function PlatformSwitcher({
             type="button"
             aria-pressed={isActive}
             onClick={() => onChange(id)}
-            className={`inline-flex h-12 items-center gap-2 rounded-2xl border px-4 text-sm font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#e11d68] focus-visible:ring-offset-2 ${
+            className={`inline-flex h-11 items-center gap-2 rounded-full border px-4 text-sm font-bold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#e11d68] focus-visible:ring-offset-2 ${
               isActive
-                ? "border-[#e11d68] bg-[#e11d68] text-white shadow-[0_8px_20px_-8px_rgba(225,29,104,0.5)]"
-                : "border-[#ffd6e5] bg-white/90 text-[#2d1622] hover:bg-[#fff0f6]"
+                ? "border-white bg-[#FCE4EC] text-[#4a352c] shadow-[0_6px_16px_-4px_rgba(244,143,177,0.5)]"
+                : "border-[#F8BBD0]/60 bg-white/90 text-[#6d5246] hover:bg-[#FCE4EC]/50 hover:text-[#4a352c]"
             }`}
           >
-            <Icon className="h-4 w-4 shrink-0" />
+            <Icon className="h-4 w-4 shrink-0 text-[#d81b60]" />
             <span>{label}</span>
             <span
-              className={`inline-flex min-w-6 items-center justify-center rounded-full px-2 py-0.5 font-[var(--font-fredoka)] text-xs font-semibold tabular-nums ${
+              className={`inline-flex min-w-6 items-center justify-center rounded-full px-2 py-0.5 font-[var(--font-fredoka)] text-xs font-bold tabular-nums ${
                 isActive
-                  ? "bg-white/20 text-white"
-                  : "bg-[#fff0f6] text-[#be1253]"
+                  ? "bg-white text-[#b81452]"
+                  : "bg-[#FCE4EC] text-[#b81452]"
               }`}
             >
               {count}

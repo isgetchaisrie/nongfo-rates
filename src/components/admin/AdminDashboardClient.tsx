@@ -162,11 +162,11 @@ export function AdminDashboardClient({
   }
 
   return (
-    <div className="min-h-screen bg-[#fff6f9] text-[#2d1622]">
-      <header className="border-b border-[#ffd6e5] bg-white/95">
+    <div className="bg-pastel-canvas min-h-screen text-[#4a352c]">
+      <header className="border-b border-[#F8BBD0]/60 bg-white/90 backdrop-blur-md">
         <div className="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-6">
           <div className="flex items-center gap-4">
-            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border border-[#ffd6e5] bg-[#fff0f6] p-1.5">
+            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border-2 border-white bg-[#FCE4EC] p-1.5 shadow-xs">
               <CatMascot
                 variant="admin"
                 className="h-11 w-11"
@@ -175,22 +175,22 @@ export function AdminDashboardClient({
             </div>
             <div>
               <h1
-                className="text-xl font-bold text-[#2d1622] sm:text-2xl"
+                className="text-xl font-bold text-[#4a352c] sm:text-2xl"
                 style={{ fontFamily: "var(--font-mali), sans-serif" }}
               >
                 จัดการเรทราคาเกมและแอป (Admin)
               </h1>
-              <p className="mt-0.5 text-sm text-[#6e485b]">
+              <p className="mt-0.5 text-sm font-medium text-[#6d5246]">
                 รายการทั้งหมด{" "}
-                <span className="font-semibold tabular-nums text-[#2d1622]">
+                <span className="font-bold tabular-nums text-[#4a352c]">
                   {counts.all}
                 </span>{" "}
                 รายการ (เกม{" "}
-                <span className="font-semibold tabular-nums text-[#2d1622]">
+                <span className="font-bold tabular-nums text-[#4a352c]">
                   {counts.game}
                 </span>{" "}
                 · แอป{" "}
-                <span className="font-semibold tabular-nums text-[#be1253]">
+                <span className="font-bold tabular-nums text-[#b81452]">
                   {counts.app}
                 </span>
                 )
@@ -201,18 +201,18 @@ export function AdminDashboardClient({
           <div className="flex flex-wrap items-center gap-2.5">
             <Link
               href="/"
-              className="inline-flex items-center gap-1.5 rounded-2xl border border-[#ffd6e5] bg-[#fff6f9] px-3.5 py-2 text-sm font-semibold text-[#2d1622] transition-colors hover:border-[#ff85b3] hover:bg-[#ffe4ee]"
+              className="inline-flex items-center gap-1.5 rounded-full border border-[#F8BBD0] bg-white px-4 py-2 text-sm font-bold text-[#4a352c] transition-colors hover:bg-[#FCE4EC]"
             >
-              <ExternalLink className="h-4 w-4 text-[#e11d68]" />
+              <ExternalLink className="h-4 w-4 text-[#b81452]" />
               <span>ดูหน้าเว็บจริง</span>
             </Link>
 
             <button
               type="button"
               onClick={openAddModal}
-              className="inline-flex items-center gap-1.5 rounded-2xl bg-[#e11d68] px-4 py-2 text-sm font-semibold text-white shadow-[0_6px_16px_rgba(225,29,104,0.25)] transition-colors hover:bg-[#be1253]"
+              className="inline-flex items-center gap-1.5 rounded-full border border-white bg-[#FCE4EC] px-4 py-2 text-sm font-bold text-[#4a352c] shadow-sm transition-colors hover:bg-[#F8BBD0]"
             >
-              <Plus className="h-4 w-4" />
+              <Plus className="h-4 w-4 text-[#b81452]" />
               <span>+ เพิ่มเกม / แอปใหม่</span>
             </button>
 
@@ -220,7 +220,7 @@ export function AdminDashboardClient({
               type="button"
               onClick={handleLogout}
               disabled={loggingOut}
-              className="inline-flex items-center gap-1.5 rounded-2xl border border-[#ffd6e5] bg-white px-3.5 py-2 text-sm font-semibold text-[#6e485b] transition-colors hover:bg-[#fff0f6] hover:text-[#2d1622] disabled:opacity-60"
+              className="inline-flex items-center gap-1.5 rounded-full border border-[#F8BBD0]/60 bg-white px-4 py-2 text-sm font-bold text-[#6d5246] transition-colors hover:bg-[#FCE4EC]/50 hover:text-[#4a352c] disabled:opacity-60"
             >
               {loggingOut ? (
                 <Loader2 className="h-4 w-4 animate-spin" />

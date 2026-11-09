@@ -30,10 +30,10 @@ export function CatFloatingWidget({ defaultOpen = false }: { defaultOpen?: boole
         <div
           role="status"
           aria-live="polite"
-          className="relative max-w-xs rounded-2xl border border-[#ffc2da] bg-white px-4 py-3 text-sm text-[#2d1622] shadow-[0_10px_28px_-8px_rgba(190,18,83,0.14)]"
+          className="glass-card relative max-w-xs rounded-3xl px-4 py-3 text-sm text-[#4a352c]"
         >
           <div className="flex items-start justify-between gap-3">
-            <div className="flex items-center gap-1.5 font-semibold text-[#e11d68]">
+            <div className="flex items-center gap-1.5 font-bold text-[#b81452]">
               <PawSparkle className="h-4 w-4 shrink-0" />
               <span>น้องแมว Nuggetkub</span>
             </div>
@@ -41,7 +41,7 @@ export function CatFloatingWidget({ defaultOpen = false }: { defaultOpen?: boole
               type="button"
               onClick={() => setIsOpen(false)}
               aria-label="ซ่อนข้อความผู้ช่วยน้องแมว"
-              className="rounded-full p-1 text-[#6e485b] transition-colors hover:bg-[#fff0f6] hover:text-[#2d1622]"
+              className="rounded-full p-1 text-[#6d5246] transition-colors hover:bg-[#FCE4EC] hover:text-[#4a352c]"
             >
               <svg
                 viewBox="0 0 16 16"
@@ -59,17 +59,17 @@ export function CatFloatingWidget({ defaultOpen = false }: { defaultOpen?: boole
               </svg>
             </button>
           </div>
-          <p className="mt-1 leading-relaxed text-[#2d1622]">
+          <p className="mt-1 font-medium leading-relaxed text-[#4a352c]">
             {MASCOT_TIPS[tipIndex]}
           </p>
-          <div className="mt-2 flex items-center justify-between text-xs text-[#6e485b]">
+          <div className="mt-2 flex items-center justify-between text-xs font-medium text-[#6d5246]">
             <span>
               เคล็ดลับ {tipIndex + 1}/{MASCOT_TIPS.length}
             </span>
             <button
               type="button"
               onClick={handleCycleTip}
-              className="font-medium text-[#e11d68] underline decoration-[#ffc2da] underline-offset-4 hover:text-[#be1253]"
+              className="font-bold text-[#b81452] underline decoration-[#F8BBD0] underline-offset-4 hover:text-[#880e4f]"
             >
               เคล็ดลับถัดไป
             </button>
@@ -82,10 +82,10 @@ export function CatFloatingWidget({ defaultOpen = false }: { defaultOpen?: boole
         onClick={handleCycleTip}
         aria-expanded={isOpen}
         aria-label="แตะเพื่อดูเคล็ดลับจากน้องแมว Nuggetkub"
-        className="group flex items-center gap-2 rounded-full border border-[#ffc2da] bg-white p-1.5 pr-3.5 text-xs font-semibold text-[#2d1622] shadow-[0_10px_28px_-8px_rgba(190,18,83,0.16)] transition-transform hover:-translate-y-0.5 hover:border-[#ff85b3]"
+        className="group flex items-center gap-2 rounded-full border-2 border-white bg-[#FCE4EC] p-1.5 pr-4 text-xs font-bold text-[#4a352c] shadow-[0_10px_28px_-8px_rgba(158,136,119,0.3)] transition-all hover:-translate-y-0.5 hover:bg-[#F8BBD0]"
       >
         <CatMascot variant="badge" className="h-9 w-9 shrink-0" />
-        <span className="text-[#2d1622] group-hover:text-[#e11d68]">
+        <span className="text-[#4a352c] group-hover:text-[#b81452]">
           เมี๊ยว~ เช็กเรทไว
         </span>
       </button>
