@@ -162,7 +162,7 @@ export function RateBoardClient({
 
         {activeSection === "rates" && (
           <>
-            <section className="glass-card relative mb-3.5 rounded-[24px] p-2.5 sm:mb-8 sm:rounded-[40px] sm:p-6">
+            <section className="gingham-frame relative mb-3.5 rounded-[28px] p-2.5 sm:mb-8 sm:rounded-[44px] sm:p-3.5 border-3 border-white shadow-[0_12px_36px_rgba(244,143,177,0.3)]">
           <svg
             aria-hidden="true"
             className="anim-float-1 pointer-events-none absolute -left-2 -top-3 z-20 h-6 w-6 text-[#F8BBD0] drop-shadow-xs sm:-top-4 sm:h-9 sm:w-9"
@@ -180,27 +180,7 @@ export function RateBoardClient({
             <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
           </svg>
 
-          <div className="relative rounded-[20px] p-3 sm:rounded-[34px] sm:p-6">
-            <svg
-              aria-hidden="true"
-              className="pointer-events-none absolute inset-0 h-full w-full"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <rect
-                x="2"
-                y="2"
-                width="calc(100% - 4px)"
-                height="calc(100% - 4px)"
-                rx="18"
-                ry="18"
-                fill="none"
-                stroke="#F8BBD0"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="animate-dash"
-              />
-            </svg>
+          <div className="relative rounded-[22px] border-2 border-white bg-white/95 p-3.5 sm:rounded-[36px] sm:p-6 shadow-xs backdrop-blur-md">
 
             <div className="flex flex-row items-center justify-between gap-3 md:gap-6">
               <div className="min-w-0 flex-1 text-left">
