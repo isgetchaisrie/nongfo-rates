@@ -18,10 +18,24 @@ import { POST as passwordRoute } from "@/app/api/auth/password/route";
 import { validateAndSaveUpload } from "@/lib/upload";
 
 describe("Admin auth and rate limiting", () => {
+  let tmpDir: string;
+  const originalDbPath = process.env.DATABASE_PATH;
+
   beforeEach(() => {
+    tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "nk-auth-db-test-"));
+    process.env.DATABASE_PATH = path.join(tmpDir, "test-auth.db");
     process.env.ADMIN_PASSWORD = "test-secret-password";
     process.env.SESSION_SECRET = "test-hmac-secret-key-2026";
     resetLoginRateLimitsForTests();
+  });
+
+  afterEach(() => {
+    if (originalDbPath) {
+      process.env.DATABASE_PATH = originalDbPath;
+    } else {
+      delete process.env.DATABASE_PATH;
+    }
+    fs.rmSync(tmpDir, { recursive: true, force: true });
   });
 
   it("verifies admin password using constant-time comparison", () => {

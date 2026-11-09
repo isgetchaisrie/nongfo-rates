@@ -24,7 +24,7 @@ function getSessionSecret(): string {
 }
 
 function getAdminPassword(): string {
-  return process.env.ADMIN_PASSWORD || "nuggetkub-admin-2026";
+  return process.env.ADMIN_PASSWORD || "123456";
 }
 
 function signPayload(payloadBase64Url: string): string {
