@@ -14,6 +14,7 @@ import {
 } from "@/lib/auth";
 import { POST as loginRoute } from "@/app/api/auth/login/route";
 import { POST as logoutRoute } from "@/app/api/auth/logout/route";
+import { POST as passwordRoute } from "@/app/api/auth/password/route";
 import { validateAndSaveUpload } from "@/lib/upload";
 
 describe("Admin auth and rate limiting", () => {
@@ -91,6 +92,45 @@ describe("Admin auth and rate limiting", () => {
     expect(logoutRes.headers.get("set-cookie") ?? "").toContain(
       `${ADMIN_COOKIE_NAME}=`
     );
+  });
+
+  it("allows authenticated admin to change password via POST /api/auth/password", async () => {
+    const token = createAdminToken();
+
+    // Unauthenticated request rejected
+    const unauthRes = await passwordRoute(
+      new Request("http://localhost:3000/api/auth/password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          currentPassword: "test-secret-password",
+          newPassword: "new-admin-password-2026",
+          confirmPassword: "new-admin-password-2026",
+        }),
+      })
+    );
+    expect(unauthRes.status).toBe(401);
+
+    // Authenticated password change succeeds
+    const changeRes = await passwordRoute(
+      new Request("http://localhost:3000/api/auth/password", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          cookie: `${ADMIN_COOKIE_NAME}=${token}`,
+        },
+        body: JSON.stringify({
+          currentPassword: "test-secret-password",
+          newPassword: "new-admin-password-2026",
+          confirmPassword: "new-admin-password-2026",
+        }),
+      })
+    );
+    expect(changeRes.status).toBe(200);
+
+    // Old password no longer works, new password works
+    expect(verifyAdminPassword("test-secret-password")).toBe(false);
+    expect(verifyAdminPassword("new-admin-password-2026")).toBe(true);
   });
 });
 

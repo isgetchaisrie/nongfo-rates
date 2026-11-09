@@ -512,6 +512,34 @@ export function deleteGame(id: string): boolean {
   return Number(result.changes) > 0;
 }
 
+export function getAdminPasswordHash(): string | null {
+  try {
+    const db = getDb();
+    const row = db
+      .prepare("SELECT value FROM meta WHERE key = 'admin_password_sha256'")
+      .get() as { value: string } | undefined;
+    return row?.value ?? null;
+  } catch {
+    return null;
+  }
+}
+
+export function setAdminPasswordHash(hashHex: string): void {
+  const db = getDb();
+  db.prepare(
+    "INSERT OR REPLACE INTO meta (key, value) VALUES ('admin_password_sha256', ?)"
+  ).run(hashHex);
+}
+
+export function clearAdminPasswordHash(): void {
+  try {
+    const db = getDb();
+    db.prepare("DELETE FROM meta WHERE key = 'admin_password_sha256'").run();
+  } catch {
+    // Ignore if DB not initialized
+  }
+}
+
 export function resetDbForTests(): void {
   if (dbInstance) {
     try {

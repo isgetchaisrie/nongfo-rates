@@ -4,8 +4,10 @@ import React, { useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
+  CheckCircle2,
   ExternalLink,
   Gamepad2,
+  KeyRound,
   LayoutGrid,
   Loader2,
   LogOut,
@@ -13,6 +15,7 @@ import {
   Plus,
   Sparkles,
   Trash2,
+  X,
 } from "lucide-react";
 import type { CategoryType, GameRate, PlatformType } from "@/types/game";
 import { CatMascot } from "@/components/mascot/CatMascot";
@@ -84,6 +87,14 @@ export function AdminDashboardClient({
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [loggingOut, setLoggingOut] = useState(false);
   const [feedbackError, setFeedbackError] = useState<string | null>(null);
+  const [feedbackSuccess, setFeedbackSuccess] = useState<string | null>(null);
+
+  const [passwordModalOpen, setPasswordModalOpen] = useState(false);
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordError, setPasswordError] = useState<string | null>(null);
+  const [savingPassword, setSavingPassword] = useState(false);
 
   const counts = useMemo(() => {
     let gameCount = 0;
@@ -161,6 +172,56 @@ export function AdminDashboardClient({
     }
   }
 
+  function openPasswordModal() {
+    setCurrentPassword("");
+    setNewPassword("");
+    setConfirmPassword("");
+    setPasswordError(null);
+    setPasswordModalOpen(true);
+  }
+
+  async function handlePasswordSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (savingPassword) return;
+    setPasswordError(null);
+
+    if (newPassword.trim().length < 6) {
+      setPasswordError("รหัสผ่านใหม่ต้องมีอย่างน้อย 6 ตัวอักษร");
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      setPasswordError("รหัสผ่านใหม่และการยืนยันรหัสผ่านไม่ตรงกัน");
+      return;
+    }
+
+    setSavingPassword(true);
+    try {
+      const res = await fetch("/api/auth/password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          currentPassword,
+          newPassword,
+          confirmPassword,
+        }),
+      });
+      const body = (await res.json().catch(() => ({}))) as {
+        error?: string;
+        message?: string;
+      };
+      if (!res.ok) {
+        setPasswordError(body.error ?? "เปลี่ยนรหัสผ่านไม่สำเร็จ");
+        return;
+      }
+      setPasswordModalOpen(false);
+      setFeedbackSuccess(body.message ?? "เปลี่ยนรหัสผ่านแอดมินเรียบร้อยแล้ว");
+    } catch {
+      setPasswordError("เกิดข้อผิดพลาดในการเชื่อมต่อ กรุณาลองใหม่");
+    } finally {
+      setSavingPassword(false);
+    }
+  }
+
   return (
     <div className="bg-pastel-canvas min-h-screen text-[#4a352c]">
       <header className="border-b border-[#F8BBD0]/60 bg-white/90 backdrop-blur-md">
@@ -218,6 +279,15 @@ export function AdminDashboardClient({
 
             <button
               type="button"
+              onClick={openPasswordModal}
+              className="inline-flex items-center gap-1.5 rounded-full border border-[#F8BBD0] bg-[#FFFDE7] px-4 py-2 text-sm font-bold text-[#4a352c] shadow-xs transition-colors hover:bg-[#FCE4EC]"
+            >
+              <KeyRound className="h-4 w-4 text-[#b81452]" />
+              <span>เปลี่ยนรหัสผ่าน</span>
+            </button>
+
+            <button
+              type="button"
               onClick={handleLogout}
               disabled={loggingOut}
               className="inline-flex items-center gap-1.5 rounded-full border border-[#F8BBD0]/60 bg-white px-4 py-2 text-sm font-bold text-[#6d5246] transition-colors hover:bg-[#FCE4EC]/50 hover:text-[#4a352c] disabled:opacity-60"
@@ -234,6 +304,26 @@ export function AdminDashboardClient({
       </header>
 
       <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
+        {feedbackSuccess && (
+          <div
+            role="status"
+            className="mb-6 flex items-center justify-between gap-3 rounded-2xl border border-[#b8f0d6] bg-[#eefbf5] px-4 py-3 text-sm font-bold text-[#0f5137]"
+          >
+            <div className="flex items-center gap-2">
+              <CheckCircle2 className="h-4 w-4 shrink-0" />
+              <span>{feedbackSuccess}</span>
+            </div>
+            <button
+              type="button"
+              onClick={() => setFeedbackSuccess(null)}
+              aria-label="ปิดข้อความแจ้งเตือน"
+              className="rounded-full p-1 hover:bg-white/60"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+        )}
+
         {feedbackError && (
           <div
             role="alert"
@@ -557,6 +647,128 @@ export function AdminDashboardClient({
         onClose={() => setModalOpen(false)}
         onSaved={handleSaved}
       />
+
+      {passwordModalOpen && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="change-password-title"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-[#2d1622]/45 p-4 backdrop-blur-xs"
+        >
+          <div className="w-full max-w-md rounded-3xl border-2 border-white bg-[#FFFDF9] p-6 shadow-xl">
+            <div className="flex items-center justify-between gap-3 border-b border-[#F8BBD0]/60 pb-3.5">
+              <div className="flex items-center gap-2.5">
+                <span className="flex h-9 w-9 items-center justify-center rounded-2xl bg-[#FCE4EC] text-[#b81452]">
+                  <KeyRound className="h-5 w-5" />
+                </span>
+                <h2
+                  id="change-password-title"
+                  className="text-lg font-bold text-[#4a352c]"
+                  style={{ fontFamily: "var(--font-mali), sans-serif" }}
+                >
+                  เปลี่ยนรหัสผ่านแอดมิน
+                </h2>
+              </div>
+              <button
+                type="button"
+                onClick={() => setPasswordModalOpen(false)}
+                aria-label="ปิดหน้าต่างเปลี่ยนรหัสผ่าน"
+                className="rounded-full p-1.5 text-[#6d5246] hover:bg-[#FCE4EC] hover:text-[#4a352c]"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handlePasswordSubmit} className="mt-4 space-y-4">
+              {passwordError && (
+                <div
+                  role="alert"
+                  className="rounded-2xl border border-[#f43f5e]/30 bg-[#fff1f2] px-3.5 py-2.5 text-xs font-bold text-[#9f1239]"
+                >
+                  {passwordError}
+                </div>
+              )}
+
+              <div>
+                <label
+                  htmlFor="current-admin-password"
+                  className="block text-xs font-bold text-[#4a352c]"
+                >
+                  รหัสผ่านปัจจุบัน
+                </label>
+                <input
+                  id="current-admin-password"
+                  type="password"
+                  required
+                  value={currentPassword}
+                  onChange={(e) => setCurrentPassword(e.target.value)}
+                  placeholder="กรอกรหัสผ่านปัจจุบัน"
+                  className="mt-1.5 w-full rounded-2xl border border-[#F8BBD0] bg-white px-4 py-2.5 text-sm font-medium text-[#4a352c] focus:border-[#e11d68] focus:outline-none focus:ring-2 focus:ring-[#e11d68]/20"
+                />
+              </div>
+
+              <div>
+                <label
+                  htmlFor="new-admin-password"
+                  className="block text-xs font-bold text-[#4a352c]"
+                >
+                  รหัสผ่านใหม่ (อย่างน้อย 6 ตัวอักษร)
+                </label>
+                <input
+                  id="new-admin-password"
+                  type="password"
+                  required
+                  minLength={6}
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  placeholder="ตั้งรหัสผ่านใหม่"
+                  className="mt-1.5 w-full rounded-2xl border border-[#F8BBD0] bg-white px-4 py-2.5 text-sm font-medium text-[#4a352c] focus:border-[#e11d68] focus:outline-none focus:ring-2 focus:ring-[#e11d68]/20"
+                />
+              </div>
+
+              <div>
+                <label
+                  htmlFor="confirm-admin-password"
+                  className="block text-xs font-bold text-[#4a352c]"
+                >
+                  ยืนยันรหัสผ่านใหม่
+                </label>
+                <input
+                  id="confirm-admin-password"
+                  type="password"
+                  required
+                  minLength={6}
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  placeholder="กรอกรหัสผ่านใหม่อีกครั้ง"
+                  className="mt-1.5 w-full rounded-2xl border border-[#F8BBD0] bg-white px-4 py-2.5 text-sm font-medium text-[#4a352c] focus:border-[#e11d68] focus:outline-none focus:ring-2 focus:ring-[#e11d68]/20"
+                />
+              </div>
+
+              <div className="flex items-center justify-end gap-2.5 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setPasswordModalOpen(false)}
+                  disabled={savingPassword}
+                  className="rounded-full border border-[#F8BBD0] bg-white px-4 py-2 text-xs font-bold text-[#6d5246] hover:bg-[#FCE4EC]/50"
+                >
+                  ยกเลิก
+                </button>
+                <button
+                  type="submit"
+                  disabled={savingPassword}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-white bg-[#FCE4EC] px-5 py-2 text-xs font-bold text-[#b81452] shadow-sm transition-colors hover:bg-[#F8BBD0] disabled:opacity-60"
+                >
+                  {savingPassword && (
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  )}
+                  <span>บันทึกรหัสผ่านใหม่</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

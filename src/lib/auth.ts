@@ -1,5 +1,10 @@
 import crypto from "node:crypto";
 import { cookies } from "next/headers";
+import {
+  clearAdminPasswordHash,
+  getAdminPasswordHash,
+  setAdminPasswordHash,
+} from "./db";
 
 export const ADMIN_COOKIE_NAME = "nk_admin_session";
 
@@ -31,15 +36,41 @@ export function verifyAdminPassword(password: string): boolean {
   if (!password) {
     return false;
   }
-  const expectedDigest = crypto
-    .createHash("sha256")
-    .update(getAdminPassword(), "utf8")
-    .digest();
+  const customHashHex = getAdminPasswordHash();
+  const expectedDigest =
+    customHashHex && /^[a-f0-9]{64}$/i.test(customHashHex)
+      ? Buffer.from(customHashHex, "hex")
+      : crypto
+          .createHash("sha256")
+          .update(getAdminPassword(), "utf8")
+          .digest();
   const candidateDigest = crypto
     .createHash("sha256")
     .update(password, "utf8")
     .digest();
   return crypto.timingSafeEqual(expectedDigest, candidateDigest);
+}
+
+export function changeAdminPassword(
+  currentPassword: string,
+  newPassword: string
+): { ok: true } | { ok: false; error: string } {
+  if (!verifyAdminPassword(currentPassword)) {
+    return { ok: false, error: "รหัสผ่านปัจจุบันไม่ถูกต้อง" };
+  }
+  const trimmed = newPassword.trim();
+  if (trimmed.length < 6) {
+    return { ok: false, error: "รหัสผ่านใหม่ต้องมีอย่างน้อย 6 ตัวอักษร" };
+  }
+  if (trimmed.length > 128) {
+    return { ok: false, error: "รหัสผ่านใหม่ยาวเกินไป (สูงสุด 128 ตัวอักษร)" };
+  }
+  const hashHex = crypto
+    .createHash("sha256")
+    .update(trimmed, "utf8")
+    .digest("hex");
+  setAdminPasswordHash(hashHex);
+  return { ok: true };
 }
 
 export function createAdminToken(nowMs: number = Date.now()): string {
@@ -134,4 +165,5 @@ export function clearLoginFailures(ip: string): void {
 
 export function resetLoginRateLimitsForTests(): void {
   loginFailures.clear();
+  clearAdminPasswordHash();
 }
