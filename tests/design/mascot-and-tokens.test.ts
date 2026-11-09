@@ -146,23 +146,24 @@ describe("CatFloatingWidget interactive helper", () => {
     expect(html).toContain("Nongfo");
   });
 
-  it("renders KawaiiCatSprite and KawaiiCatPlayground roaming cats from /cats-sheet.jpg", () => {
+  it("renders full-body transparent KawaiiCatSprite and full-page touring KawaiiCatPlayground cats", () => {
     const spriteHtml = renderToStaticMarkup(
       React.createElement(KawaiiCatSprite, {
         col: 1,
         row: 3,
-        size: 60,
+        size: 74,
         label: "น้องซากุระชมพู",
       })
     );
-    expect(spriteHtml).toContain("/cats-sheet.jpg");
+    expect(spriteHtml).toContain("/cats/cat_3_1.png");
     expect(spriteHtml).toContain("น้องซากุระชมพู");
+    expect(spriteHtml).not.toContain("rounded-full");
 
     const playgroundHtml = renderToStaticMarkup(
       React.createElement(KawaiiCatPlayground)
     );
-    expect(playgroundHtml).toContain("cat-roam-ltr");
-    expect(playgroundHtml).toContain("cat-roam-rtl");
-    expect(playgroundHtml).toContain("cat-trot");
+    expect(playgroundHtml).toContain("cat-roam-tour");
+    expect(playgroundHtml).toContain("/cats/cat_3_1.png");
+    expect(playgroundHtml).toContain("/cats/cat_4_0.png");
   });
 });

@@ -197,27 +197,27 @@ export function RateBoardClient({ initialGames }: RateBoardClientProps) {
               </div>
 
               <div className="relative flex shrink-0 items-center justify-center">
-                <div className="anim-float-1 absolute -left-5 -top-4 z-20">
+                <div className="anim-float-1 absolute -left-7 -top-6 z-20">
                   <KawaiiCatSprite
                     col={1}
                     row={3}
-                    size={56}
+                    size={68}
                     label="น้องแมวชมพูพาสเทล Nongfo"
                   />
                 </div>
-                <div className="anim-float-2 absolute -bottom-3 -left-4 z-20">
+                <div className="anim-float-2 absolute -bottom-4 -left-6 z-20">
                   <KawaiiCatSprite
                     col={0}
                     row={3}
-                    size={52}
+                    size={64}
                     label="น้องแมวโบว์ม่วงพาสเทล Nongfo"
                   />
                 </div>
-                <div className="anim-float-3 absolute -right-4 -top-3 z-20">
+                <div className="anim-float-3 absolute -right-6 -top-5 z-20">
                   <KawaiiCatSprite
                     col={4}
                     row={3}
-                    size={54}
+                    size={66}
                     label="น้องแมวสายรุ้งพาสเทล Nongfo"
                   />
                 </div>
@@ -234,9 +234,9 @@ export function RateBoardClient({ initialGames }: RateBoardClientProps) {
             {/* Cute Interactive Kawaii Cat Parade Strip */}
             <div className="mt-5 flex flex-wrap items-center justify-center gap-2.5 border-t border-[#F8BBD0]/45 pt-4 md:justify-between">
               <span className="inline-flex items-center gap-1.5 rounded-full border border-white bg-[#FCE4EC] px-3.5 py-1 text-xs font-bold text-[#4a352c] shadow-xs">
-                แก๊งน้องแมว Nongfo พร้อมต้อนรับ (ลองจิ้มน้องแมวที่วิ่งเล่นด้านล่างจอได้น้า~)
+                แก๊งน้องแมว Nongfo พร้อมต้อนรับ (ลองจิ้มน้องแมวที่เดินทัวร์รอบหน้าเว็บได้น้า~)
               </span>
-              <div className="flex flex-wrap items-center justify-center gap-2">
+              <div className="flex flex-wrap items-center justify-center gap-3">
                 {[
                   { col: 0, row: 0, label: "น้องแมวขาวจั๊วะ" },
                   { col: 0, row: 3, label: "น้องแมวโบว์ม่วง" },
@@ -253,7 +253,7 @@ export function RateBoardClient({ initialGames }: RateBoardClientProps) {
                     <KawaiiCatSprite
                       col={cat.col}
                       row={cat.row}
-                      size={44}
+                      size={56}
                       label={cat.label}
                     />
                   </div>
@@ -267,11 +267,11 @@ export function RateBoardClient({ initialGames }: RateBoardClientProps) {
           aria-label="ค้นหาและกรองรายการเกมและแอป"
           className="glass-card sticky top-3 z-20 mb-10 rounded-[32px] p-4"
         >
-          <div className=" pointer-events-none absolute -top-5 right-7 z-30 hidden sm:block">
+          <div className="pointer-events-none absolute -top-8 right-7 z-30 hidden sm:block">
             <KawaiiCatSprite
               col={1}
               row={1}
-              size={46}
+              size={58}
               label="น้องแมวทักทาย"
               className="anim-float-1"
             />
