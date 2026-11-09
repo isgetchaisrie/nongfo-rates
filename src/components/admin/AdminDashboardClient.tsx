@@ -28,6 +28,10 @@ import type { CategoryType, GameRate, PlatformType } from "@/types/game";
 import { DEFAULT_STORE_SETTINGS, type StoreSettings } from "@/types/settings";
 import { CatMascot } from "@/components/mascot/CatMascot";
 import { GameFormModal } from "@/components/admin/GameFormModal";
+import {
+  FacebookIcon,
+  LineIcon,
+} from "@/components/storefront/ContactAdminSection";
 
 export type AdminTab = "account" | "game" | "app" | "contact";
 
@@ -1104,11 +1108,17 @@ export function AdminDashboardClient({
                     </p>
 
                     <div className="mt-4 w-full space-y-2">
-                      <div className="flex items-center justify-center gap-2 rounded-2xl bg-[#1877F2] px-4 py-2 text-xs font-bold text-white shadow-xs">
-                        <span>Facebook: {settings.facebookName || "Thitima Nongfo"}</span>
+                      <div className="flex items-center gap-2 rounded-2xl bg-gradient-to-r from-[#1877F2] to-[#0D65D9] p-2.5 text-xs font-bold text-white shadow-xs">
+                        <div className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-white shadow-xs">
+                          <FacebookIcon className="h-5 w-5 text-[#1877F2]" />
+                        </div>
+                        <span className="truncate">Facebook: {settings.facebookName || "Thitima Nongfo"}</span>
                       </div>
-                      <div className="flex items-center justify-center gap-2 rounded-2xl bg-[#06C755] px-4 py-2 text-xs font-bold text-white shadow-xs">
-                        <span>LINE: {settings.lineName || "Add LINE friend"}</span>
+                      <div className="flex items-center gap-2 rounded-2xl bg-gradient-to-r from-[#06C755] to-[#00B900] p-2.5 text-xs font-bold text-white shadow-xs">
+                        <div className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-white shadow-xs">
+                          <LineIcon className="h-5 w-5" />
+                        </div>
+                        <span className="truncate">LINE: {settings.lineName || "Add LINE friend"}</span>
                       </div>
                     </div>
                   </div>

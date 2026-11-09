@@ -5,7 +5,7 @@ import Link from "next/link";
 import { KawaiiCatSprite } from "@/components/mascot/KawaiiCatPlayground";
 import { DEFAULT_STORE_SETTINGS, type StoreSettings } from "@/types/settings";
 
-function FacebookIcon({ className }: { className?: string }) {
+export function FacebookIcon({ className }: { className?: string }) {
   return (
     <svg
       viewBox="0 0 24 24"
@@ -18,15 +18,24 @@ function FacebookIcon({ className }: { className?: string }) {
   );
 }
 
-function LineIcon({ className }: { className?: string }) {
+export function LineIcon({ className }: { className?: string }) {
   return (
     <svg
+      role="img"
       viewBox="0 0 24 24"
-      fill="currentColor"
       aria-hidden="true"
       className={className}
     >
-      <path d="M12 2C6.48 2 2 5.82 2 10.53c0 2.92 1.72 5.51 4.38 7.02-.19.7-.68 2.53-.78 2.93-.12.5.18.49.38.36.16-.1 2.51-1.7 3.53-2.39.81.12 1.64.18 2.49.18 5.52 0 10-3.82 10-8.53S17.52 2 12 2zm-4.7 11.23c-.41 0-.75-.34-.75-.75V8.52c0-.41.34-.75.75-.75s.75.34.75.75v3.21h1.71c.41 0 .75.34.75.75s-.34.75-.75.75H7.3zm3.95-.75c0 .41-.34.75-.75.75s-.75-.34-.75-.75V8.52c0-.41.34-.75.75-.75s.75.34.75.75v3.96zm4.8 0c0 .32-.2.6-.5.7-.08.03-.17.05-.25.05-.23 0-.46-.11-.6-.3l-2.07-2.77v2.32c0 .41-.34.75-.75.75s-.75-.34-.75-.75V8.52c0-.32.2-.6.5-.7.25-.09.52-.03.71.18l2.21 2.96V8.52c0-.41.34-.75.75-.75s.75.34.75.75v3.96zm3.3-2.46c.41 0 .75.34.75.75s-.34.75-.75.75h-2.1c-.41 0-.75-.34-.75-.75V8.52c0-.41.34-.75.75-.75h2.1c.41 0 .75.34.75.75s-.34.75-.75.75h-1.35v.71h1.35c.41 0 .75.34.75.75s-.34.75-.75.75h-1.35v.79h1.35z" />
+      {/* Official LINE Speech Bubble */}
+      <path
+        fill="#06C755"
+        d="M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314"
+      />
+      {/* Official LINE Letters */}
+      <path
+        fill="#FFFFFF"
+        d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63h2.386c.346 0 .627.285.627.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63.346 0 .628.285.628.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.282.629-.629.629"
+      />
     </svg>
   );
 }
@@ -112,11 +121,11 @@ export function ContactAdminSection({ settings }: ContactAdminSectionProps) {
             className="group relative flex w-full cursor-pointer items-center justify-between gap-3 rounded-2xl border-2 border-white bg-gradient-to-r from-[#1877F2] to-[#3b5998] p-3.5 text-left text-white shadow-[0_6px_20px_rgba(24,119,242,0.3)] transition-all hover:scale-[1.02] hover:shadow-[0_8px_24px_rgba(24,119,242,0.4)] active:scale-98"
           >
             <div className="flex items-center gap-3">
-              <div className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-white/20 text-white backdrop-blur-xs">
-                <FacebookIcon className="h-6 w-6" />
+              <div className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-white shadow-sm">
+                <FacebookIcon className="h-7 w-7 text-[#1877F2]" />
               </div>
               <div className="min-w-0">
-                <div className="text-xs font-semibold text-white/85">
+                <div className="text-xs font-semibold text-white/90">
                   Facebook แอดมิน (คลิกทักแชท)
                 </div>
                 <div className="font-[var(--font-mali)] text-base font-bold text-white drop-shadow-xs">
@@ -141,11 +150,11 @@ export function ContactAdminSection({ settings }: ContactAdminSectionProps) {
             className="group relative flex w-full cursor-pointer items-center justify-between gap-3 rounded-2xl border-2 border-white bg-gradient-to-r from-[#06C755] to-[#00B900] p-3.5 text-left text-white shadow-[0_6px_20px_rgba(6,199,85,0.3)] transition-all hover:scale-[1.02] hover:shadow-[0_8px_24px_rgba(6,199,85,0.4)] active:scale-98"
           >
             <div className="flex items-center gap-3">
-              <div className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-white/20 text-white backdrop-blur-xs">
-                <LineIcon className="h-6 w-6" />
+              <div className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-white shadow-sm">
+                <LineIcon className="h-7 w-7" />
               </div>
               <div className="min-w-0">
-                <div className="text-xs font-semibold text-white/85">
+                <div className="text-xs font-semibold text-white/90">
                   LINE Official (คลิกเพิ่มเพื่อน)
                 </div>
                 <div className="font-[var(--font-mali)] text-base font-bold text-white drop-shadow-xs">
