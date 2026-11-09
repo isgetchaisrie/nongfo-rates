@@ -150,67 +150,80 @@ export function BottomNav({
     <nav
       data-bottom-nav
       aria-label="เมนูแท็บด้านล่าง"
-      className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-5 rounded-t-3xl border-t-[2.5px] border-[#4a352c] bg-[#FFFDF9]/95 px-1.5 pt-1.5 shadow-[0_-8px_20px_rgba(74,53,44,0.12)] backdrop-blur-md md:bottom-3 md:left-1/2 md:right-auto md:w-full md:max-w-md md:-translate-x-1/2 md:rounded-3xl md:border-[2.5px]"
+      className="fixed inset-x-0 bottom-0 z-40 rounded-t-3xl border-t-[2.5px] border-[#4a352c] bg-[#FFFDF9]/95 px-1.5 pt-1.5 shadow-[0_-8px_20px_rgba(74,53,44,0.12)] backdrop-blur-md lg:bottom-3 lg:left-1/2 lg:right-auto lg:w-full lg:max-w-md lg:-translate-x-1/2 lg:rounded-3xl lg:border-[2.5px]"
       style={{
-        paddingBottom: "calc(0.5rem + env(safe-area-inset-bottom, 0px))",
+        paddingBottom: "calc(0.35rem + env(safe-area-inset-bottom, 0px))",
       }}
     >
-      <button
-        type="button"
-        data-active={isHomeActive}
-        aria-pressed={isHomeActive}
-        onClick={() => {
-          onSelectCategory("all");
-          if (viewMode === "table") {
-            onToggleViewMode();
-          }
-          if (typeof window !== "undefined") {
-            window.scrollTo({ top: 0, behavior: "smooth" });
-          }
-        }}
-        className={tabClass}
-      >
-        <TabFace k="home" />
-        <span>หน้าแรก</span>
-      </button>
+      <div className="grid grid-cols-5">
+        <button
+          type="button"
+          data-active={isHomeActive}
+          aria-pressed={isHomeActive}
+          onClick={() => {
+            onSelectCategory("all");
+            if (viewMode === "table") {
+              onToggleViewMode();
+            }
+            if (typeof window !== "undefined") {
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }
+          }}
+          className={tabClass}
+        >
+          <TabFace k="home" />
+          <span>หน้าแรก</span>
+        </button>
 
-      <button
-        type="button"
-        data-active={isGameActive}
-        aria-pressed={isGameActive}
-        onClick={() => onSelectCategory("game")}
-        className={tabClass}
-      >
-        <TabFace k="game" badge={gameCount} />
-        <span>หมวดเกม</span>
-      </button>
+        <button
+          type="button"
+          data-active={isGameActive}
+          aria-pressed={isGameActive}
+          onClick={() => onSelectCategory("game")}
+          className={tabClass}
+        >
+          <TabFace k="game" badge={gameCount} />
+          <span>หมวดเกม</span>
+        </button>
 
-      <button
-        type="button"
-        data-active={isAppActive}
-        aria-pressed={isAppActive}
-        onClick={() => onSelectCategory("app")}
-        className={tabClass}
-      >
-        <TabFace k="app" badge={appCount} />
-        <span>หมวดแอป</span>
-      </button>
+        <button
+          type="button"
+          data-active={isAppActive}
+          aria-pressed={isAppActive}
+          onClick={() => onSelectCategory("app")}
+          className={tabClass}
+        >
+          <TabFace k="app" badge={appCount} />
+          <span>หมวดแอป</span>
+        </button>
 
-      <button
-        type="button"
-        data-active={isTableActive}
-        aria-pressed={isTableActive}
-        onClick={onToggleViewMode}
-        className={tabClass}
-      >
-        <TabFace k="table" />
-        <span>{viewMode === "table" ? "แบบตาราง" : "ตารางเรท"}</span>
-      </button>
+        <button
+          type="button"
+          data-active={isTableActive}
+          aria-pressed={isTableActive}
+          onClick={onToggleViewMode}
+          className={tabClass}
+        >
+          <TabFace k="table" />
+          <span>{viewMode === "table" ? "แบบตาราง" : "ตารางเรท"}</span>
+        </button>
 
-      <Link href="/admin" className={tabClass}>
-        <TabFace k="admin" />
-        <span>แอดมิน</span>
-      </Link>
+        <Link href="/admin" className={tabClass}>
+          <TabFace k="admin" />
+          <span>แอดมิน</span>
+        </Link>
+      </div>
+
+      {/* Reserved lower shelf on mobile/tablet so the fixed bottom-right Netlify badge (63px tall) never covers the 5 tab buttons */}
+      <div
+        aria-hidden="true"
+        className="mt-1 flex h-15 items-center border-t border-[#F8BBD0]/50 px-3 lg:hidden"
+      >
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-[#FCE4EC]/70 px-2.5 py-1 text-xs font-bold text-[#6d5246]">
+          <span className="h-2 w-2 rounded-full bg-[#e11d68]" />
+          <span>Nongfo Rates • เรทอัปเดตสด</span>
+        </span>
+      </div>
     </nav>
   );
 }

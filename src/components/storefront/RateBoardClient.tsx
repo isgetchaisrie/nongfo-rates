@@ -139,7 +139,7 @@ export function RateBoardClient({ initialGames }: RateBoardClientProps) {
         </div>
       </header>
 
-      <main className="relative z-10 mx-auto max-w-7xl px-3 pt-3 pb-28 sm:px-6 sm:pt-8 lg:px-8">
+      <main className="relative z-10 mx-auto max-w-7xl px-3 pt-3 pb-40 sm:px-6 sm:pt-8 lg:px-8 lg:pb-28">
         <section className="glass-card relative mb-3.5 rounded-[24px] p-2.5 sm:mb-8 sm:rounded-[40px] sm:p-6">
           <svg
             aria-hidden="true"
