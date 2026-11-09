@@ -205,8 +205,12 @@ describe("BottomNav, PaymentAccountSection, and ContactAdminSection", () => {
     const contactHtml = renderToStaticMarkup(
       React.createElement(ContactAdminSection),
     );
+    expect(contactHtml).toContain("Nongfo");
+    expect(contactHtml).toContain("admin-profile.jpg");
     expect(contactHtml).toContain("Pat Pattida");
     expect(contactHtml).toContain("Thitima Nongfo");
+    expect(contactHtml).toContain("https://www.facebook.com/share/1BmFBDETNn/");
+    expect(contactHtml).toContain("https://lin.ee/T8apadZU");
     expect(contactHtml).toContain("@709qwuff");
   });
 
