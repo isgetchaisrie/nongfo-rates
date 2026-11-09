@@ -5,6 +5,10 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import * as MascotModule from "../../src/components/mascot/CatMascot";
 import { CatFloatingWidget } from "../../src/components/mascot/CatFloatingWidget";
+import {
+  KawaiiCatPlayground,
+  KawaiiCatSprite,
+} from "../../src/components/mascot/KawaiiCatPlayground";
 
 const ROOT = path.resolve(__dirname, "../..");
 const GLOBALS_CSS_PATH = path.join(ROOT, "src/app/globals.css");
@@ -140,5 +144,25 @@ describe("CatFloatingWidget interactive helper", () => {
     expect(html).toContain("z-40");
     expect(html).toContain("<svg");
     expect(html).toContain("Nongfo");
+  });
+
+  it("renders KawaiiCatSprite and KawaiiCatPlayground roaming cats from /cats-sheet.jpg", () => {
+    const spriteHtml = renderToStaticMarkup(
+      React.createElement(KawaiiCatSprite, {
+        col: 1,
+        row: 3,
+        size: 60,
+        label: "น้องซากุระชมพู",
+      })
+    );
+    expect(spriteHtml).toContain("/cats-sheet.jpg");
+    expect(spriteHtml).toContain("น้องซากุระชมพู");
+
+    const playgroundHtml = renderToStaticMarkup(
+      React.createElement(KawaiiCatPlayground)
+    );
+    expect(playgroundHtml).toContain("cat-roam-ltr");
+    expect(playgroundHtml).toContain("cat-roam-rtl");
+    expect(playgroundHtml).toContain("cat-trot");
   });
 });

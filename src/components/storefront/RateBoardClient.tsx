@@ -7,6 +7,10 @@ import type { GameRate } from "@/types/game";
 import { CatMascot } from "@/components/mascot/CatMascot";
 import { CatFloatingWidget } from "@/components/mascot/CatFloatingWidget";
 import {
+  KawaiiCatPlayground,
+  KawaiiCatSprite,
+} from "@/components/mascot/KawaiiCatPlayground";
+import {
   computeCategoryCounts,
   computePlatformCounts,
   filterGames,
@@ -192,12 +196,68 @@ export function RateBoardClient({ initialGames }: RateBoardClientProps) {
                 </p>
               </div>
 
-              <div className="shrink-0 rounded-[28px] border-4 border-white bg-[#FFFDE7]/70 p-2 shadow-sm">
-                <CatMascot
-                  variant="hero"
-                  label="น้องแมว Nongfo ต้อนรับสู่ตารางเรทราคาเกม"
-                  className="animate-mascot-float h-32 w-32 sm:h-36 sm:w-36"
-                />
+              <div className="relative flex shrink-0 items-center justify-center">
+                <div className="anim-float-1 absolute -left-5 -top-4 z-20">
+                  <KawaiiCatSprite
+                    col={1}
+                    row={3}
+                    size={56}
+                    label="น้องแมวชมพูพาสเทล Nongfo"
+                  />
+                </div>
+                <div className="anim-float-2 absolute -bottom-3 -left-4 z-20">
+                  <KawaiiCatSprite
+                    col={0}
+                    row={3}
+                    size={52}
+                    label="น้องแมวโบว์ม่วงพาสเทล Nongfo"
+                  />
+                </div>
+                <div className="anim-float-3 absolute -right-4 -top-3 z-20">
+                  <KawaiiCatSprite
+                    col={4}
+                    row={3}
+                    size={54}
+                    label="น้องแมวสายรุ้งพาสเทล Nongfo"
+                  />
+                </div>
+                <div className="rounded-[28px] border-4 border-white bg-[#FFFDE7]/85 p-2.5 shadow-sm">
+                  <CatMascot
+                    variant="hero"
+                    label="น้องแมว Nongfo ต้อนรับสู่ตารางเรทราคาเกม"
+                    className="animate-mascot-float h-32 w-32 sm:h-36 sm:w-36"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Cute Interactive Kawaii Cat Parade Strip */}
+            <div className="mt-5 flex flex-wrap items-center justify-center gap-2.5 border-t border-[#F8BBD0]/45 pt-4 md:justify-between">
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-white bg-[#FCE4EC] px-3.5 py-1 text-xs font-bold text-[#4a352c] shadow-xs">
+                แก๊งน้องแมว Nongfo พร้อมต้อนรับ (ลองจิ้มน้องแมวที่วิ่งเล่นด้านล่างจอได้น้า~)
+              </span>
+              <div className="flex flex-wrap items-center justify-center gap-2">
+                {[
+                  { col: 0, row: 0, label: "น้องแมวขาวจั๊วะ" },
+                  { col: 0, row: 3, label: "น้องแมวโบว์ม่วง" },
+                  { col: 1, row: 3, label: "น้องแมวซากุระชมพู" },
+                  { col: 2, row: 3, label: "น้องแมวฟ้าพาสเทล" },
+                  { col: 3, row: 3, label: "น้องแมวมินต์กระดิ่งทอง" },
+                  { col: 4, row: 3, label: "น้องแมวสายรุ้งพาสเทล" },
+                  { col: 5, row: 3, label: "น้องแมวกาแล็กซีดาววิ้ง" },
+                ].map((cat, idx) => (
+                  <div
+                    key={`${cat.col}-${cat.row}`}
+                    className={idx % 2 === 0 ? "anim-float-1" : "anim-float-2"}
+                  >
+                    <KawaiiCatSprite
+                      col={cat.col}
+                      row={cat.row}
+                      size={44}
+                      label={cat.label}
+                    />
+                  </div>
+                ))}
               </div>
             </div>
           </div>
@@ -207,6 +267,15 @@ export function RateBoardClient({ initialGames }: RateBoardClientProps) {
           aria-label="ค้นหาและกรองรายการเกมและแอป"
           className="glass-card sticky top-3 z-20 mb-10 rounded-[32px] p-4"
         >
+          <div className=" pointer-events-none absolute -top-5 right-7 z-30 hidden sm:block">
+            <KawaiiCatSprite
+              col={1}
+              row={1}
+              size={46}
+              label="น้องแมวทักทาย"
+              className="anim-float-1"
+            />
+          </div>
           <div className="flex flex-col gap-3.5">
             <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
               <div className="w-full lg:max-w-md">
@@ -303,6 +372,7 @@ export function RateBoardClient({ initialGames }: RateBoardClientProps) {
         )}
       </main>
 
+      <KawaiiCatPlayground />
       <CatFloatingWidget />
     </div>
   );

@@ -224,6 +224,78 @@ h3,
   animation: pulseSoft 3.2s ease-in-out infinite;
 }
 
+@keyframes catRoamLtr {
+  0% {
+    left: -90px;
+    transform: scaleX(1);
+  }
+  49% {
+    left: calc(100vw + 20px);
+    transform: scaleX(1);
+  }
+  50% {
+    left: calc(100vw + 20px);
+    transform: scaleX(-1);
+  }
+  99% {
+    left: -90px;
+    transform: scaleX(-1);
+  }
+  100% {
+    left: -90px;
+    transform: scaleX(1);
+  }
+}
+
+@keyframes catRoamRtl {
+  0% {
+    left: calc(100vw + 20px);
+    transform: scaleX(1);
+  }
+  49% {
+    left: -90px;
+    transform: scaleX(1);
+  }
+  50% {
+    left: -90px;
+    transform: scaleX(-1);
+  }
+  99% {
+    left: calc(100vw + 20px);
+    transform: scaleX(-1);
+  }
+  100% {
+    left: calc(100vw + 20px);
+    transform: scaleX(1);
+  }
+}
+
+@keyframes catTrot {
+  0%,
+  100% {
+    transform: translateY(0px) rotate(-3deg);
+  }
+  50% {
+    transform: translateY(-7px) rotate(3deg);
+  }
+}
+
+.cat-roam-ltr {
+  animation-name: catRoamLtr;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+.cat-roam-rtl {
+  animation-name: catRoamRtl;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+.cat-trot {
+  animation: catTrot 0.65s ease-in-out infinite;
+}
+
 .card-bento {
   background-color: var(--bg-surface);
   border: 1px solid var(--border-pastel);
@@ -265,6 +337,9 @@ h3,
   .anim-float-2,
   .anim-float-3,
   .anim-pulse,
+  .cat-roam-ltr,
+  .cat-roam-rtl,
+  .cat-trot,
   .neko-card,
   .card-bento {
     animation: none !important;
