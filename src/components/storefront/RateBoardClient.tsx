@@ -3,11 +3,9 @@
 import React, { useMemo, useState } from "react";
 import Link from "next/link";
 import {
-  Gamepad2,
   LayoutGrid,
   Lock,
   RotateCcw,
-  Sparkles,
   Table2,
 } from "lucide-react";
 import type { GameRate } from "@/types/game";
@@ -22,7 +20,7 @@ import {
   type FilterPlatform,
 } from "./filterGames";
 import { SearchBar } from "./SearchBar";
-import { PlatformSwitcher } from "./PlatformSwitcher";
+import { AppleIcon, AndroidIcon } from "./PlatformSwitcher";
 import { ProductRateCard } from "./ProductRateCard";
 import { BottomNav, type StorefrontSection } from "./BottomNav";
 import { PaymentAccountSection } from "./PaymentAccountSection";
@@ -30,21 +28,15 @@ import { ContactAdminSection } from "./ContactAdminSection";
 
 export interface RateBoardClientProps {
   initialGames: GameRate[];
+  initialSection?: StorefrontSection;
 }
 
-const CATEGORY_TABS: Array<{
-  id: FilterCategory;
-  label: string;
-  Icon: React.ComponentType<{ className?: string }>;
-}> = [
-  { id: "all", label: "ทุกหมวด", Icon: LayoutGrid },
-  { id: "game", label: "เกม", Icon: Gamepad2 },
-  { id: "app", label: "แอป", Icon: Sparkles },
-];
-
-export function RateBoardClient({ initialGames }: RateBoardClientProps) {
+export function RateBoardClient({
+  initialGames,
+  initialSection = "account",
+}: RateBoardClientProps) {
   const [activeSection, setActiveSection] =
-    useState<StorefrontSection>("account");
+    useState<StorefrontSection>(initialSection);
   const [query, setQuery] = useState("");
   const [platform, setPlatform] = useState<FilterPlatform>("all");
   const [category, setCategory] = useState<FilterCategory>("all");
@@ -292,110 +284,98 @@ export function RateBoardClient({ initialGames }: RateBoardClientProps) {
 
         <section
           aria-label="ค้นหาและกรองรายการเกมและแอป"
-          className="glass-card sticky top-2 z-20 mb-4 rounded-[22px] p-2.5 sm:top-3 sm:mb-10 sm:rounded-[32px] sm:p-4"
+          className="glass-card sticky top-2 z-20 mb-4 rounded-[22px] p-2.5 sm:top-3 sm:mb-8 sm:rounded-[28px] sm:p-3.5"
         >
-          <div className="pointer-events-none absolute -top-8 right-7 z-30 hidden sm:block">
-            <KawaiiCatSprite
-              col={1}
-              row={1}
-              size={58}
-              label="น้องแมวทักทาย"
-              className="anim-float-1"
-            />
-          </div>
-          <div className="flex flex-col gap-2 sm:gap-3.5">
-            <div className="flex flex-col gap-2.5 lg:flex-row lg:items-center lg:justify-between">
-              <div className="w-full lg:max-w-md">
-                <SearchBar value={query} onChange={setQuery} />
-              </div>
+          <div className="flex flex-col gap-2.5">
+            <SearchBar value={query} onChange={setQuery} />
 
-              {/* Category tabs */}
+            <div className="flex flex-wrap items-center justify-between gap-2 border-t border-[#F8BBD0]/40 pt-2 sm:pt-2.5">
               <div
                 role="group"
-                aria-label="กรองตามหมวดหมู่ เกม หรือ แอป"
+                aria-label="หมวดตัวกรอง ทั้งหมด ตาราง iOS และ Android"
                 className="flex flex-wrap items-center gap-1.5 sm:gap-2"
               >
-                {CATEGORY_TABS.map(({ id, label, Icon }) => {
-                  const isActive = category === id;
-                  const count = categoryCounts[id] ?? 0;
-                  return (
-                    <button
-                      key={id}
-                      type="button"
-                      aria-pressed={isActive}
-                      onClick={() => setCategory(id)}
-                      className={`inline-flex h-9 items-center gap-1.5 rounded-full border px-3 text-xs font-bold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#e11d68] focus-visible:ring-offset-2 sm:h-11 sm:gap-2 sm:px-4 sm:text-sm ${
-                        isActive
-                          ? "border-white bg-[#FCE4EC] text-[#4a352c] shadow-[0_6px_16px_-4px_rgba(244,143,177,0.55)]"
-                          : "border-[#F8BBD0]/60 bg-[#FFFDF9] text-[#6d5246] hover:bg-[#FCE4EC]/50 hover:text-[#4a352c]"
-                      }`}
-                    >
-                      <Icon className="h-3.5 w-3.5 shrink-0 text-[#d81b60] sm:h-4 sm:w-4" />
-                      <span>{label}</span>
-                      <span
-                        className={`inline-flex min-w-5 items-center justify-center rounded-full px-1.5 py-0.5 font-[var(--font-fredoka)] text-xs font-bold tabular-nums sm:min-w-6 sm:px-2 ${
-                          isActive
-                            ? "bg-white text-[#b81452]"
-                            : "bg-[#FCE4EC] text-[#b81452]"
-                        }`}
-                      >
-                        {count}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            <div className="flex flex-wrap items-center justify-between gap-2 border-t border-[#F8BBD0]/40 pt-2 sm:gap-3 sm:pt-3">
-              <PlatformSwitcher
-                value={platform}
-                onChange={setPlatform}
-                counts={counts}
-              />
-
-              <div className="flex flex-wrap items-center gap-2">
-                {/* View mode toggle - filter between Card and Table view */}
-                <div
-                  role="group"
-                  aria-label="สลับมุมมองการ์ดหรือตาราง"
-                  className="inline-flex items-center rounded-full border border-[#F8BBD0]/70 bg-[#FFFDF9] p-0.5 shadow-xs sm:p-1"
+                {/* 1. ทั้งหมด */}
+                <button
+                  type="button"
+                  aria-pressed={viewMode === "grid" && platform === "all"}
+                  onClick={() => {
+                    setViewMode("grid");
+                    setPlatform("all");
+                  }}
+                  className={`inline-flex h-9 items-center gap-1.5 rounded-full border px-3 text-xs font-bold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#e11d68] sm:h-10 sm:gap-2 sm:px-4 sm:text-sm ${
+                    viewMode === "grid" && platform === "all"
+                      ? "border-white bg-[#FCE4EC] text-[#4a352c] shadow-[0_6px_16px_-4px_rgba(244,143,177,0.55)]"
+                      : "border-[#F8BBD0]/60 bg-[#FFFDF9] text-[#6d5246] hover:bg-[#FCE4EC]/50 hover:text-[#4a352c]"
+                  }`}
                 >
-                  <button
-                    type="button"
-                    aria-pressed={viewMode === "grid"}
-                    onClick={() => setViewMode("grid")}
-                    className={`inline-flex h-8 items-center gap-1.5 rounded-full px-2.5 text-xs font-bold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#e11d68] sm:px-3 ${
-                      viewMode === "grid"
-                        ? "border border-white bg-[#FCE4EC] text-[#b81452] shadow-xs"
-                        : "text-[#6d5246] hover:text-[#4a352c]"
-                    }`}
-                  >
-                    <LayoutGrid aria-hidden="true" className="h-3.5 w-3.5 text-[#d81b60]" />
-                    <span>การ์ด</span>
-                  </button>
-                  <button
-                    type="button"
-                    aria-pressed={viewMode === "table"}
-                    onClick={() => setViewMode("table")}
-                    className={`inline-flex h-8 items-center gap-1.5 rounded-full px-2.5 text-xs font-bold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#e11d68] sm:px-3 ${
-                      viewMode === "table"
-                        ? "border border-white bg-[#FCE4EC] text-[#b81452] shadow-xs"
-                        : "text-[#6d5246] hover:text-[#4a352c]"
-                    }`}
-                  >
-                    <Table2 aria-hidden="true" className="h-3.5 w-3.5 text-[#d81b60]" />
-                    <span>ตาราง</span>
-                  </button>
-                </div>
+                  <LayoutGrid className="h-3.5 w-3.5 shrink-0 text-[#d81b60] sm:h-4 sm:w-4" />
+                  <span>ทั้งหมด</span>
+                </button>
 
-                <p
-                  aria-live="polite"
-                  className="shrink-0 rounded-full border border-[#F8BBD0]/60 bg-white px-2.5 py-1 text-xs font-bold text-[#6d5246] tabular-nums sm:px-3"
+                {/* 2. ตาราง */}
+                <button
+                  type="button"
+                  aria-pressed={viewMode === "table"}
+                  onClick={() => {
+                    setViewMode((prev) =>
+                      prev === "table" ? "grid" : "table",
+                    );
+                    setPlatform("all");
+                  }}
+                  className={`inline-flex h-9 items-center gap-1.5 rounded-full border px-3 text-xs font-bold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#e11d68] sm:h-10 sm:gap-2 sm:px-4 sm:text-sm ${
+                    viewMode === "table"
+                      ? "border-white bg-[#FCE4EC] text-[#4a352c] shadow-[0_6px_16px_-4px_rgba(244,143,177,0.55)]"
+                      : "border-[#F8BBD0]/60 bg-[#FFFDF9] text-[#6d5246] hover:bg-[#FCE4EC]/50 hover:text-[#4a352c]"
+                  }`}
                 >
-                  {visibleGames.length} รายการ
-                </p>
+                  <Table2 className="h-3.5 w-3.5 shrink-0 text-[#d81b60] sm:h-4 sm:w-4" />
+                  <span>ตาราง</span>
+                </button>
+
+                {/* 3. iOS */}
+                <button
+                  type="button"
+                  aria-pressed={viewMode === "grid" && platform === "ios"}
+                  onClick={() => {
+                    setViewMode("grid");
+                    setPlatform("ios");
+                  }}
+                  className={`inline-flex h-9 items-center gap-1.5 rounded-full border px-3 text-xs font-bold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#e11d68] sm:h-10 sm:gap-2 sm:px-4 sm:text-sm ${
+                    viewMode === "grid" && platform === "ios"
+                      ? "border-white bg-[#FCE4EC] text-[#4a352c] shadow-[0_6px_16px_-4px_rgba(244,143,177,0.55)]"
+                      : "border-[#F8BBD0]/60 bg-[#FFFDF9] text-[#6d5246] hover:bg-[#FCE4EC]/50 hover:text-[#4a352c]"
+                  }`}
+                >
+                  <AppleIcon className="h-3.5 w-3.5 shrink-0 text-[#d81b60] sm:h-4 sm:w-4" />
+                  <span>iOS</span>
+                </button>
+
+                {/* 4. Android */}
+                <button
+                  type="button"
+                  aria-pressed={viewMode === "grid" && platform === "android"}
+                  onClick={() => {
+                    setViewMode("grid");
+                    setPlatform("android");
+                  }}
+                  className={`inline-flex h-9 items-center gap-1.5 rounded-full border px-3 text-xs font-bold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#e11d68] sm:h-10 sm:gap-2 sm:px-4 sm:text-sm ${
+                    viewMode === "grid" && platform === "android"
+                      ? "border-white bg-[#FCE4EC] text-[#4a352c] shadow-[0_6px_16px_-4px_rgba(244,143,177,0.55)]"
+                      : "border-[#F8BBD0]/60 bg-[#FFFDF9] text-[#6d5246] hover:bg-[#FCE4EC]/50 hover:text-[#4a352c]"
+                  }`}
+                >
+                  <AndroidIcon className="h-3.5 w-3.5 shrink-0 text-[#d81b60] sm:h-4 sm:w-4" />
+                  <span>Android</span>
+                </button>
               </div>
+
+              <p
+                aria-live="polite"
+                className="shrink-0 rounded-full border border-[#F8BBD0]/60 bg-white px-2.5 py-1 text-xs font-bold text-[#6d5246] tabular-nums sm:px-3"
+              >
+                {visibleGames.length} รายการ
+              </p>
             </div>
           </div>
         </section>

@@ -10,6 +10,7 @@ import {
 import { BottomNav } from "@/components/storefront/BottomNav";
 import { PaymentAccountSection } from "@/components/storefront/PaymentAccountSection";
 import { ContactAdminSection } from "@/components/storefront/ContactAdminSection";
+import { RateBoardClient } from "@/components/storefront/RateBoardClient";
 
 const sampleGames: GameRate[] = [
   {
@@ -207,5 +208,18 @@ describe("BottomNav, PaymentAccountSection, and ContactAdminSection", () => {
     expect(contactHtml).toContain("Pat Pattida");
     expect(contactHtml).toContain("Thitima Nongfo");
     expect(contactHtml).toContain("@709qwuff");
+  });
+
+  it("renders the 4 concise filters: ทั้งหมด, ตาราง, iOS, and Android", () => {
+    const html = renderToStaticMarkup(
+      React.createElement(RateBoardClient, {
+        initialGames: sampleGames,
+        initialSection: "rates",
+      }),
+    );
+    expect(html).toContain("ทั้งหมด");
+    expect(html).toContain("ตาราง");
+    expect(html).toContain("iOS");
+    expect(html).toContain("Android");
   });
 });

@@ -9,7 +9,7 @@ export interface PlatformSwitcherProps {
   counts: Record<FilterPlatform, number>;
 }
 
-function AppleIcon({ className }: { className?: string }) {
+export function AppleIcon({ className }: { className?: string }) {
   return (
     <svg
       viewBox="0 0 24 24"
@@ -22,7 +22,7 @@ function AppleIcon({ className }: { className?: string }) {
   );
 }
 
-function AndroidIcon({ className }: { className?: string }) {
+export function AndroidIcon({ className }: { className?: string }) {
   return (
     <svg
       viewBox="0 0 24 24"
