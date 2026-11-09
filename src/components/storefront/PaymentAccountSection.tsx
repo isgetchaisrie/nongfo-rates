@@ -3,14 +3,21 @@
 import React, { useState } from "react";
 import { CatMascot } from "@/components/mascot/CatMascot";
 import { KawaiiCatSprite } from "@/components/mascot/KawaiiCatPlayground";
+import { DEFAULT_STORE_SETTINGS, type StoreSettings } from "@/types/settings";
 
 export interface PaymentAccountSectionProps {
   onExploreRates?: () => void;
+  settings?: StoreSettings;
 }
 
 export function PaymentAccountSection({
   onExploreRates,
+  settings,
 }: PaymentAccountSectionProps) {
+  const currentSettings = { ...DEFAULT_STORE_SETTINGS, ...settings };
+  const kbankRaw = currentSettings.kbankNumber.replace(/\D/g, "");
+  const trueRaw = currentSettings.trueNumber.replace(/\D/g, "");
+
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [copiedKey, setCopiedKey] = useState<"kbank" | "true" | "fb" | null>(
     null
@@ -53,7 +60,7 @@ export function PaymentAccountSection({
   };
 
   const handleDownloadQr = async () => {
-    const qrUrl = "/payment-qr.jpg";
+    const qrUrl = currentSettings.qrImage || "/payment-qr.jpg";
     try {
       const response = await fetch(qrUrl);
       const blob = await response.blob();
@@ -61,7 +68,7 @@ export function PaymentAccountSection({
       const a = document.createElement("a");
       a.style.display = "none";
       a.href = url;
-      a.download = "pattida-payment-qr.jpg";
+      a.download = "payment-qr.jpg";
       document.body.appendChild(a);
       a.click();
       window.URL.revokeObjectURL(url);
@@ -283,12 +290,12 @@ export function PaymentAccountSection({
           <div className="relative overflow-hidden rounded-[28px] border-4 border-white bg-white shadow-xs">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="/payment-qr.jpg"
+              src={currentSettings.qrImage || "/payment-qr.jpg"}
               onError={(e) => {
                 e.currentTarget.src =
                   "https://i.postimg.cc/85TRr9bv/line-oa-chat-261013-123006.jpg";
               }}
-              alt="QR ชำระเงิน บัญชี Pattida (ภัทรธิดา)"
+              alt={`QR ชำระเงิน บัญชี ${currentSettings.accountName}`}
               className="h-auto w-full object-cover"
             />
           </div>
@@ -338,7 +345,7 @@ export function PaymentAccountSection({
               <br />
               <span>ชื่อบัญชี </span>
               <span className="relative inline-block rounded-lg border border-[#F8BBD0]/40 bg-[#FCE4EC] px-2.5 py-0.5 font-bold text-[#4a352c]">
-                ภัทรธิดา
+                {currentSettings.accountName}
                 <svg
                   className="anim-float-3 absolute -top-2 -right-2.5 h-4 w-4 text-[#F8BBD0]"
                   fill="currentColor"
@@ -370,7 +377,11 @@ export function PaymentAccountSection({
             <button
               type="button"
               onClick={() =>
-                handleCopy("1518830984", "kbank", "คัดลอกเลขบัญชีกสิกรแล้ว")
+                handleCopy(
+                  kbankRaw,
+                  "kbank",
+                  `คัดลอกเลขบัญชีกสิกร ${currentSettings.kbankNumber} แล้ว`
+                )
               }
               className="group relative w-full cursor-pointer overflow-hidden rounded-[24px] border border-white bg-gradient-to-br from-[#E8F0FE] to-[#E0F2F1] p-5 text-left shadow-md transition-all hover:-translate-y-0.5 active:scale-98"
             >
@@ -445,10 +456,10 @@ export function PaymentAccountSection({
                 </div>
                 <div className="mt-1">
                   <div className="mb-1 text-xs font-bold text-[#6d5246]">
-                    กสิกร (ภัทรธิดา)
+                    กสิกร ({currentSettings.accountName})
                   </div>
                   <div className="font-[var(--font-fredoka)] text-2xl font-bold tracking-widest text-[#4a352c] tabular-nums">
-                    151-8-83098-4
+                    {currentSettings.kbankNumber}
                   </div>
                 </div>
               </div>
@@ -458,7 +469,11 @@ export function PaymentAccountSection({
             <button
               type="button"
               onClick={() =>
-                handleCopy("0960180967", "true", "คัดลอกเบอร์วอเลทแล้ว")
+                handleCopy(
+                  trueRaw,
+                  "true",
+                  `คัดลอกเบอร์วอเลท ${currentSettings.trueNumber} แล้ว`
+                )
               }
               className="group relative w-full cursor-pointer overflow-hidden rounded-[24px] border border-white bg-gradient-to-br from-[#FFFDE7] to-[#FCE4EC] p-5 text-left shadow-md transition-all hover:-translate-y-0.5 active:scale-98"
             >
@@ -533,10 +548,10 @@ export function PaymentAccountSection({
                 </div>
                 <div className="mt-1">
                   <div className="mb-1 text-xs font-bold text-[#6d5246]">
-                    วอเลท (ภัทรธิดา)
+                    วอเลท ({currentSettings.accountName})
                   </div>
                   <div className="font-[var(--font-fredoka)] text-2xl font-bold tracking-widest text-[#4a352c] tabular-nums">
-                    096-018-0967
+                    {currentSettings.trueNumber}
                   </div>
                 </div>
               </div>
@@ -572,7 +587,7 @@ export function PaymentAccountSection({
                     type="button"
                     onClick={() =>
                       handleCopy(
-                        "ยินยอมซื้อขายFb Pat Pattida",
+                        currentSettings.slipNote,
                         "fb",
                         "คัดลอกข้อความโน้ตสลิปแล้วนะคะ"
                       )
@@ -584,7 +599,7 @@ export function PaymentAccountSection({
                     <span className="text-xs font-bold text-[#4a352c]">
                       {copiedKey === "fb"
                         ? '"คัดลอกสำเร็จ!"'
-                        : '"ยินยอมซื้อขายFb Pat Pattida"'}
+                        : `"${currentSettings.slipNote}"`}
                     </span>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"

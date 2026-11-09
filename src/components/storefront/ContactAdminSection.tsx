@@ -3,6 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { KawaiiCatSprite } from "@/components/mascot/KawaiiCatPlayground";
+import { DEFAULT_STORE_SETTINGS, type StoreSettings } from "@/types/settings";
 
 function FacebookIcon({ className }: { className?: string }) {
   return (
@@ -30,7 +31,13 @@ function LineIcon({ className }: { className?: string }) {
   );
 }
 
-export function ContactAdminSection() {
+export interface ContactAdminSectionProps {
+  settings?: StoreSettings;
+}
+
+export function ContactAdminSection({ settings }: ContactAdminSectionProps) {
+  const currentSettings = { ...DEFAULT_STORE_SETTINGS, ...settings };
+
   return (
     <section
       aria-label="โปรไฟล์ติดต่อแอดมิน Nongfo"
@@ -65,8 +72,8 @@ export function ContactAdminSection() {
               className="absolute -inset-2 rounded-full bg-gradient-to-tr from-[#F8BBD0] via-[#FFFDE7] to-[#FCE4EC] opacity-80 blur-xs"
             />
             <img
-              src="/admin-profile.jpg"
-              alt="แอดมิน Nongfo"
+              src={currentSettings.adminAvatar || "/admin-profile.jpg"}
+              alt={`แอดมิน ${currentSettings.adminName}`}
               className="relative h-28 w-28 rounded-full border-4 border-white object-cover shadow-[0_8px_24px_rgba(244,143,177,0.45)] sm:h-32 sm:w-32"
             />
 
@@ -79,7 +86,7 @@ export function ContactAdminSection() {
 
         {/* Profile Name & Title */}
         <h1 className="font-[var(--font-mali)] text-2xl font-bold tracking-tight text-[#4a352c] sm:text-3xl">
-          Nongfo
+          {currentSettings.adminName}
         </h1>
         <div className="mt-1 flex items-center justify-center gap-1.5">
           <span className="inline-flex items-center gap-1 rounded-full border border-[#F8BBD0] bg-[#FCE4EC] px-3 py-0.5 text-xs font-bold text-[#b81452] shadow-2xs">
@@ -99,7 +106,7 @@ export function ContactAdminSection() {
         <div className="mt-5 space-y-3">
           {/* Button 1: Facebook Thitima Nongfo */}
           <a
-            href="https://www.facebook.com/share/1BmFBDETNn/"
+            href={currentSettings.facebookUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="group relative flex w-full cursor-pointer items-center justify-between gap-3 rounded-2xl border-2 border-white bg-gradient-to-r from-[#1877F2] to-[#3b5998] p-3.5 text-left text-white shadow-[0_6px_20px_rgba(24,119,242,0.3)] transition-all hover:scale-[1.02] hover:shadow-[0_8px_24px_rgba(24,119,242,0.4)] active:scale-98"
@@ -113,7 +120,7 @@ export function ContactAdminSection() {
                   Facebook แอดมิน (คลิกทักแชท)
                 </div>
                 <div className="font-[var(--font-mali)] text-base font-bold text-white drop-shadow-xs">
-                  Thitima Nongfo
+                  {currentSettings.facebookName}
                 </div>
               </div>
             </div>
@@ -128,7 +135,7 @@ export function ContactAdminSection() {
 
           {/* Button 2: LINE Official lin.ee */}
           <a
-            href="https://lin.ee/T8apadZU"
+            href={currentSettings.lineUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="group relative flex w-full cursor-pointer items-center justify-between gap-3 rounded-2xl border-2 border-white bg-gradient-to-r from-[#06C755] to-[#00B900] p-3.5 text-left text-white shadow-[0_6px_20px_rgba(6,199,85,0.3)] transition-all hover:scale-[1.02] hover:shadow-[0_8px_24px_rgba(6,199,85,0.4)] active:scale-98"
@@ -142,7 +149,7 @@ export function ContactAdminSection() {
                   LINE Official (คลิกเพิ่มเพื่อน)
                 </div>
                 <div className="font-[var(--font-mali)] text-base font-bold text-white drop-shadow-xs">
-                  Add LINE friend (@709qwuff)
+                  {currentSettings.lineName}
                 </div>
               </div>
             </div>

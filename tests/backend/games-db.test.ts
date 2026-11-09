@@ -14,6 +14,8 @@ import {
   resetDbForTests,
   resolveMongoDbName,
   updateGame,
+  getStoreSettings,
+  updateStoreSettings,
 } from "@/lib/db";
 import * as auth from "@/lib/auth";
 import { GET as getGamesRoute, POST as postGamesRoute } from "@/app/api/games/route";
@@ -21,6 +23,10 @@ import {
   DELETE as deleteGameByIdRoute,
   PUT as putGameByIdRoute,
 } from "@/app/api/games/[id]/route";
+import {
+  GET as getSettingsRoute,
+  PUT as putSettingsRoute,
+} from "@/app/api/settings/route";
 
 describe("validateGameInput", () => {
   it("validates a game available on both platforms and defaults category to game", () => {
@@ -314,5 +320,55 @@ describe("SQLite games database and seed data", () => {
     expect(resolveMongoDbName("NuggetKub-Shop")).toBe("nongfo_rates");
     expect(resolveMongoDbName("nuggetkub_prod")).toBe("nongfo_rates");
     expect(resolveMongoDbName("nongfo_rates")).toBe("nongfo_rates");
+  });
+
+  it("retrieves and updates store settings with default fallback and route auth protection", async () => {
+    // 1. Initially getStoreSettings returns DEFAULT_STORE_SETTINGS
+    const initial = getStoreSettings();
+    expect(initial.accountName).toBe("ภัทรธิดา");
+    expect(initial.kbankNumber).toBe("151-8-83098-4");
+    expect(initial.trueNumber).toBe("096-018-0967");
+    expect(initial.adminName).toBe("Nongfo");
+
+    // 2. GET /api/settings is public
+    const getRes = await getSettingsRoute();
+    expect(getRes.status).toBe(200);
+    const getBody = (await getRes.json()) as { settings: typeof initial };
+    expect(getBody.settings.accountName).toBe("ภัทรธิดา");
+
+    // 3. PUT /api/settings requires admin auth
+    vi.spyOn(auth, "isAdminAuthenticated").mockResolvedValueOnce(false);
+    const unauthPut = await putSettingsRoute(
+      new Request("http://localhost:3000/api/settings", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ accountName: "น้องโฟ" }),
+      })
+    );
+    expect(unauthPut.status).toBe(401);
+
+    // 4. Authenticated admin can update settings
+    vi.spyOn(auth, "isAdminAuthenticated").mockResolvedValueOnce(true);
+    const authPut = await putSettingsRoute(
+      new Request("http://localhost:3000/api/settings", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          accountName: "ทิธิมา น้องโฟ",
+          kbankNumber: "999-8-77777-1",
+          slipNote: "ยินยอมซื้อขายกับแอดมินน้องโฟ",
+        }),
+      })
+    );
+    expect(authPut.status).toBe(200);
+    const updatedBody = (await authPut.json()) as { settings: typeof initial };
+    expect(updatedBody.settings.accountName).toBe("ทิธิมา น้องโฟ");
+    expect(updatedBody.settings.kbankNumber).toBe("999-8-77777-1");
+    expect(updatedBody.settings.trueNumber).toBe("096-018-0967"); // preserved
+    expect(updatedBody.settings.slipNote).toBe("ยินยอมซื้อขายกับแอดมินน้องโฟ");
+
+    // 5. Subsequent getStoreSettings reflects the updated values
+    const current = getStoreSettings();
+    expect(current.accountName).toBe("ทิธิมา น้องโฟ");
   });
 });

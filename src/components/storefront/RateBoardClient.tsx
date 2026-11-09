@@ -25,16 +25,25 @@ import { ProductRateCard } from "./ProductRateCard";
 import { BottomNav, type StorefrontSection } from "./BottomNav";
 import { PaymentAccountSection } from "./PaymentAccountSection";
 import { ContactAdminSection } from "./ContactAdminSection";
+import {
+  DEFAULT_STORE_SETTINGS,
+  type StoreSettings,
+} from "@/types/settings";
 
 export interface RateBoardClientProps {
   initialGames: GameRate[];
   initialSection?: StorefrontSection;
+  initialSettings?: StoreSettings;
 }
 
 export function RateBoardClient({
   initialGames,
   initialSection = "account",
+  initialSettings,
 }: RateBoardClientProps) {
+  const [settings] = useState<StoreSettings>(
+    initialSettings ?? DEFAULT_STORE_SETTINGS,
+  );
   const [activeSection, setActiveSection] =
     useState<StorefrontSection>(initialSection);
   const [query, setQuery] = useState("");
@@ -138,6 +147,7 @@ export function RateBoardClient({
       <main className="relative z-10 mx-auto max-w-7xl px-3 pt-3 pb-40 sm:px-6 sm:pt-8 lg:px-8 lg:pb-28">
         {activeSection === "account" && (
           <PaymentAccountSection
+            settings={settings}
             onExploreRates={() => {
               setActiveSection("rates");
               setCategory("all");
@@ -146,7 +156,9 @@ export function RateBoardClient({
           />
         )}
 
-        {activeSection === "contact" && <ContactAdminSection />}
+        {activeSection === "contact" && (
+          <ContactAdminSection settings={settings} />
+        )}
 
         {activeSection === "rates" && (
           <>

@@ -20,3 +20,5 @@ tsconfig.tsbuildinfo
 public/uploads/
 .netlify/
 .vercel/
+.vercel
+.env*

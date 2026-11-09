@@ -4,6 +4,7 @@ import path from "node:path";
 import { DatabaseSync } from "node:sqlite";
 import { MongoClient, type Collection, type Db } from "mongodb";
 import type { CategoryType, GameRate, GameRateInput, PlatformType } from "@/types/game";
+import { DEFAULT_STORE_SETTINGS, type StoreSettings } from "@/types/settings";
 
 export const NONGFO_DB_NAME = "nongfo_rates";
 export const NONGFO_GAMES_COLLECTION = "nongfo_games";
@@ -552,6 +553,35 @@ export function setAdminPasswordHash(hashHex: string): void {
   ).run(hashHex);
 }
 
+export function getStoreSettings(): StoreSettings {
+  try {
+    const db = getDb();
+    const row = db
+      .prepare("SELECT value FROM meta WHERE key = 'store_settings'")
+      .get() as { value: string } | undefined;
+    if (!row?.value) {
+      return DEFAULT_STORE_SETTINGS;
+    }
+    return { ...DEFAULT_STORE_SETTINGS, ...JSON.parse(row.value) };
+  } catch {
+    return DEFAULT_STORE_SETTINGS;
+  }
+}
+
+export function updateStoreSettings(patch: Partial<StoreSettings>): StoreSettings {
+  const current = getStoreSettings();
+  const updated: StoreSettings = {
+    ...current,
+    ...patch,
+    updatedAt: new Date().toISOString(),
+  };
+  const db = getDb();
+  db.prepare(
+    "INSERT OR REPLACE INTO meta (key, value) VALUES ('store_settings', ?)"
+  ).run(JSON.stringify(updated));
+  return updated;
+}
+
 export function clearAdminPasswordHash(): void {
   try {
     const db = getDb();
@@ -838,4 +868,41 @@ export async function setAdminPasswordHashAsync(hashHex: string): Promise<void> 
     { $set: { key: "admin_password_sha256", value: hashHex } },
     { upsert: true }
   );
+}
+
+export async function getStoreSettingsAsync(): Promise<StoreSettings> {
+  if (!isMongoEnabled()) {
+    return getStoreSettings();
+  }
+  try {
+    const { meta } = await getMongoCollections();
+    const doc = await meta.findOne({ key: "store_settings" });
+    if (!doc?.value) {
+      return DEFAULT_STORE_SETTINGS;
+    }
+    return { ...DEFAULT_STORE_SETTINGS, ...JSON.parse(doc.value) };
+  } catch {
+    return DEFAULT_STORE_SETTINGS;
+  }
+}
+
+export async function updateStoreSettingsAsync(
+  patch: Partial<StoreSettings>
+): Promise<StoreSettings> {
+  if (!isMongoEnabled()) {
+    return updateStoreSettings(patch);
+  }
+  const current = await getStoreSettingsAsync();
+  const updated: StoreSettings = {
+    ...current,
+    ...patch,
+    updatedAt: new Date().toISOString(),
+  };
+  const { meta } = await getMongoCollections();
+  await meta.updateOne(
+    { key: "store_settings" },
+    { $set: { key: "store_settings", value: JSON.stringify(updated) } },
+    { upsert: true }
+  );
+  return updated;
 }

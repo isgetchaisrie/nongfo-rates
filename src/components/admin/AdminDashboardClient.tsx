@@ -1,47 +1,39 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
+  Camera,
   CheckCircle2,
+  CreditCard,
   ExternalLink,
   Gamepad2,
   KeyRound,
   LayoutGrid,
   Loader2,
   LogOut,
+  MessageCircle,
   Pencil,
   Plus,
+  QrCode,
+  Save,
   Sparkles,
   Trash2,
+  Upload,
+  User,
   X,
 } from "lucide-react";
 import type { CategoryType, GameRate, PlatformType } from "@/types/game";
+import { DEFAULT_STORE_SETTINGS, type StoreSettings } from "@/types/settings";
 import { CatMascot } from "@/components/mascot/CatMascot";
 import { GameFormModal } from "@/components/admin/GameFormModal";
 
+export type AdminTab = "account" | "game" | "app" | "contact";
+
 export interface AdminDashboardClientProps {
   initialGames: GameRate[];
-}
-
-function getCategoryBadge(category: CategoryType): {
-  label: string;
-  className: string;
-  Icon: React.ComponentType<{ className?: string }>;
-} {
-  if (category === "app") {
-    return {
-      label: "แอป",
-      className: "border-[#fbcfe8] bg-[#fff0f6] text-[#be1253]",
-      Icon: Sparkles,
-    };
-  }
-  return {
-    label: "เกม",
-    className: "border-[#ffd6e5] bg-[#fff6f9] text-[#2d1622]",
-    Icon: Gamepad2,
-  };
+  initialSettings?: StoreSettings;
 }
 
 function getPlatformBadge(platform: PlatformType): {
@@ -52,20 +44,17 @@ function getPlatformBadge(platform: PlatformType): {
     case "both":
       return {
         label: "iOS & Android",
-        className:
-          "border-[#ffd6e5] bg-[#fff0f6] text-[#9d174d]",
+        className: "border-[#ffd6e5] bg-[#fff0f6] text-[#9d174d]",
       };
     case "ios":
       return {
         label: "เฉพาะ iOS",
-        className:
-          "border-[#fbcfe8] bg-[#fdf2f8] text-[#831843]",
+        className: "border-[#fbcfe8] bg-[#fdf2f8] text-[#831843]",
       };
     case "android":
       return {
         label: "เฉพาะ Android",
-        className:
-          "border-[#bbf7d0] bg-[#eefbf5] text-[#134e32]",
+        className: "border-[#bbf7d0] bg-[#eefbf5] text-[#134e32]",
       };
   }
 }
@@ -77,18 +66,33 @@ function formatPriceThb(price: number | null): string {
 
 export function AdminDashboardClient({
   initialGames,
+  initialSettings,
 }: AdminDashboardClientProps) {
   const router = useRouter();
+  const [activeTab, setActiveTab] = useState<AdminTab>("account");
   const [games, setGames] = useState<GameRate[]>(initialGames);
-  const [categoryFilter, setCategoryFilter] = useState<"all" | CategoryType>("all");
+  const [settings, setSettings] = useState<StoreSettings>(
+    initialSettings ?? DEFAULT_STORE_SETTINGS,
+  );
+
+  // Modals & form state
   const [modalOpen, setModalOpen] = useState(false);
   const [editingGame, setEditingGame] = useState<GameRate | null>(null);
+  const [defaultCategory, setDefaultCategory] = useState<CategoryType>("game");
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [loggingOut, setLoggingOut] = useState(false);
+  const [savingSettings, setSavingSettings] = useState(false);
+  const [uploadingQr, setUploadingQr] = useState(false);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [feedbackError, setFeedbackError] = useState<string | null>(null);
   const [feedbackSuccess, setFeedbackSuccess] = useState<string | null>(null);
 
+  // File input refs
+  const qrInputRef = useRef<HTMLInputElement | null>(null);
+  const avatarInputRef = useRef<HTMLInputElement | null>(null);
+
+  // Password Modal State
   const [passwordModalOpen, setPasswordModalOpen] = useState(false);
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -109,18 +113,25 @@ export function AdminDashboardClient({
     return { all: games.length, game: gameCount, app: appCount };
   }, [games]);
 
-  const filteredGames = useMemo(() => {
-    if (categoryFilter === "all") return games;
-    return games.filter((g) => g.category === categoryFilter);
-  }, [games, categoryFilter]);
+  const displayedGames = useMemo(() => {
+    if (activeTab === "game") {
+      return games.filter((g) => g.category === "game");
+    }
+    if (activeTab === "app") {
+      return games.filter((g) => g.category === "app");
+    }
+    return games;
+  }, [games, activeTab]);
 
-  function openAddModal() {
+  function openAddModal(cat: CategoryType) {
     setEditingGame(null);
+    setDefaultCategory(cat);
     setModalOpen(true);
   }
 
   function openEditModal(game: GameRate) {
     setEditingGame(game);
+    setDefaultCategory(game.category);
     setModalOpen(true);
   }
 
@@ -147,7 +158,7 @@ export function AdminDashboardClient({
       });
       if (!res.ok) {
         const body = (await res.json().catch(() => ({}))) as { error?: string };
-        setFeedbackError(body.error ?? "ลบรายการเกมไม่สำเร็จ กรุณาลองใหม่");
+        setFeedbackError(body.error ?? "ลบรายการไม่สำเร็จ กรุณาลองใหม่");
         return;
       }
       setGames((prev) => prev.filter((item) => item.id !== id));
@@ -157,6 +168,121 @@ export function AdminDashboardClient({
       setFeedbackError("เกิดข้อผิดพลาดในการเชื่อมต่อขณะลบรายการ");
     } finally {
       setDeletingId(null);
+    }
+  }
+
+  async function handleSaveSettingsSubmit(e?: React.FormEvent) {
+    if (e) e.preventDefault();
+    if (savingSettings) return;
+
+    setFeedbackError(null);
+    setSavingSettings(true);
+
+    try {
+      const res = await fetch("/api/settings", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(settings),
+      });
+
+      const body = (await res.json().catch(() => ({}))) as {
+        settings?: StoreSettings;
+        error?: string;
+        message?: string;
+      };
+
+      if (!res.ok) {
+        setFeedbackError(body.error ?? "บันทึกการตั้งค่าไม่สำเร็จ");
+        return;
+      }
+
+      if (body.settings) {
+        setSettings(body.settings);
+      }
+      setFeedbackSuccess("บันทึกการตั้งค่าเรียบร้อยแล้ว หน้าร้านจะอัปเดตทันที!");
+      router.refresh();
+    } catch {
+      setFeedbackError("เกิดข้อผิดพลาดในการเชื่อมต่อ กรุณาลองใหม่อีกครั้ง");
+    } finally {
+      setSavingSettings(false);
+    }
+  }
+
+  async function handleQrUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setFeedbackError(null);
+    setUploadingQr(true);
+
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      const body = (await res.json().catch(() => ({}))) as {
+        url?: string;
+        error?: string;
+      };
+
+      if (!res.ok || !body.url) {
+        setFeedbackError(
+          body.error ??
+            "อัปโหลดรูป QR Code ไม่สำเร็จ กรุณาเลือกไฟล์ภาพ PNG, JPG หรือ WEBP",
+        );
+        return;
+      }
+
+      setSettings((prev) => ({ ...prev, qrImage: body.url! }));
+      setFeedbackSuccess("อัปโหลดรูป QR Code เรียบร้อยแล้ว อย่าลืมกดบันทึกน้า");
+    } catch {
+      setFeedbackError("เกิดข้อผิดพลาดในการอัปโหลดรูป QR Code");
+    } finally {
+      setUploadingQr(false);
+      if (qrInputRef.current) qrInputRef.current.value = "";
+    }
+  }
+
+  async function handleAvatarUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setFeedbackError(null);
+    setUploadingAvatar(true);
+
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      const body = (await res.json().catch(() => ({}))) as {
+        url?: string;
+        error?: string;
+      };
+
+      if (!res.ok || !body.url) {
+        setFeedbackError(
+          body.error ??
+            "อัปโหลดรูปโปรไฟล์ไม่สำเร็จ กรุณาเลือกไฟล์ภาพ PNG, JPG หรือ WEBP",
+        );
+        return;
+      }
+
+      setSettings((prev) => ({ ...prev, adminAvatar: body.url! }));
+      setFeedbackSuccess("อัปโหลดรูปโปรไฟล์เรียบร้อยแล้ว อย่าลืมกดบันทึกน้า");
+    } catch {
+      setFeedbackError("เกิดข้อผิดพลาดในการอัปโหลดรูปโปรไฟล์");
+    } finally {
+      setUploadingAvatar(false);
+      if (avatarInputRef.current) avatarInputRef.current.value = "";
     }
   }
 
@@ -170,14 +296,6 @@ export function AdminDashboardClient({
     } finally {
       setLoggingOut(false);
     }
-  }
-
-  function openPasswordModal() {
-    setCurrentPassword("");
-    setNewPassword("");
-    setConfirmPassword("");
-    setPasswordError(null);
-    setPasswordModalOpen(true);
   }
 
   async function handlePasswordSubmit(e: React.FormEvent) {
@@ -224,93 +342,89 @@ export function AdminDashboardClient({
 
   return (
     <div className="bg-pastel-canvas min-h-screen text-[#4a352c]">
-      <header className="border-b border-[#F8BBD0]/60 bg-white/90 backdrop-blur-md">
-        <div className="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-6">
-          <div className="flex items-center gap-4">
-            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border-2 border-white bg-[#FCE4EC] p-1.5 shadow-xs">
+      {/* Top Header */}
+      <header className="border-b border-[#F8BBD0]/60 bg-white/90 backdrop-blur-md sticky top-0 z-30">
+        <div className="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+          <div className="flex items-center gap-3.5">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border-2 border-white bg-[#FCE4EC] p-1 shadow-xs">
               <CatMascot
                 variant="admin"
-                className="h-11 w-11"
+                className="h-10 w-10"
                 label="มาสคอตแมวแอดมิน Nongfo"
               />
             </div>
             <div>
-              <h1
-                className="text-xl font-bold text-[#4a352c] sm:text-2xl"
-                style={{ fontFamily: "var(--font-mali), sans-serif" }}
-              >
-                จัดการเรทราคาเกมและแอป (Admin)
-              </h1>
-              <p className="mt-0.5 text-sm font-medium text-[#6d5246]">
-                รายการทั้งหมด{" "}
-                <span className="font-bold tabular-nums text-[#4a352c]">
-                  {counts.all}
-                </span>{" "}
-                รายการ (เกม{" "}
-                <span className="font-bold tabular-nums text-[#4a352c]">
-                  {counts.game}
-                </span>{" "}
-                · แอป{" "}
-                <span className="font-bold tabular-nums text-[#b81452]">
-                  {counts.app}
+              <div className="flex items-center gap-2">
+                <h1
+                  className="text-lg font-bold text-[#4a352c] sm:text-xl"
+                  style={{ fontFamily: "var(--font-mali), sans-serif" }}
+                >
+                  ระบบจัดการร้าน Nongfo Rates (Admin)
+                </h1>
+                <span className="rounded-full border border-[#F8BBD0] bg-[#FFFDE7] px-2.5 py-0.5 text-xs font-bold text-[#b81452]">
+                  {activeTab === "account" && "บัญชี"}
+                  {activeTab === "game" && `หมวดเกม (${counts.game})`}
+                  {activeTab === "app" && `หมวดแอป (${counts.app})`}
+                  {activeTab === "contact" && "ติดต่อแอดมิน"}
                 </span>
-                )
+              </div>
+              <p className="text-xs font-medium text-[#6d5246]">
+                เปลี่ยนเลขบัญชี รูปโปรไฟล์ ข้อมูลติดต่อ และจัดการเรทราคาสอดคล้องกับหน้าร้าน
               </p>
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2.5">
+          <div className="flex flex-wrap items-center gap-2">
             <Link
               href="/"
-              className="inline-flex items-center gap-1.5 rounded-full border border-[#F8BBD0] bg-white px-4 py-2 text-sm font-bold text-[#4a352c] transition-colors hover:bg-[#FCE4EC]"
+              target="_blank"
+              className="inline-flex items-center gap-1.5 rounded-full border border-[#F8BBD0] bg-white px-3.5 py-1.5 text-xs font-bold text-[#4a352c] transition-colors hover:bg-[#FCE4EC]"
             >
-              <ExternalLink className="h-4 w-4 text-[#b81452]" />
-              <span>ดูหน้าเว็บจริง</span>
+              <ExternalLink className="h-3.5 w-3.5 text-[#b81452]" />
+              <span>ดูหน้าร้านจริง</span>
             </Link>
 
             <button
               type="button"
-              onClick={openAddModal}
-              className="inline-flex items-center gap-1.5 rounded-full border border-white bg-[#FCE4EC] px-4 py-2 text-sm font-bold text-[#4a352c] shadow-sm transition-colors hover:bg-[#F8BBD0]"
+              onClick={() => {
+                setCurrentPassword("");
+                setNewPassword("");
+                setConfirmPassword("");
+                setPasswordError(null);
+                setPasswordModalOpen(true);
+              }}
+              className="inline-flex items-center gap-1.5 rounded-full border border-[#F8BBD0] bg-[#FFFDE7] px-3.5 py-1.5 text-xs font-bold text-[#4a352c] shadow-xs transition-colors hover:bg-[#FCE4EC]"
             >
-              <Plus className="h-4 w-4 text-[#b81452]" />
-              <span>+ เพิ่มเกม / แอปใหม่</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={openPasswordModal}
-              className="inline-flex items-center gap-1.5 rounded-full border border-[#F8BBD0] bg-[#FFFDE7] px-4 py-2 text-sm font-bold text-[#4a352c] shadow-xs transition-colors hover:bg-[#FCE4EC]"
-            >
-              <KeyRound className="h-4 w-4 text-[#b81452]" />
-              <span>เปลี่ยนรหัสผ่าน</span>
+              <KeyRound className="h-3.5 w-3.5 text-[#b81452]" />
+              <span>รหัสผ่าน</span>
             </button>
 
             <button
               type="button"
               onClick={handleLogout}
               disabled={loggingOut}
-              className="inline-flex items-center gap-1.5 rounded-full border border-[#F8BBD0]/60 bg-white px-4 py-2 text-sm font-bold text-[#6d5246] transition-colors hover:bg-[#FCE4EC]/50 hover:text-[#4a352c] disabled:opacity-60"
+              className="inline-flex items-center gap-1.5 rounded-full border border-[#F8BBD0]/60 bg-white px-3.5 py-1.5 text-xs font-bold text-[#6d5246] transition-colors hover:bg-[#FCE4EC]/50 hover:text-[#4a352c] disabled:opacity-60"
             >
               {loggingOut ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
+                <Loader2 className="h-3.5 w-3.5 animate-spin" />
               ) : (
-                <LogOut className="h-4 w-4" />
+                <LogOut className="h-3.5 w-3.5" />
               )}
-              <span>ออกจากระบบ</span>
+              <span>ออก</span>
             </button>
           </div>
         </div>
       </header>
 
-      <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
+      {/* Main Content Area (extra bottom padding for bottom nav) */}
+      <main className="mx-auto max-w-6xl px-4 pt-6 pb-40 sm:px-6">
         {feedbackSuccess && (
           <div
             role="status"
-            className="mb-6 flex items-center justify-between gap-3 rounded-2xl border border-[#b8f0d6] bg-[#eefbf5] px-4 py-3 text-sm font-bold text-[#0f5137]"
+            className="mb-6 flex items-center justify-between gap-3 rounded-2xl border border-[#b8f0d6] bg-[#eefbf5] px-4 py-3 text-sm font-bold text-[#0f5137] shadow-xs animate-in fade-in"
           >
             <div className="flex items-center gap-2">
-              <CheckCircle2 className="h-4 w-4 shrink-0" />
+              <CheckCircle2 className="h-5 w-5 shrink-0" />
               <span>{feedbackSuccess}</span>
             </div>
             <button
@@ -327,364 +441,829 @@ export function AdminDashboardClient({
         {feedbackError && (
           <div
             role="alert"
-            className="mb-6 rounded-2xl border border-[#f43f5e]/30 bg-[#fff1f2] px-4 py-3 text-sm font-medium text-[#9f1239]"
+            className="mb-6 rounded-2xl border border-[#f43f5e]/30 bg-[#fff1f2] px-4 py-3 text-sm font-medium text-[#9f1239] shadow-xs animate-in fade-in"
           >
             {feedbackError}
           </div>
         )}
 
-        {games.length > 0 && (
-          <div
-            role="group"
-            aria-label="กรองรายการแอดมินตามหมวดหมู่"
-            className="mb-5 inline-flex flex-wrap items-center gap-2 rounded-2xl border border-[#ffd6e5] bg-white p-1.5"
-          >
-            {(
-              [
-                { id: "all", label: "ทั้งหมด", count: counts.all, Icon: LayoutGrid },
-                { id: "game", label: "หมวดเกม", count: counts.game, Icon: Gamepad2 },
-                { id: "app", label: "หมวดแอป", count: counts.app, Icon: Sparkles },
-              ] as const
-            ).map(({ id, label, count, Icon }) => {
-              const active = categoryFilter === id;
-              return (
-                <button
-                  key={id}
-                  type="button"
-                  aria-pressed={active}
-                  onClick={() => setCategoryFilter(id)}
-                  className={`inline-flex items-center gap-2 rounded-xl px-3.5 py-2 text-xs font-semibold transition-colors sm:text-sm ${
-                    active
-                      ? "bg-[#2d1622] text-white"
-                      : "text-[#6e485b] hover:bg-[#fff0f6] hover:text-[#2d1622]"
-                  }`}
+        {/* ========================================================= */}
+        {/* TAB 1: บัญชี (Payment Account Settings)                  */}
+        {/* ========================================================= */}
+        {activeTab === "account" && (
+          <div className="space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+              <div>
+                <h2
+                  className="text-xl font-bold text-[#4a352c]"
+                  style={{ fontFamily: "var(--font-mali), sans-serif" }}
                 >
-                  <Icon className="h-3.5 w-3.5 shrink-0" />
-                  <span>{label}</span>
-                  <span
-                    className={`inline-flex min-w-5 items-center justify-center rounded-full px-1.5 py-0.5 text-xs font-bold tabular-nums ${
-                      active
-                        ? "bg-white/20 text-white"
-                        : "bg-[#fff0f6] text-[#be1253]"
-                    }`}
+                  💳 จัดการข้อมูลบัญชีรับเงิน & โน้ตสลิป
+                </h2>
+                <p className="text-xs font-medium text-[#6d5246]">
+                  แก้ไขเลขบัญชีกสิกร, TrueMoney Wallet, ข้อความโน้ตสลิป และอัปโหลดรูป QR Code รับเงิน
+                </p>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => handleSaveSettingsSubmit()}
+                disabled={savingSettings}
+                className="inline-flex items-center justify-center gap-2 rounded-full border border-white bg-[#FCE4EC] px-6 py-2.5 text-sm font-bold text-[#b81452] shadow-md transition-all hover:bg-[#F8BBD0] active:scale-95 disabled:opacity-60 cursor-pointer"
+              >
+                {savingSettings ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Save className="h-4 w-4" />
+                )}
+                <span>บันทึกข้อมูลบัญชี</span>
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
+              {/* Form Column */}
+              <div className="lg:col-span-7 space-y-5 rounded-[28px] border border-white bg-white/90 p-5 sm:p-7 shadow-md">
+                {/* QR Code Upload */}
+                <div>
+                  <label className="block text-xs font-bold text-[#4a352c] mb-1.5">
+                    รูปภาพ QR Code สแกนจ่ายเงิน
+                  </label>
+                  <div className="flex items-center gap-4">
+                    <div className="relative h-28 w-28 shrink-0 overflow-hidden rounded-2xl border-2 border-[#F8BBD0] bg-white p-1 shadow-inner">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={settings.qrImage}
+                        alt="QR Code ปัจจุบัน"
+                        className="h-full w-full object-contain"
+                      />
+                    </div>
+
+                    <div className="flex-1 space-y-2">
+                      <input
+                        type="file"
+                        ref={qrInputRef}
+                        onChange={handleQrUpload}
+                        accept="image/png,image/jpeg,image/webp"
+                        className="hidden"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => qrInputRef.current?.click()}
+                        disabled={uploadingQr}
+                        className="inline-flex items-center gap-2 rounded-full border border-[#F8BBD0] bg-[#FFFDE7] px-4 py-2 text-xs font-bold text-[#4a352c] shadow-xs transition-all hover:bg-[#FCE4EC] active:scale-95 disabled:opacity-60 cursor-pointer"
+                      >
+                        {uploadingQr ? (
+                          <Loader2 className="h-4 w-4 animate-spin text-[#b81452]" />
+                        ) : (
+                          <Upload className="h-4 w-4 text-[#b81452]" />
+                        )}
+                        <span>{uploadingQr ? "กำลังอัปโหลด..." : "เปลี่ยนรูป QR Code"}</span>
+                      </button>
+                      <p className="text-[11px] text-[#84685b]">
+                        รองรับ PNG, JPG หรือ WEBP (แนะนำรูป QR จัตุรัสคมชัด)
+                      </p>
+                      <input
+                        type="text"
+                        value={settings.qrImage}
+                        onChange={(e) =>
+                          setSettings((prev) => ({
+                            ...prev,
+                            qrImage: e.target.value,
+                          }))
+                        }
+                        placeholder="หรือกรอก URL รูป QR Code"
+                        className="w-full rounded-xl border border-[#F8BBD0]/60 bg-white px-3 py-1.5 text-xs text-[#4a352c] focus:outline-none focus:border-[#e11d68]"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Account Name */}
+                <div>
+                  <label className="block text-xs font-bold text-[#4a352c] mb-1">
+                    ชื่อบัญชี (ชื่อ-นามสกุลแม่ค้า)
+                  </label>
+                  <input
+                    type="text"
+                    value={settings.accountName}
+                    onChange={(e) =>
+                      setSettings((prev) => ({
+                        ...prev,
+                        accountName: e.target.value,
+                      }))
+                    }
+                    placeholder="เช่น ภัทรธิดา"
+                    className="w-full rounded-2xl border border-[#F8BBD0] bg-white px-4 py-2.5 text-sm font-semibold text-[#4a352c] focus:border-[#e11d68] focus:outline-none focus:ring-2 focus:ring-[#e11d68]/20"
+                  />
+                </div>
+
+                {/* KBank Number */}
+                <div>
+                  <label className="block text-xs font-bold text-[#4a352c] mb-1">
+                    เลขบัญชีธนาคารกสิกรไทย (K-Plus)
+                  </label>
+                  <input
+                    type="text"
+                    value={settings.kbankNumber}
+                    onChange={(e) =>
+                      setSettings((prev) => ({
+                        ...prev,
+                        kbankNumber: e.target.value,
+                      }))
+                    }
+                    placeholder="เช่น 151-8-83098-4"
+                    className="w-full rounded-2xl border border-[#F8BBD0] bg-white px-4 py-2.5 text-sm font-semibold text-[#4a352c] focus:border-[#e11d68] focus:outline-none focus:ring-2 focus:ring-[#e11d68]/20"
+                  />
+                </div>
+
+                {/* TrueMoney Wallet */}
+                <div>
+                  <label className="block text-xs font-bold text-[#4a352c] mb-1">
+                    เบอร์ TrueMoney Wallet
+                  </label>
+                  <input
+                    type="text"
+                    value={settings.trueNumber}
+                    onChange={(e) =>
+                      setSettings((prev) => ({
+                        ...prev,
+                        trueNumber: e.target.value,
+                      }))
+                    }
+                    placeholder="เช่น 096-018-0967"
+                    className="w-full rounded-2xl border border-[#F8BBD0] bg-white px-4 py-2.5 text-sm font-semibold text-[#4a352c] focus:border-[#e11d68] focus:outline-none focus:ring-2 focus:ring-[#e11d68]/20"
+                  />
+                </div>
+
+                {/* Slip Note */}
+                <div>
+                  <label className="block text-xs font-bold text-[#4a352c] mb-1">
+                    ข้อความโน้ตสลิปที่ลูกค้าต้องใส่
+                  </label>
+                  <input
+                    type="text"
+                    value={settings.slipNote}
+                    onChange={(e) =>
+                      setSettings((prev) => ({
+                        ...prev,
+                        slipNote: e.target.value,
+                      }))
+                    }
+                    placeholder="เช่น ยินยอมซื้อขายFb Pat Pattida"
+                    className="w-full rounded-2xl border border-[#F8BBD0] bg-white px-4 py-2.5 text-sm font-semibold text-[#4a352c] focus:border-[#e11d68] focus:outline-none focus:ring-2 focus:ring-[#e11d68]/20"
+                  />
+                  <p className="mt-1 text-[11px] text-[#84685b]">
+                    ข้อความนี้จะแสดงในกรอบโน้ตสลิปและปุ่มกดคัดลอกข้อความในหน้าบัญชี
+                  </p>
+                </div>
+
+                <div className="pt-2">
+                  <button
+                    type="button"
+                    onClick={() => handleSaveSettingsSubmit()}
+                    disabled={savingSettings}
+                    className="w-full inline-flex items-center justify-center gap-2 rounded-2xl border border-white bg-[#FCE4EC] px-6 py-3 text-sm font-bold text-[#b81452] shadow-md transition-all hover:bg-[#F8BBD0] active:scale-98 disabled:opacity-60 cursor-pointer"
                   >
-                    {count}
+                    {savingSettings ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <Save className="h-4 w-4" />
+                    )}
+                    <span>บันทึกข้อมูลบัญชีทั้งหมด</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Preview Column */}
+              <div className="lg:col-span-5 space-y-4">
+                <div className="rounded-[28px] border border-[#F8BBD0]/60 bg-gradient-to-br from-[#FFF9FB] to-[#FFF5F8] p-5 shadow-sm">
+                  <span className="inline-block rounded-full border border-[#F8BBD0] bg-white px-3 py-1 text-[11px] font-bold text-[#b81452] mb-3">
+                    👀 ตัวอย่างการแสดงผลหน้าร้าน
                   </span>
-                </button>
-              );
-            })}
+
+                  <div className="flex flex-col items-center rounded-2xl border border-white bg-white/80 p-4 text-center shadow-xs">
+                    <div className="relative h-44 w-44 overflow-hidden rounded-xl border border-pink-200 bg-white p-1 shadow-inner">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={settings.qrImage}
+                        alt="QR Preview"
+                        className="h-full w-full object-contain"
+                      />
+                    </div>
+                    <p className="mt-3 text-xs font-bold text-[#4a352c]">
+                      ชื่อบัญชี: <span className="text-[#b81452]">{settings.accountName || "—"}</span>
+                    </p>
+                    <p className="mt-1 text-xs font-medium text-[#6d5246]">
+                      กสิกร: {settings.kbankNumber || "—"}
+                    </p>
+                    <p className="text-xs font-medium text-[#6d5246]">
+                      วอเลท: {settings.trueNumber || "—"}
+                    </p>
+
+                    <div className="mt-3 w-full rounded-xl border border-amber-200 bg-[#FFFDE7] p-2 text-left">
+                      <span className="text-[10px] font-bold text-[#84685b]">โน้ตสลิป:</span>
+                      <p className="text-xs font-bold text-[#b81452]">
+                        &quot;{settings.slipNote || "ยินยอมซื้อขาย"}&quot;
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         )}
 
-        {filteredGames.length === 0 ? (
-          <section className="flex flex-col items-center justify-center rounded-3xl border border-[#ffd6e5] bg-white px-6 py-14 text-center shadow-[0_10px_28px_rgba(45,22,34,0.06)]">
-            <CatMascot
-              variant="empty"
-              className="h-24 w-24"
-              label="ยังไม่มีรายการเกมหรือแอป"
-            />
-            <h2
-              className="mt-4 text-lg font-bold text-[#2d1622]"
-              style={{ fontFamily: "var(--font-mali), sans-serif" }}
-            >
-              ยังไม่มีรายการเรทราคาในหมวดนี้
-            </h2>
-            <p className="mt-1 max-w-md text-sm text-[#6e485b]">
-              เริ่มต้นเพิ่มเกมหรือแอปพร้อมอัปโหลดรูปปกและระบุราคา iOS / Android ได้ทันที
-            </p>
-            <button
-              type="button"
-              onClick={openAddModal}
-              className="mt-5 inline-flex items-center gap-2 rounded-2xl bg-[#e11d68] px-5 py-2.5 text-sm font-semibold text-white shadow-[0_6px_16px_rgba(225,29,104,0.25)] transition-colors hover:bg-[#be1253]"
-            >
-              <Plus className="h-4 w-4" />
-              <span>+ เพิ่มเกม / แอปใหม่</span>
-            </button>
-          </section>
-        ) : (
-          <>
-            {/* Desktop Table */}
-            <div className="hidden overflow-hidden rounded-3xl border border-[#ffd6e5] bg-white shadow-[0_10px_30px_rgba(45,22,34,0.06)] md:block">
-              <table className="w-full border-collapse text-left">
-                <thead>
-                  <tr className="border-b border-[#ffd6e5] bg-[#fff0f6] text-xs font-bold text-[#6e485b]">
-                    <th scope="col" className="px-5 py-3.5">
-                      รูปปก
-                    </th>
-                    <th scope="col" className="px-5 py-3.5">
-                      ชื่อรายการ
-                    </th>
-                    <th scope="col" className="px-5 py-3.5">
-                      หมวดหมู่
-                    </th>
-                    <th scope="col" className="px-5 py-3.5">
-                      ระบบที่รองรับ
-                    </th>
-                    <th scope="col" className="px-5 py-3.5 text-right">
-                      ราคา iOS
-                    </th>
-                    <th scope="col" className="px-5 py-3.5 text-right">
-                      ราคา Android
-                    </th>
-                    <th scope="col" className="px-5 py-3.5 text-right">
-                      จัดการ
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-[#ffe4ee] text-sm">
-                  {filteredGames.map((game) => {
-                    const badge = getPlatformBadge(game.platform);
-                    const catBadge = getCategoryBadge(game.category);
-                    const CatIcon = catBadge.Icon;
-                    const isConfirmingDelete = confirmDeleteId === game.id;
-                    const isDeleting = deletingId === game.id;
+        {/* ========================================================= */}
+        {/* TAB 2 & 3: หมวดเกม & หมวดแอป (Games / Apps Management)     */}
+        {/* ========================================================= */}
+        {(activeTab === "game" || activeTab === "app") && (
+          <div className="space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+              <div>
+                <h2
+                  className="text-xl font-bold text-[#4a352c] flex items-center gap-2"
+                  style={{ fontFamily: "var(--font-mali), sans-serif" }}
+                >
+                  {activeTab === "game" ? (
+                    <>
+                      <Gamepad2 className="h-6 w-6 text-[#b81452]" />
+                      <span>รายการเรทราคา หมวดเกม ({displayedGames.length} เกม)</span>
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="h-6 w-6 text-[#be1253]" />
+                      <span>รายการเรทราคา หมวดแอป ({displayedGames.length} แอป)</span>
+                    </>
+                  )}
+                </h2>
+                <p className="text-xs font-medium text-[#6d5246]">
+                  {activeTab === "game"
+                    ? "จัดการรายชื่อเกม, ราคา iOS / Android และรูปไอคอนเกม"
+                    : "จัดการรายชื่อแอป, ราคา iOS / Android และรูปไอคอนแอป"}
+                </p>
+              </div>
 
-                    return (
-                      <tr
-                        key={game.id}
-                        className="transition-colors hover:bg-[#fff6f9]"
-                      >
-                        <td className="px-5 py-3.5">
-                          <div className="h-12 w-12 overflow-hidden rounded-2xl border border-[#ffd6e5] bg-[#fff6f9]">
-                            <img
-                              src={game.image}
-                              alt={game.name}
-                              className="h-full w-full object-cover"
-                            />
-                          </div>
-                        </td>
-                        <td className="px-5 py-3.5 font-semibold text-[#2d1622]">
-                          {game.name}
-                        </td>
-                        <td className="px-5 py-3.5">
-                          <span
-                            className={`inline-flex items-center gap-1 rounded-full border px-3 py-1 text-xs font-semibold ${catBadge.className}`}
-                          >
-                            <CatIcon className="h-3.5 w-3.5 text-[#e11d68]" />
-                            <span>{catBadge.label}</span>
-                          </span>
-                        </td>
-                        <td className="px-5 py-3.5">
-                          <span
-                            className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold ${badge.className}`}
-                          >
-                            {badge.label}
-                          </span>
-                        </td>
-                        <td className="px-5 py-3.5 text-right font-semibold tabular-nums text-[#2d1622]">
-                          {formatPriceThb(game.priceIos)}
-                        </td>
-                        <td className="px-5 py-3.5 text-right font-semibold tabular-nums text-[#134e32]">
-                          {formatPriceThb(game.priceAndroid)}
-                        </td>
-                        <td className="px-5 py-3.5 text-right">
-                          {isConfirmingDelete ? (
-                            <div className="inline-flex items-center justify-end gap-2">
-                              <button
-                                type="button"
-                                onClick={() => handleConfirmDelete(game.id)}
-                                disabled={isDeleting}
-                                className="inline-flex items-center gap-1 rounded-xl bg-[#be123c] px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-[#9f1239] disabled:opacity-60"
-                              >
-                                {isDeleting && (
-                                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                                )}
-                                <span>ยืนยันลบ</span>
-                              </button>
-                              <button
-                                type="button"
-                                onClick={() => setConfirmDeleteId(null)}
-                                disabled={isDeleting}
-                                className="rounded-xl border border-[#ffd6e5] bg-white px-2.5 py-1.5 text-xs font-semibold text-[#6e485b] hover:bg-[#fff6f9]"
-                              >
-                                ยกเลิก
-                              </button>
-                            </div>
-                          ) : (
-                            <div className="inline-flex items-center justify-end gap-2">
-                              <button
-                                type="button"
-                                onClick={() => openEditModal(game)}
-                                className="inline-flex items-center gap-1.5 rounded-xl border border-[#ffd6e5] bg-[#fff6f9] px-3 py-1.5 text-xs font-semibold text-[#2d1622] transition-colors hover:border-[#ff85b3] hover:bg-[#ffe4ee]"
-                              >
-                                <Pencil className="h-3.5 w-3.5 text-[#e11d68]" />
-                                <span>แก้ไข</span>
-                              </button>
-                              <button
-                                type="button"
-                                onClick={() => setConfirmDeleteId(game.id)}
-                                className="inline-flex items-center gap-1.5 rounded-xl border border-[#ffd6e5] bg-white px-3 py-1.5 text-xs font-semibold text-[#9f1239] transition-colors hover:border-[#fda4af] hover:bg-[#fff1f2]"
-                              >
-                                <Trash2 className="h-3.5 w-3.5" />
-                                <span>ลบ</span>
-                              </button>
-                            </div>
-                          )}
-                        </td>
+              <button
+                type="button"
+                onClick={() => openAddModal(activeTab === "game" ? "game" : "app")}
+                className="inline-flex items-center justify-center gap-2 rounded-full border border-white bg-[#FCE4EC] px-5 py-2.5 text-sm font-bold text-[#b81452] shadow-md transition-all hover:bg-[#F8BBD0] active:scale-95 cursor-pointer"
+              >
+                <Plus className="h-4 w-4" />
+                <span>+ เพิ่ม{activeTab === "game" ? "เกมใหม่" : "แอปใหม่"}</span>
+              </button>
+            </div>
+
+            {displayedGames.length === 0 ? (
+              <div className="flex flex-col items-center justify-center rounded-[32px] border border-white bg-white/80 p-12 text-center shadow-sm">
+                <CatMascot
+                  variant="empty"
+                  className="h-20 w-20 mb-3"
+                  label="ยังไม่มีรายการ"
+                />
+                <h3 className="text-base font-bold text-[#4a352c]">
+                  ยังไม่มีรายการในหมวด{activeTab === "game" ? "เกม" : "แอป"}นี้
+                </h3>
+                <p className="mt-1 text-xs text-[#6d5246]">
+                  กดปุ่มด้านล่างเพื่อเริ่มเพิ่มรายการแรกได้เลยค่า
+                </p>
+                <button
+                  type="button"
+                  onClick={() => openAddModal(activeTab === "game" ? "game" : "app")}
+                  className="mt-4 inline-flex items-center gap-2 rounded-full border border-white bg-[#FCE4EC] px-5 py-2 text-xs font-bold text-[#b81452] shadow-xs hover:bg-[#F8BBD0]"
+                >
+                  <Plus className="h-3.5 w-3.5" />
+                  <span>เพิ่มรายการใหม่</span>
+                </button>
+              </div>
+            ) : (
+              <div className="overflow-hidden rounded-[28px] border border-white bg-white/90 shadow-md">
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-sm">
+                    <thead>
+                      <tr className="border-b border-[#F8BBD0]/50 bg-[#FFF5F8] text-xs font-bold text-[#6d5246]">
+                        <th className="py-3 pl-4 pr-3 sm:pl-6">รายการ</th>
+                        <th className="px-3 py-3 text-center">ระบบ</th>
+                        <th className="px-3 py-3 text-center">ราคา iOS</th>
+                        <th className="px-3 py-3 text-center">ราคา Android</th>
+                        <th className="py-3 pr-4 pl-3 text-right sm:pr-6">จัดการ</th>
                       </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+                    </thead>
+                    <tbody className="divide-y divide-[#F8BBD0]/30 font-medium text-[#4a352c]">
+                      {displayedGames.map((game) => {
+                        const platBadge = getPlatformBadge(game.platform);
+                        const isDeleting = deletingId === game.id;
+                        const isConfirming = confirmDeleteId === game.id;
+
+                        return (
+                          <tr
+                            key={game.id}
+                            className="transition-colors hover:bg-[#FFF9FB]"
+                          >
+                            <td className="py-3.5 pl-4 pr-3 sm:pl-6">
+                              <div className="flex items-center gap-3">
+                                <div className="h-11 w-11 shrink-0 overflow-hidden rounded-2xl border border-[#F8BBD0] bg-white p-0.5 shadow-xs">
+                                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                                  <img
+                                    src={game.image}
+                                    alt={game.name}
+                                    className="h-full w-full rounded-[14px] object-cover"
+                                  />
+                                </div>
+                                <span className="font-bold text-[#4a352c]">
+                                  {game.name}
+                                </span>
+                              </div>
+                            </td>
+
+                            <td className="px-3 py-3.5 text-center">
+                              <span
+                                className={`inline-block rounded-full border px-2.5 py-0.5 text-[11px] font-bold ${platBadge.className}`}
+                              >
+                                {platBadge.label}
+                              </span>
+                            </td>
+
+                            <td className="px-3 py-3.5 text-center font-bold text-[#b81452] tabular-nums">
+                              {formatPriceThb(game.priceIos)}
+                            </td>
+
+                            <td className="px-3 py-3.5 text-center font-bold text-[#0f5137] tabular-nums">
+                              {formatPriceThb(game.priceAndroid)}
+                            </td>
+
+                            <td className="py-3.5 pr-4 pl-3 text-right sm:pr-6">
+                              <div className="flex items-center justify-end gap-1.5">
+                                <button
+                                  type="button"
+                                  onClick={() => openEditModal(game)}
+                                  className="inline-flex items-center gap-1 rounded-xl border border-[#F8BBD0] bg-white px-2.5 py-1.5 text-xs font-bold text-[#4a352c] transition-colors hover:bg-[#FCE4EC] cursor-pointer"
+                                >
+                                  <Pencil className="h-3 w-3 text-[#b81452]" />
+                                  <span>แก้ไข</span>
+                                </button>
+
+                                {isConfirming ? (
+                                  <div className="inline-flex items-center gap-1 rounded-xl border border-red-200 bg-red-50 p-1">
+                                    <button
+                                      type="button"
+                                      disabled={isDeleting}
+                                      onClick={() => handleConfirmDelete(game.id)}
+                                      className="rounded-lg bg-red-600 px-2 py-1 text-[11px] font-bold text-white hover:bg-red-700 cursor-pointer disabled:opacity-60"
+                                    >
+                                      {isDeleting ? "กำลังลบ..." : "ยืนยัน"}
+                                    </button>
+                                    <button
+                                      type="button"
+                                      disabled={isDeleting}
+                                      onClick={() => setConfirmDeleteId(null)}
+                                      className="rounded-lg bg-white px-1.5 py-1 text-[11px] font-bold text-[#6d5246] hover:bg-gray-100 cursor-pointer"
+                                    >
+                                      ยกเลิก
+                                    </button>
+                                  </div>
+                                ) : (
+                                  <button
+                                    type="button"
+                                    onClick={() => setConfirmDeleteId(game.id)}
+                                    className="inline-flex items-center gap-1 rounded-xl border border-[#f43f5e]/30 bg-white px-2.5 py-1.5 text-xs font-bold text-[#9f1239] transition-colors hover:bg-red-50 cursor-pointer"
+                                  >
+                                    <Trash2 className="h-3 w-3" />
+                                    <span>ลบ</span>
+                                  </button>
+                                )}
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ========================================================= */}
+        {/* TAB 4: ติดต่อแอดมิน (Contact Admin Settings)             */}
+        {/* ========================================================= */}
+        {activeTab === "contact" && (
+          <div className="space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+              <div>
+                <h2
+                  className="text-xl font-bold text-[#4a352c]"
+                  style={{ fontFamily: "var(--font-mali), sans-serif" }}
+                >
+                  💬 จัดการโปรไฟล์ & ช่องทางติดต่อแอดมิน
+                </h2>
+                <p className="text-xs font-medium text-[#6d5246]">
+                  เปลี่ยนรูปโปรไฟล์แอดมิน, ชื่อแสดงผล, ลิงก์ Facebook และ LINE สำหรับลูกค้าทักแชทสั่งซื้อ
+                </p>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => handleSaveSettingsSubmit()}
+                disabled={savingSettings}
+                className="inline-flex items-center justify-center gap-2 rounded-full border border-white bg-[#FCE4EC] px-6 py-2.5 text-sm font-bold text-[#b81452] shadow-md transition-all hover:bg-[#F8BBD0] active:scale-95 disabled:opacity-60 cursor-pointer"
+              >
+                {savingSettings ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Save className="h-4 w-4" />
+                )}
+                <span>บันทึกข้อมูลติดต่อ</span>
+              </button>
             </div>
 
-            {/* Mobile Card List */}
-            <div className="space-y-3.5 md:hidden">
-              {filteredGames.map((game) => {
-                const badge = getPlatformBadge(game.platform);
-                const catBadge = getCategoryBadge(game.category);
-                const CatIcon = catBadge.Icon;
-                const isConfirmingDelete = confirmDeleteId === game.id;
-                const isDeleting = deletingId === game.id;
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
+              {/* Form Column */}
+              <div className="lg:col-span-7 space-y-5 rounded-[28px] border border-white bg-white/90 p-5 sm:p-7 shadow-md">
+                {/* Profile Picture Upload */}
+                <div>
+                  <label className="block text-xs font-bold text-[#4a352c] mb-1.5">
+                    รูปโปรไฟล์แอดมิน (แสดงเป็นวงกลมตรงกลาง)
+                  </label>
+                  <div className="flex items-center gap-4">
+                    <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-full border-4 border-[#F8BBD0] bg-white p-0.5 shadow-md">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={settings.adminAvatar}
+                        alt="รูปโปรไฟล์ปัจจุบัน"
+                        className="h-full w-full rounded-full object-cover"
+                      />
+                    </div>
 
-                return (
-                  <article
-                    key={game.id}
-                    className="rounded-3xl border border-[#ffd6e5] bg-white p-4 shadow-[0_8px_20px_rgba(45,22,34,0.05)]"
+                    <div className="flex-1 space-y-2">
+                      <input
+                        type="file"
+                        ref={avatarInputRef}
+                        onChange={handleAvatarUpload}
+                        accept="image/png,image/jpeg,image/webp"
+                        className="hidden"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => avatarInputRef.current?.click()}
+                        disabled={uploadingAvatar}
+                        className="inline-flex items-center gap-2 rounded-full border border-[#F8BBD0] bg-[#FFFDE7] px-4 py-2 text-xs font-bold text-[#4a352c] shadow-xs transition-all hover:bg-[#FCE4EC] active:scale-95 disabled:opacity-60 cursor-pointer"
+                      >
+                        {uploadingAvatar ? (
+                          <Loader2 className="h-4 w-4 animate-spin text-[#b81452]" />
+                        ) : (
+                          <Camera className="h-4 w-4 text-[#b81452]" />
+                        )}
+                        <span>{uploadingAvatar ? "กำลังอัปโหลด..." : "เปลี่ยนรูปโปรไฟล์"}</span>
+                      </button>
+                      <p className="text-[11px] text-[#84685b]">
+                        รองรับ PNG, JPG หรือ WEBP รูปจะถูกแสดงเป็นทรงกลม
+                      </p>
+                      <input
+                        type="text"
+                        value={settings.adminAvatar}
+                        onChange={(e) =>
+                          setSettings((prev) => ({
+                            ...prev,
+                            adminAvatar: e.target.value,
+                          }))
+                        }
+                        placeholder="หรือกรอก URL รูปโปรไฟล์"
+                        className="w-full rounded-xl border border-[#F8BBD0]/60 bg-white px-3 py-1.5 text-xs text-[#4a352c] focus:outline-none focus:border-[#e11d68]"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Admin Name */}
+                <div>
+                  <label className="block text-xs font-bold text-[#4a352c] mb-1">
+                    ชื่อแอดมิน / ร้าน
+                  </label>
+                  <input
+                    type="text"
+                    value={settings.adminName}
+                    onChange={(e) =>
+                      setSettings((prev) => ({
+                        ...prev,
+                        adminName: e.target.value,
+                      }))
+                    }
+                    placeholder="เช่น Nongfo"
+                    className="w-full rounded-2xl border border-[#F8BBD0] bg-white px-4 py-2.5 text-sm font-semibold text-[#4a352c] focus:border-[#e11d68] focus:outline-none focus:ring-2 focus:ring-[#e11d68]/20"
+                  />
+                </div>
+
+                {/* Facebook Name & URL */}
+                <div className="space-y-3 rounded-2xl border border-[#F8BBD0]/40 bg-[#FFF5F8]/40 p-4">
+                  <span className="text-xs font-bold text-[#b81452]">
+                    ช่องทาง Facebook
+                  </span>
+
+                  <div>
+                    <label className="block text-xs font-medium text-[#4a352c] mb-1">
+                      ข้อความบนปุ่ม Facebook
+                    </label>
+                    <input
+                      type="text"
+                      value={settings.facebookName}
+                      onChange={(e) =>
+                        setSettings((prev) => ({
+                          ...prev,
+                          facebookName: e.target.value,
+                        }))
+                      }
+                      placeholder="เช่น Thitima Nongfo"
+                      className="w-full rounded-xl border border-[#F8BBD0] bg-white px-3.5 py-2 text-xs font-semibold text-[#4a352c] focus:border-[#e11d68] focus:outline-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-medium text-[#4a352c] mb-1">
+                      ลิงก์โปรไฟล์ / เพจ Facebook (URL)
+                    </label>
+                    <input
+                      type="text"
+                      value={settings.facebookUrl}
+                      onChange={(e) =>
+                        setSettings((prev) => ({
+                          ...prev,
+                          facebookUrl: e.target.value,
+                        }))
+                      }
+                      placeholder="เช่น https://www.facebook.com/share/..."
+                      className="w-full rounded-xl border border-[#F8BBD0] bg-white px-3.5 py-2 text-xs font-semibold text-[#4a352c] focus:border-[#e11d68] focus:outline-none"
+                    />
+                  </div>
+                </div>
+
+                {/* LINE Name & URL */}
+                <div className="space-y-3 rounded-2xl border border-[#b8f0d6]/50 bg-[#eefbf5]/40 p-4">
+                  <span className="text-xs font-bold text-[#0f5137]">
+                    ช่องทาง LINE Official / LINE ส่วนตัว
+                  </span>
+
+                  <div>
+                    <label className="block text-xs font-medium text-[#4a352c] mb-1">
+                      ข้อความบนปุ่ม LINE
+                    </label>
+                    <input
+                      type="text"
+                      value={settings.lineName}
+                      onChange={(e) =>
+                        setSettings((prev) => ({
+                          ...prev,
+                          lineName: e.target.value,
+                        }))
+                      }
+                      placeholder="เช่น Add LINE friend (@709qwuff)"
+                      className="w-full rounded-xl border border-[#b8f0d6] bg-white px-3.5 py-2 text-xs font-semibold text-[#4a352c] focus:border-[#0f5137] focus:outline-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-medium text-[#4a352c] mb-1">
+                      ลิงก์เพิ่มเพื่อน LINE (URL)
+                    </label>
+                    <input
+                      type="text"
+                      value={settings.lineUrl}
+                      onChange={(e) =>
+                        setSettings((prev) => ({
+                          ...prev,
+                          lineUrl: e.target.value,
+                        }))
+                      }
+                      placeholder="เช่น https://lin.ee/..."
+                      className="w-full rounded-xl border border-[#b8f0d6] bg-white px-3.5 py-2 text-xs font-semibold text-[#4a352c] focus:border-[#0f5137] focus:outline-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-medium text-[#4a352c] mb-1">
+                      LINE ID สำหรับกดคัดลอก
+                    </label>
+                    <input
+                      type="text"
+                      value={settings.lineId}
+                      onChange={(e) =>
+                        setSettings((prev) => ({
+                          ...prev,
+                          lineId: e.target.value,
+                        }))
+                      }
+                      placeholder="เช่น @709qwuff"
+                      className="w-full rounded-xl border border-[#b8f0d6] bg-white px-3.5 py-2 text-xs font-semibold text-[#4a352c] focus:border-[#0f5137] focus:outline-none"
+                    />
+                  </div>
+                </div>
+
+                <div className="pt-2">
+                  <button
+                    type="button"
+                    onClick={() => handleSaveSettingsSubmit()}
+                    disabled={savingSettings}
+                    className="w-full inline-flex items-center justify-center gap-2 rounded-2xl border border-white bg-[#FCE4EC] px-6 py-3 text-sm font-bold text-[#b81452] shadow-md transition-all hover:bg-[#F8BBD0] active:scale-98 disabled:opacity-60 cursor-pointer"
                   >
-                    <div className="flex items-center gap-3.5">
-                      <div className="h-14 w-14 shrink-0 overflow-hidden rounded-2xl border border-[#ffd6e5] bg-[#fff6f9]">
-                        <img
-                          src={game.image}
-                          alt={game.name}
-                          className="h-full w-full object-cover"
-                        />
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <h2 className="truncate text-base font-bold text-[#2d1622]">
-                          {game.name}
-                        </h2>
-                        <div className="mt-1 flex flex-wrap items-center gap-1.5">
-                          <span
-                            className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-xs font-semibold ${catBadge.className}`}
-                          >
-                            <CatIcon className="h-3 w-3 text-[#e11d68]" />
-                            <span>{catBadge.label}</span>
-                          </span>
-                          <span
-                            className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold ${badge.className}`}
-                          >
-                            {badge.label}
-                          </span>
-                        </div>
-                      </div>
+                    {savingSettings ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <Save className="h-4 w-4" />
+                    )}
+                    <span>บันทึกข้อมูลติดต่อทั้งหมด</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Preview Column */}
+              <div className="lg:col-span-5 space-y-4">
+                <div className="rounded-[28px] border border-[#F8BBD0]/60 bg-gradient-to-br from-[#FFF9FB] to-[#FFF5F8] p-5 shadow-sm">
+                  <span className="inline-block rounded-full border border-[#F8BBD0] bg-white px-3 py-1 text-[11px] font-bold text-[#b81452] mb-3">
+                    👀 ตัวอย่างการแสดงผลหน้าร้าน
+                  </span>
+
+                  <div className="flex flex-col items-center rounded-3xl border border-white bg-white/90 p-6 text-center shadow-xs">
+                    {/* Circle Avatar */}
+                    <div className="relative mb-3 h-24 w-24 overflow-hidden rounded-full border-4 border-[#F8BBD0] shadow-md">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={settings.adminAvatar}
+                        alt="Profile preview"
+                        className="h-full w-full object-cover"
+                      />
                     </div>
 
-                    <div className="mt-3.5 grid grid-cols-2 gap-2.5">
-                      <div className="rounded-2xl border border-[#ffd6e5] bg-[#fff0f6] px-3 py-2">
-                        <span className="block text-xs font-medium text-[#6e485b]">
-                          ราคา iOS
-                        </span>
-                        <span className="mt-0.5 block text-sm font-bold tabular-nums text-[#2d1622]">
-                          {formatPriceThb(game.priceIos)}
-                        </span>
-                      </div>
-                      <div className="rounded-2xl border border-[#bbf7d0] bg-[#eefbf5] px-3 py-2">
-                        <span className="block text-xs font-medium text-[#134e32]">
-                          ราคา Android
-                        </span>
-                        <span className="mt-0.5 block text-sm font-bold tabular-nums text-[#134e32]">
-                          {formatPriceThb(game.priceAndroid)}
-                        </span>
-                      </div>
-                    </div>
+                    <h3
+                      className="text-lg font-bold text-[#4a352c]"
+                      style={{ fontFamily: "var(--font-mali), sans-serif" }}
+                    >
+                      {settings.adminName || "Nongfo"}
+                    </h3>
+                    <p className="text-xs font-semibold text-[#b81452]">
+                      ติดต่อแอดมิน
+                    </p>
 
-                    <div className="mt-3.5 flex items-center justify-end gap-2 border-t border-[#ffe4ee] pt-3">
-                      {isConfirmingDelete ? (
-                        <>
-                          <button
-                            type="button"
-                            onClick={() => handleConfirmDelete(game.id)}
-                            disabled={isDeleting}
-                            className="inline-flex items-center gap-1 rounded-xl bg-[#be123c] px-3.5 py-1.5 text-xs font-semibold text-white"
-                          >
-                            {isDeleting && (
-                              <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                            )}
-                            <span>ยืนยันลบ</span>
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => setConfirmDeleteId(null)}
-                            disabled={isDeleting}
-                            className="rounded-xl border border-[#ffd6e5] bg-white px-3 py-1.5 text-xs font-semibold text-[#6e485b]"
-                          >
-                            ยกเลิก
-                          </button>
-                        </>
-                      ) : (
-                        <>
-                          <button
-                            type="button"
-                            onClick={() => openEditModal(game)}
-                            className="inline-flex items-center gap-1.5 rounded-xl border border-[#ffd6e5] bg-[#fff6f9] px-3.5 py-1.5 text-xs font-semibold text-[#2d1622]"
-                          >
-                            <Pencil className="h-3.5 w-3.5 text-[#e11d68]" />
-                            <span>แก้ไข</span>
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => setConfirmDeleteId(game.id)}
-                            className="inline-flex items-center gap-1.5 rounded-xl border border-[#ffd6e5] bg-white px-3.5 py-1.5 text-xs font-semibold text-[#9f1239]"
-                          >
-                            <Trash2 className="h-3.5 w-3.5" />
-                            <span>ลบ</span>
-                          </button>
-                        </>
-                      )}
+                    <div className="mt-4 w-full space-y-2">
+                      <div className="flex items-center justify-center gap-2 rounded-2xl bg-[#1877F2] px-4 py-2 text-xs font-bold text-white shadow-xs">
+                        <span>Facebook: {settings.facebookName || "Thitima Nongfo"}</span>
+                      </div>
+                      <div className="flex items-center justify-center gap-2 rounded-2xl bg-[#06C755] px-4 py-2 text-xs font-bold text-white shadow-xs">
+                        <span>LINE: {settings.lineName || "Add LINE friend"}</span>
+                      </div>
                     </div>
-                  </article>
-                );
-              })}
+                  </div>
+                </div>
+              </div>
             </div>
-          </>
+          </div>
         )}
       </main>
 
+      {/* ========================================================= */}
+      {/* Bottom Navigation Bar (Synchronized with Storefront)     */}
+      {/* ========================================================= */}
+      <nav
+        aria-label="เมนูจัดการสำหรับแอดมิน"
+        className="pointer-events-none fixed bottom-3 inset-x-0 z-40 mx-auto max-w-md px-3"
+      >
+        <div className="pointer-events-auto rounded-[28px] border border-white/80 bg-white/95 p-1.5 shadow-[0_12px_36px_rgba(244,143,177,0.35)] backdrop-blur-md">
+          <ul className="grid grid-cols-4 gap-1">
+            {/* Tab 1: บัญชี */}
+            <li>
+              <button
+                type="button"
+                onClick={() => {
+                  setActiveTab("account");
+                  window.scrollTo({ top: 0, behavior: "smooth" });
+                }}
+                className={`group flex w-full flex-col items-center justify-center rounded-[22px] py-1.5 transition-all active:scale-95 cursor-pointer ${
+                  activeTab === "account"
+                    ? "bg-[#FCE4EC] text-[#b81452] shadow-xs"
+                    : "text-[#6d5246] hover:bg-[#FFFDE7]/60"
+                }`}
+              >
+                <CreditCard className="h-5 w-5 transition-transform group-hover:scale-110" />
+                <span className="mt-0.5 text-[11px] font-bold tracking-tight">
+                  บัญชี
+                </span>
+              </button>
+            </li>
+
+            {/* Tab 2: หมวดเกม */}
+            <li>
+              <button
+                type="button"
+                onClick={() => {
+                  setActiveTab("game");
+                  window.scrollTo({ top: 0, behavior: "smooth" });
+                }}
+                className={`group relative flex w-full flex-col items-center justify-center rounded-[22px] py-1.5 transition-all active:scale-95 cursor-pointer ${
+                  activeTab === "game"
+                    ? "bg-[#FCE4EC] text-[#b81452] shadow-xs"
+                    : "text-[#6d5246] hover:bg-[#FFFDE7]/60"
+                }`}
+              >
+                <div className="relative">
+                  <Gamepad2 className="h-5 w-5 transition-transform group-hover:scale-110" />
+                  <span className="absolute -top-1.5 -right-2.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#e11d68] px-1 text-[9px] font-bold text-white">
+                    {counts.game}
+                  </span>
+                </div>
+                <span className="mt-0.5 text-[11px] font-bold tracking-tight">
+                  หมวดเกม
+                </span>
+              </button>
+            </li>
+
+            {/* Tab 3: หมวดแอป */}
+            <li>
+              <button
+                type="button"
+                onClick={() => {
+                  setActiveTab("app");
+                  window.scrollTo({ top: 0, behavior: "smooth" });
+                }}
+                className={`group relative flex w-full flex-col items-center justify-center rounded-[22px] py-1.5 transition-all active:scale-95 cursor-pointer ${
+                  activeTab === "app"
+                    ? "bg-[#FCE4EC] text-[#b81452] shadow-xs"
+                    : "text-[#6d5246] hover:bg-[#FFFDE7]/60"
+                }`}
+              >
+                <div className="relative">
+                  <Sparkles className="h-5 w-5 transition-transform group-hover:scale-110" />
+                  <span className="absolute -top-1.5 -right-2.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#be1253] px-1 text-[9px] font-bold text-white">
+                    {counts.app}
+                  </span>
+                </div>
+                <span className="mt-0.5 text-[11px] font-bold tracking-tight">
+                  หมวดแอป
+                </span>
+              </button>
+            </li>
+
+            {/* Tab 4: ติดต่อแอดมิน */}
+            <li>
+              <button
+                type="button"
+                onClick={() => {
+                  setActiveTab("contact");
+                  window.scrollTo({ top: 0, behavior: "smooth" });
+                }}
+                className={`group flex w-full flex-col items-center justify-center rounded-[22px] py-1.5 transition-all active:scale-95 cursor-pointer ${
+                  activeTab === "contact"
+                    ? "bg-[#FCE4EC] text-[#b81452] shadow-xs"
+                    : "text-[#6d5246] hover:bg-[#FFFDE7]/60"
+                }`}
+              >
+                <User className="h-5 w-5 transition-transform group-hover:scale-110" />
+                <span className="mt-0.5 text-[11px] font-bold tracking-tight">
+                  ติดต่อแอดมิน
+                </span>
+              </button>
+            </li>
+          </ul>
+        </div>
+      </nav>
+
+      {/* Add / Edit Game Modal */}
       <GameFormModal
         open={modalOpen}
         editingGame={editingGame}
+        defaultCategory={defaultCategory}
         onClose={() => setModalOpen(false)}
         onSaved={handleSaved}
       />
 
+      {/* Password Change Modal */}
       {passwordModalOpen && (
         <div
           role="dialog"
           aria-modal="true"
-          aria-labelledby="change-password-title"
-          className="fixed inset-0 z-50 flex items-center justify-center bg-[#2d1622]/45 p-4 backdrop-blur-xs"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-xs"
         >
-          <div className="w-full max-w-md rounded-3xl border-2 border-white bg-[#FFFDF9] p-6 shadow-xl">
-            <div className="flex items-center justify-between gap-3 border-b border-[#F8BBD0]/60 pb-3.5">
-              <div className="flex items-center gap-2.5">
-                <span className="flex h-9 w-9 items-center justify-center rounded-2xl bg-[#FCE4EC] text-[#b81452]">
-                  <KeyRound className="h-5 w-5" />
-                </span>
-                <h2
-                  id="change-password-title"
-                  className="text-lg font-bold text-[#4a352c]"
+          <div className="w-full max-w-md rounded-3xl border border-white bg-white/95 p-6 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-3 border-b border-[#F8BBD0]">
+              <div className="flex items-center gap-2">
+                <KeyRound className="h-5 w-5 text-[#b81452]" />
+                <h3
+                  className="text-base font-bold text-[#4a352c]"
                   style={{ fontFamily: "var(--font-mali), sans-serif" }}
                 >
                   เปลี่ยนรหัสผ่านแอดมิน
-                </h2>
+                </h3>
               </div>
               <button
                 type="button"
                 onClick={() => setPasswordModalOpen(false)}
-                aria-label="ปิดหน้าต่างเปลี่ยนรหัสผ่าน"
-                className="rounded-full p-1.5 text-[#6d5246] hover:bg-[#FCE4EC] hover:text-[#4a352c]"
+                className="rounded-full p-1 text-[#6d5246] hover:bg-[#FCE4EC]/50"
               >
                 <X className="h-5 w-5" />
               </button>
             </div>
 
-            <form onSubmit={handlePasswordSubmit} className="mt-4 space-y-4">
+            <form onSubmit={handlePasswordSubmit} className="mt-4 space-y-3.5">
               {passwordError && (
-                <div
-                  role="alert"
-                  className="rounded-2xl border border-[#f43f5e]/30 bg-[#fff1f2] px-3.5 py-2.5 text-xs font-bold text-[#9f1239]"
-                >
+                <div className="rounded-xl border border-red-200 bg-red-50 p-2.5 text-xs font-semibold text-red-700">
                   {passwordError}
                 </div>
               )}
@@ -703,7 +1282,7 @@ export function AdminDashboardClient({
                   value={currentPassword}
                   onChange={(e) => setCurrentPassword(e.target.value)}
                   placeholder="กรอกรหัสผ่านปัจจุบัน"
-                  className="mt-1.5 w-full rounded-2xl border border-[#F8BBD0] bg-white px-4 py-2.5 text-sm font-medium text-[#4a352c] focus:border-[#e11d68] focus:outline-none focus:ring-2 focus:ring-[#e11d68]/20"
+                  className="mt-1 w-full rounded-xl border border-[#F8BBD0] bg-white px-3.5 py-2 text-xs font-medium text-[#4a352c] focus:border-[#e11d68] focus:outline-none"
                 />
               </div>
 
@@ -722,7 +1301,7 @@ export function AdminDashboardClient({
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                   placeholder="ตั้งรหัสผ่านใหม่"
-                  className="mt-1.5 w-full rounded-2xl border border-[#F8BBD0] bg-white px-4 py-2.5 text-sm font-medium text-[#4a352c] focus:border-[#e11d68] focus:outline-none focus:ring-2 focus:ring-[#e11d68]/20"
+                  className="mt-1 w-full rounded-xl border border-[#F8BBD0] bg-white px-3.5 py-2 text-xs font-medium text-[#4a352c] focus:border-[#e11d68] focus:outline-none"
                 />
               </div>
 
@@ -741,23 +1320,23 @@ export function AdminDashboardClient({
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="กรอกรหัสผ่านใหม่อีกครั้ง"
-                  className="mt-1.5 w-full rounded-2xl border border-[#F8BBD0] bg-white px-4 py-2.5 text-sm font-medium text-[#4a352c] focus:border-[#e11d68] focus:outline-none focus:ring-2 focus:ring-[#e11d68]/20"
+                  className="mt-1 w-full rounded-xl border border-[#F8BBD0] bg-white px-3.5 py-2 text-xs font-medium text-[#4a352c] focus:border-[#e11d68] focus:outline-none"
                 />
               </div>
 
-              <div className="flex items-center justify-end gap-2.5 pt-2">
+              <div className="flex items-center justify-end gap-2 pt-2">
                 <button
                   type="button"
                   onClick={() => setPasswordModalOpen(false)}
                   disabled={savingPassword}
-                  className="rounded-full border border-[#F8BBD0] bg-white px-4 py-2 text-xs font-bold text-[#6d5246] hover:bg-[#FCE4EC]/50"
+                  className="rounded-full border border-[#F8BBD0] bg-white px-4 py-1.5 text-xs font-bold text-[#6d5246] hover:bg-[#FCE4EC]/50 cursor-pointer"
                 >
                   ยกเลิก
                 </button>
                 <button
                   type="submit"
                   disabled={savingPassword}
-                  className="inline-flex items-center gap-1.5 rounded-full border border-white bg-[#FCE4EC] px-5 py-2 text-xs font-bold text-[#b81452] shadow-sm transition-colors hover:bg-[#F8BBD0] disabled:opacity-60"
+                  className="inline-flex items-center gap-1.5 rounded-full border border-white bg-[#FCE4EC] px-4 py-1.5 text-xs font-bold text-[#b81452] shadow-xs hover:bg-[#F8BBD0] disabled:opacity-60 cursor-pointer"
                 >
                   {savingPassword && (
                     <Loader2 className="h-3.5 w-3.5 animate-spin" />

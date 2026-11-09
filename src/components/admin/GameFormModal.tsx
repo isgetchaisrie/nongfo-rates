@@ -11,6 +11,7 @@ import {
 export interface GameFormModalProps {
   open: boolean;
   editingGame: GameRate | null;
+  defaultCategory?: CategoryType;
   onClose: () => void;
   onSaved: (savedGame: GameRate, isEdit: boolean) => void;
 }
@@ -33,6 +34,7 @@ const PLATFORM_OPTIONS: { value: PlatformType; label: string }[] = [
 export function GameFormModal({
   open,
   editingGame,
+  defaultCategory = "game",
   onClose,
   onSaved,
 }: GameFormModalProps) {
@@ -42,7 +44,7 @@ export function GameFormModal({
   const [form, setForm] = useState<AdminGameFormState>({
     name: "",
     image: "",
-    category: "game",
+    category: defaultCategory,
     platform: "both",
     priceIosInput: "",
     priceAndroidInput: "",
@@ -74,13 +76,13 @@ export function GameFormModal({
       setForm({
         name: "",
         image: "",
-        category: "game",
+        category: defaultCategory,
         platform: "both",
         priceIosInput: "",
         priceAndroidInput: "",
       });
     }
-  }, [open, editingGame]);
+  }, [open, editingGame, defaultCategory]);
 
   if (!open) return null;
 
