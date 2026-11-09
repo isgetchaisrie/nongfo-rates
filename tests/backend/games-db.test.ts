@@ -4,11 +4,15 @@ import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { validateGameInput } from "@/lib/validation";
 import {
+  NONGFO_DB_NAME,
+  NONGFO_GAMES_COLLECTION,
+  NONGFO_META_COLLECTION,
   createGame,
   deleteGame,
   getGameById,
   listGames,
   resetDbForTests,
+  resolveMongoDbName,
   updateGame,
 } from "@/lib/db";
 import * as auth from "@/lib/auth";
@@ -297,5 +301,18 @@ describe("SQLite games database and seed data", () => {
       { params: Promise.resolve({ id: gameId }) }
     );
     expect(delAgain.status).toBe(404);
+  });
+
+  it("enforces strict MongoDB database and collection isolation away from nuggetkub", () => {
+    expect(NONGFO_DB_NAME).toBe("nongfo_rates");
+    expect(NONGFO_GAMES_COLLECTION).toBe("nongfo_games");
+    expect(NONGFO_META_COLLECTION).toBe("nongfo_meta");
+
+    expect(resolveMongoDbName(undefined)).toBe("nongfo_rates");
+    expect(resolveMongoDbName("")).toBe("nongfo_rates");
+    expect(resolveMongoDbName("nuggetkub")).toBe("nongfo_rates");
+    expect(resolveMongoDbName("NuggetKub-Shop")).toBe("nongfo_rates");
+    expect(resolveMongoDbName("nuggetkub_prod")).toBe("nongfo_rates");
+    expect(resolveMongoDbName("nongfo_rates")).toBe("nongfo_rates");
   });
 });

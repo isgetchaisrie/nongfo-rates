@@ -97,13 +97,28 @@ export async function validateAndSaveUpload(
     };
   }
 
-  fs.mkdirSync(uploadDir, { recursive: true });
-  const fileName = `${crypto.randomUUID()}.${ext}`;
-  const fullPath = path.join(uploadDir, fileName);
-  fs.writeFileSync(fullPath, buffer);
+  const defaultDir = path.join(process.cwd(), "public", "uploads", "games");
+  const useDataUrl =
+    uploadDir === defaultDir &&
+    Boolean(process.env.VERCEL || process.env.MONGODB_URI || process.env.NONGFO_MONGODB_URI);
+
+  if (!useDataUrl) {
+    try {
+      fs.mkdirSync(uploadDir, { recursive: true });
+      const fileName = `${crypto.randomUUID()}.${ext}`;
+      const fullPath = path.join(uploadDir, fileName);
+      fs.writeFileSync(fullPath, buffer);
+      return {
+        ok: true,
+        url: `/uploads/games/${fileName}`,
+      };
+    } catch {
+      // Fall through to base64 data URI on read-only serverless filesystems
+    }
+  }
 
   return {
     ok: true,
-    url: `/uploads/games/${fileName}`,
+    url: `data:${file.type};base64,${buffer.toString("base64")}`,
   };
 }

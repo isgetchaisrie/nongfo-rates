@@ -17,9 +17,16 @@ const rawInputSchema = z.object({
     .string({ message: "กรุณาอัปโหลดรูปภาพหน้าปก" })
     .trim()
     .min(1, "กรุณาอัปโหลดรูปภาพหน้าปก")
-    .refine((val) => val.startsWith("/") && !val.startsWith("//"), {
-      message: "พาธรูปภาพไม่ถูกต้อง กรุณาอัปโหลดรูปภาพจากเครื่อง",
-    }),
+    .refine(
+      (val) =>
+        (val.startsWith("/") && !val.startsWith("//")) ||
+        /^data:image\/(png|jpeg|webp|gif|svg\+xml);base64,[A-Za-z0-9+/=]+$/i.test(
+          val
+        ),
+      {
+        message: "พาธรูปภาพไม่ถูกต้อง กรุณาอัปโหลดรูปภาพจากเครื่อง",
+      }
+    ),
   category: z
     .enum(["game", "app"], {
       message: "กรุณาเลือกหมวดหมู่ (เกม หรือ แอป)",

@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { isAdminAuthenticated } from "@/lib/auth";
-import { listGames } from "@/lib/db";
+import { listGamesAsync } from "@/lib/db";
 import { AdminDashboardClient } from "@/components/admin/AdminDashboardClient";
 
 export const dynamic = "force-dynamic";
@@ -11,6 +11,6 @@ export default async function AdminPage() {
     redirect("/admin/login");
   }
 
-  const games = listGames();
+  const games = await listGamesAsync();
   return <AdminDashboardClient initialGames={games} />;
 }

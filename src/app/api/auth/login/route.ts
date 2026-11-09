@@ -5,7 +5,7 @@ import {
   clearLoginFailures,
   createAdminToken,
   recordLoginFailure,
-  verifyAdminPassword,
+  verifyAdminPasswordAsync,
 } from "@/lib/auth";
 
 function getClientIp(request: Request): string {
@@ -32,7 +32,7 @@ export async function POST(request: Request) {
     const body = (await request.json()) as { password?: unknown };
     const password = typeof body?.password === "string" ? body.password : "";
 
-    if (!verifyAdminPassword(password)) {
+    if (!(await verifyAdminPasswordAsync(password))) {
       recordLoginFailure(ip);
       return NextResponse.json(
         { error: "รหัสผ่านแอดมินไม่ถูกต้อง" },

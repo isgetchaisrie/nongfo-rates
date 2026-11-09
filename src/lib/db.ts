@@ -2,7 +2,28 @@ import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import { DatabaseSync } from "node:sqlite";
+import { MongoClient, type Collection, type Db } from "mongodb";
 import type { CategoryType, GameRate, GameRateInput, PlatformType } from "@/types/game";
+
+export const NONGFO_DB_NAME = "nongfo_rates";
+export const NONGFO_GAMES_COLLECTION = "nongfo_games";
+export const NONGFO_META_COLLECTION = "nongfo_meta";
+
+/**
+ * Strict isolation guard: never allow Nongfo Rates to connect to nuggetkub's database
+ * even if MONGODB_DB="nuggetkub" is accidentally copied into environment variables.
+ */
+export function resolveMongoDbName(raw?: string): string {
+  const trimmed = raw?.trim();
+  if (
+    !trimmed ||
+    trimmed.toLowerCase().startsWith("nuggetkub") ||
+    ["admin", "local", "config", "test"].includes(trimmed.toLowerCase())
+  ) {
+    return NONGFO_DB_NAME;
+  }
+  return trimmed;
+}
 
 interface GameRow {
   id: string;
@@ -555,4 +576,266 @@ export function resetDbForTests(): void {
     fs.rmSync(targetPath, { force: true });
   }
   getDb();
+}
+
+/* ————— MongoDB isolated store (nongfo_rates.nongfo_games & nongfo_rates.nongfo_meta) ————— */
+
+interface MongoGameDoc {
+  id: string;
+  name: string;
+  image: string;
+  category: CategoryType;
+  platform: PlatformType;
+  priceIos: number | null;
+  priceAndroid: number | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface MongoMetaDoc {
+  key: string;
+  value: string;
+}
+
+const globalForNongfoMongo = globalThis as unknown as {
+  _nongfoMongoClient?: MongoClient;
+  _nongfoMongoSeeded?: boolean;
+};
+
+function getMongoUri(): string {
+  return (process.env.NONGFO_MONGODB_URI || process.env.MONGODB_URI || "")
+    .trim()
+    .replace(/^["']|["']$/g, "");
+}
+
+function isMongoEnabled(): boolean {
+  const uri = getMongoUri();
+  return uri.startsWith("mongodb://") || uri.startsWith("mongodb+srv://");
+}
+
+async function getMongoCollections(): Promise<{
+  db: Db;
+  games: Collection<MongoGameDoc>;
+  meta: Collection<MongoMetaDoc>;
+}> {
+  const uri = getMongoUri();
+  if (!globalForNongfoMongo._nongfoMongoClient) {
+    globalForNongfoMongo._nongfoMongoClient = new MongoClient(uri, {
+      maxPoolSize: 5,
+      minPoolSize: 0,
+      maxIdleTimeMS: 60_000,
+      serverSelectionTimeoutMS: 5000,
+      connectTimeoutMS: 10_000,
+      socketTimeoutMS: 30_000,
+      appName: "nongfo-rates",
+      autoSelectFamily: false,
+    });
+  }
+
+  const client = globalForNongfoMongo._nongfoMongoClient;
+  await client.connect();
+  const dbName = resolveMongoDbName(
+    process.env.NONGFO_MONGODB_DB || process.env.MONGODB_DB
+  );
+  const db = client.db(dbName);
+  const games = db.collection<MongoGameDoc>(NONGFO_GAMES_COLLECTION);
+  const meta = db.collection<MongoMetaDoc>(NONGFO_META_COLLECTION);
+
+  if (!globalForNongfoMongo._nongfoMongoSeeded) {
+    const seededDoc = await meta.findOne({ key: "seeded" });
+    if (!seededDoc || seededDoc.value !== "2") {
+      const baseTimeMs = Date.now() - SEED_GAMES.length * 1000;
+      const ops = SEED_GAMES.map((item, index) => {
+        const iso = new Date(
+          baseTimeMs + (SEED_GAMES.length - index) * 1000
+        ).toISOString();
+        return {
+          updateOne: {
+            filter: { id: item.id },
+            update: {
+              $setOnInsert: {
+                id: item.id,
+                name: item.name,
+                image: item.image,
+                category: item.category,
+                platform: item.platform,
+                priceIos: item.priceIos,
+                priceAndroid: item.priceAndroid,
+                createdAt: iso,
+                updatedAt: iso,
+              },
+            },
+            upsert: true,
+          },
+        };
+      });
+      if (ops.length > 0) {
+        await games.bulkWrite(ops);
+      }
+      await meta.updateOne(
+        { key: "seeded" },
+        { $set: { key: "seeded", value: "2" } },
+        { upsert: true }
+      );
+    }
+    globalForNongfoMongo._nongfoMongoSeeded = true;
+  }
+
+  return { db, games, meta };
+}
+
+function applyGameFilter(
+  games: GameRate[],
+  filter?: {
+    query?: string;
+    platform?: "all" | PlatformType;
+    category?: "all" | CategoryType;
+  }
+): GameRate[] {
+  let result = games;
+  const category = filter?.category;
+  if (category === "game" || category === "app") {
+    result = result.filter((g) => g.category === category);
+  }
+
+  const platform = filter?.platform;
+  if (platform === "ios") {
+    result = result.filter((g) => g.platform === "ios" || g.platform === "both");
+  } else if (platform === "android") {
+    result = result.filter(
+      (g) => g.platform === "android" || g.platform === "both"
+    );
+  } else if (platform === "both") {
+    result = result.filter((g) => g.platform === "both");
+  }
+
+  const query = filter?.query?.trim().toLowerCase();
+  if (query) {
+    result = result.filter((g) => g.name.toLowerCase().includes(query));
+  }
+
+  return result;
+}
+
+export async function listGamesAsync(filter?: {
+  query?: string;
+  platform?: "all" | PlatformType;
+  category?: "all" | CategoryType;
+}): Promise<GameRate[]> {
+  if (!isMongoEnabled()) {
+    return listGames(filter);
+  }
+  const { games } = await getMongoCollections();
+  const docs = await games
+    .find({}, { projection: { _id: 0 } })
+    .sort({ createdAt: -1 })
+    .toArray();
+  return applyGameFilter(docs, filter);
+}
+
+export async function createGameAsync(input: GameRateInput): Promise<GameRate> {
+  if (!isMongoEnabled()) {
+    return createGame(input);
+  }
+  const { games } = await getMongoCollections();
+  const id = crypto.randomUUID();
+  const now = new Date().toISOString();
+  const category: CategoryType = input.category === "app" ? "app" : "game";
+  const priceIos =
+    input.platform === "both" || input.platform === "ios"
+      ? input.priceIos
+      : null;
+  const priceAndroid =
+    input.platform === "both" || input.platform === "android"
+      ? input.priceAndroid
+      : null;
+
+  const doc: MongoGameDoc = {
+    id,
+    name: input.name.trim(),
+    image: input.image.trim(),
+    category,
+    platform: input.platform,
+    priceIos,
+    priceAndroid,
+    createdAt: now,
+    updatedAt: now,
+  };
+  await games.insertOne({ ...doc });
+  return doc;
+}
+
+export async function updateGameAsync(
+  id: string,
+  input: GameRateInput
+): Promise<GameRate | null> {
+  if (!isMongoEnabled()) {
+    return updateGame(id, input);
+  }
+  const { games } = await getMongoCollections();
+  const existing = await games.findOne({ id }, { projection: { _id: 0 } });
+  if (!existing) {
+    return null;
+  }
+
+  const now = new Date().toISOString();
+  const category: CategoryType = input.category === "app" ? "app" : "game";
+  const priceIos =
+    input.platform === "both" || input.platform === "ios"
+      ? input.priceIos
+      : null;
+  const priceAndroid =
+    input.platform === "both" || input.platform === "android"
+      ? input.priceAndroid
+      : null;
+
+  const updated: MongoGameDoc = {
+    id,
+    name: input.name.trim(),
+    image: input.image.trim(),
+    category,
+    platform: input.platform,
+    priceIos,
+    priceAndroid,
+    createdAt: existing.createdAt,
+    updatedAt: now,
+  };
+
+  await games.updateOne({ id }, { $set: updated });
+  return updated;
+}
+
+export async function deleteGameAsync(id: string): Promise<boolean> {
+  if (!isMongoEnabled()) {
+    return deleteGame(id);
+  }
+  const { games } = await getMongoCollections();
+  const res = await games.deleteOne({ id });
+  return res.deletedCount > 0;
+}
+
+export async function getAdminPasswordHashAsync(): Promise<string | null> {
+  if (!isMongoEnabled()) {
+    return getAdminPasswordHash();
+  }
+  try {
+    const { meta } = await getMongoCollections();
+    const doc = await meta.findOne({ key: "admin_password_sha256" });
+    return doc?.value ?? null;
+  } catch {
+    return null;
+  }
+}
+
+export async function setAdminPasswordHashAsync(hashHex: string): Promise<void> {
+  if (!isMongoEnabled()) {
+    setAdminPasswordHash(hashHex);
+    return;
+  }
+  const { meta } = await getMongoCollections();
+  await meta.updateOne(
+    { key: "admin_password_sha256" },
+    { $set: { key: "admin_password_sha256", value: hashHex } },
+    { upsert: true }
+  );
 }

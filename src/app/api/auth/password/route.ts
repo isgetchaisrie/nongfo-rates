@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import {
   ADMIN_COOKIE_NAME,
-  changeAdminPassword,
+  changeAdminPasswordAsync,
   isAdminAuthenticated,
   verifyAdminToken,
 } from "@/lib/auth";
@@ -50,7 +50,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const result = changeAdminPassword(currentPassword, newPassword);
+    const result = await changeAdminPasswordAsync(currentPassword, newPassword);
     if (!result.ok) {
       return NextResponse.json({ error: result.error }, { status: 400 });
     }

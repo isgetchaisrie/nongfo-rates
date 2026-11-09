@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { isAdminAuthenticated } from "@/lib/auth";
-import { createGame, listGames } from "@/lib/db";
+import { createGameAsync, listGamesAsync } from "@/lib/db";
 import { validateGameInput } from "@/lib/validation";
 import type { CategoryType, PlatformType } from "@/types/game";
 
@@ -31,7 +31,7 @@ export async function GET(request: Request) {
     }
   }
 
-  const games = listGames({ query, platform, category });
+  const games = await listGamesAsync({ query, platform, category });
   return NextResponse.json({ games });
 }
 
@@ -50,7 +50,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: valid.error }, { status: 400 });
     }
 
-    const game = createGame(valid.data);
+    const game = await createGameAsync(valid.data);
     return NextResponse.json({ game }, { status: 201 });
   } catch {
     return NextResponse.json(

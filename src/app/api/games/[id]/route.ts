@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { isAdminAuthenticated } from "@/lib/auth";
-import { deleteGame, updateGame } from "@/lib/db";
+import { deleteGameAsync, updateGameAsync } from "@/lib/db";
 import { validateGameInput } from "@/lib/validation";
 
 export async function PUT(
@@ -22,7 +22,7 @@ export async function PUT(
       return NextResponse.json({ error: valid.error }, { status: 400 });
     }
 
-    const game = updateGame(id, valid.data);
+    const game = await updateGameAsync(id, valid.data);
     if (!game) {
       return NextResponse.json({ error: "ไม่พบรายการเกม" }, { status: 404 });
     }
@@ -48,7 +48,7 @@ export async function DELETE(
   }
 
   const { id } = await context.params;
-  const deleted = deleteGame(id);
+  const deleted = await deleteGameAsync(id);
   if (!deleted) {
     return NextResponse.json({ error: "ไม่พบรายการเกม" }, { status: 404 });
   }
