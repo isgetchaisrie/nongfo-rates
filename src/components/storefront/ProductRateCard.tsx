@@ -1,4 +1,5 @@
 import React from "react";
+import { Gamepad2, Sparkles } from "lucide-react";
 import type { GameRate, PlatformType } from "@/types/game";
 
 export interface ProductRateCardProps {
@@ -40,6 +41,7 @@ function MiniAndroidIcon() {
 export function ProductRateCard({ game }: ProductRateCardProps) {
   const hasIos = game.priceIos !== null && game.priceIos > 0;
   const hasAndroid = game.priceAndroid !== null && game.priceAndroid > 0;
+  const isApp = game.category === "app";
 
   return (
     <article className="flex flex-col rounded-3xl border border-[#ffd6e5] bg-white p-4 shadow-[0_12px_28px_-14px_rgba(225,29,104,0.16)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_36px_-14px_rgba(225,29,104,0.24)]">
@@ -50,6 +52,20 @@ export function ProductRateCard({ game }: ProductRateCardProps) {
           loading="lazy"
           className="h-full w-full object-cover"
         />
+        <span
+          className={`absolute left-3 top-3 inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-xs font-semibold shadow-[0_4px_12px_-4px_rgba(45,22,34,0.14)] ${
+            isApp
+              ? "border-[#fbcfe8] bg-[#fff0f6]/95 text-[#be1253]"
+              : "border-[#ffd6e5] bg-white/95 text-[#2d1622]"
+          }`}
+        >
+          {isApp ? (
+            <Sparkles aria-hidden="true" className="h-3.5 w-3.5 text-[#e11d68]" />
+          ) : (
+            <Gamepad2 aria-hidden="true" className="h-3.5 w-3.5 text-[#e11d68]" />
+          )}
+          <span>{isApp ? "แอป" : "เกม"}</span>
+        </span>
         <span className="absolute right-3 top-3 inline-flex items-center rounded-full border border-[#ffd6e5] bg-white/95 px-3 py-1 text-xs font-semibold text-[#2d1622] shadow-[0_4px_12px_-4px_rgba(45,22,34,0.14)]">
           {PLATFORM_LABELS[game.platform]}
         </span>

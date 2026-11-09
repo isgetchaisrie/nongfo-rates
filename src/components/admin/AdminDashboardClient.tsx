@@ -1,22 +1,44 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   ExternalLink,
+  Gamepad2,
+  LayoutGrid,
   Loader2,
   LogOut,
   Pencil,
   Plus,
+  Sparkles,
   Trash2,
 } from "lucide-react";
-import type { GameRate, PlatformType } from "@/types/game";
+import type { CategoryType, GameRate, PlatformType } from "@/types/game";
 import { CatMascot } from "@/components/mascot/CatMascot";
 import { GameFormModal } from "@/components/admin/GameFormModal";
 
 export interface AdminDashboardClientProps {
   initialGames: GameRate[];
+}
+
+function getCategoryBadge(category: CategoryType): {
+  label: string;
+  className: string;
+  Icon: React.ComponentType<{ className?: string }>;
+} {
+  if (category === "app") {
+    return {
+      label: "แอป",
+      className: "border-[#fbcfe8] bg-[#fff0f6] text-[#be1253]",
+      Icon: Sparkles,
+    };
+  }
+  return {
+    label: "เกม",
+    className: "border-[#ffd6e5] bg-[#fff6f9] text-[#2d1622]",
+    Icon: Gamepad2,
+  };
 }
 
 function getPlatformBadge(platform: PlatformType): {
@@ -55,12 +77,31 @@ export function AdminDashboardClient({
 }: AdminDashboardClientProps) {
   const router = useRouter();
   const [games, setGames] = useState<GameRate[]>(initialGames);
+  const [categoryFilter, setCategoryFilter] = useState<"all" | CategoryType>("all");
   const [modalOpen, setModalOpen] = useState(false);
   const [editingGame, setEditingGame] = useState<GameRate | null>(null);
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [loggingOut, setLoggingOut] = useState(false);
   const [feedbackError, setFeedbackError] = useState<string | null>(null);
+
+  const counts = useMemo(() => {
+    let gameCount = 0;
+    let appCount = 0;
+    for (const item of games) {
+      if (item.category === "app") {
+        appCount += 1;
+      } else {
+        gameCount += 1;
+      }
+    }
+    return { all: games.length, game: gameCount, app: appCount };
+  }, [games]);
+
+  const filteredGames = useMemo(() => {
+    if (categoryFilter === "all") return games;
+    return games.filter((g) => g.category === categoryFilter);
+  }, [games, categoryFilter]);
 
   function openAddModal() {
     setEditingGame(null);
@@ -137,14 +178,22 @@ export function AdminDashboardClient({
                 className="text-xl font-bold text-[#2d1622] sm:text-2xl"
                 style={{ fontFamily: "var(--font-mali), sans-serif" }}
               >
-                จัดการเรทราคาเกม (Admin)
+                จัดการเรทราคาเกมและแอป (Admin)
               </h1>
               <p className="mt-0.5 text-sm text-[#6e485b]">
-                รายการเกมทั้งหมด{" "}
+                รายการทั้งหมด{" "}
                 <span className="font-semibold tabular-nums text-[#2d1622]">
-                  {games.length}
+                  {counts.all}
                 </span>{" "}
-                รายการ
+                รายการ (เกม{" "}
+                <span className="font-semibold tabular-nums text-[#2d1622]">
+                  {counts.game}
+                </span>{" "}
+                · แอป{" "}
+                <span className="font-semibold tabular-nums text-[#be1253]">
+                  {counts.app}
+                </span>
+                )
               </p>
             </div>
           </div>
@@ -164,7 +213,7 @@ export function AdminDashboardClient({
               className="inline-flex items-center gap-1.5 rounded-2xl bg-[#e11d68] px-4 py-2 text-sm font-semibold text-white shadow-[0_6px_16px_rgba(225,29,104,0.25)] transition-colors hover:bg-[#be1253]"
             >
               <Plus className="h-4 w-4" />
-              <span>+ เพิ่มเกมใหม่</span>
+              <span>+ เพิ่มเกม / แอปใหม่</span>
             </button>
 
             <button
@@ -194,21 +243,64 @@ export function AdminDashboardClient({
           </div>
         )}
 
-        {games.length === 0 ? (
+        {games.length > 0 && (
+          <div
+            role="group"
+            aria-label="กรองรายการแอดมินตามหมวดหมู่"
+            className="mb-5 inline-flex flex-wrap items-center gap-2 rounded-2xl border border-[#ffd6e5] bg-white p-1.5"
+          >
+            {(
+              [
+                { id: "all", label: "ทั้งหมด", count: counts.all, Icon: LayoutGrid },
+                { id: "game", label: "หมวดเกม", count: counts.game, Icon: Gamepad2 },
+                { id: "app", label: "หมวดแอป", count: counts.app, Icon: Sparkles },
+              ] as const
+            ).map(({ id, label, count, Icon }) => {
+              const active = categoryFilter === id;
+              return (
+                <button
+                  key={id}
+                  type="button"
+                  aria-pressed={active}
+                  onClick={() => setCategoryFilter(id)}
+                  className={`inline-flex items-center gap-2 rounded-xl px-3.5 py-2 text-xs font-semibold transition-colors sm:text-sm ${
+                    active
+                      ? "bg-[#2d1622] text-white"
+                      : "text-[#6e485b] hover:bg-[#fff0f6] hover:text-[#2d1622]"
+                  }`}
+                >
+                  <Icon className="h-3.5 w-3.5 shrink-0" />
+                  <span>{label}</span>
+                  <span
+                    className={`inline-flex min-w-5 items-center justify-center rounded-full px-1.5 py-0.5 text-xs font-bold tabular-nums ${
+                      active
+                        ? "bg-white/20 text-white"
+                        : "bg-[#fff0f6] text-[#be1253]"
+                    }`}
+                  >
+                    {count}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        )}
+
+        {filteredGames.length === 0 ? (
           <section className="flex flex-col items-center justify-center rounded-3xl border border-[#ffd6e5] bg-white px-6 py-14 text-center shadow-[0_10px_28px_rgba(45,22,34,0.06)]">
             <CatMascot
               variant="empty"
               className="h-24 w-24"
-              label="ยังไม่มีรายการเกม"
+              label="ยังไม่มีรายการเกมหรือแอป"
             />
             <h2
               className="mt-4 text-lg font-bold text-[#2d1622]"
               style={{ fontFamily: "var(--font-mali), sans-serif" }}
             >
-              ยังไม่มีรายการเรทราคาเกมในระบบ
+              ยังไม่มีรายการเรทราคาในหมวดนี้
             </h2>
             <p className="mt-1 max-w-md text-sm text-[#6e485b]">
-              เริ่มต้นเพิ่มเกมแรกพร้อมอัปโหลดรูปปกและระบุราคา iOS / Android ได้ทันที
+              เริ่มต้นเพิ่มเกมหรือแอปพร้อมอัปโหลดรูปปกและระบุราคา iOS / Android ได้ทันที
             </p>
             <button
               type="button"
@@ -216,7 +308,7 @@ export function AdminDashboardClient({
               className="mt-5 inline-flex items-center gap-2 rounded-2xl bg-[#e11d68] px-5 py-2.5 text-sm font-semibold text-white shadow-[0_6px_16px_rgba(225,29,104,0.25)] transition-colors hover:bg-[#be1253]"
             >
               <Plus className="h-4 w-4" />
-              <span>+ เพิ่มเกมใหม่</span>
+              <span>+ เพิ่มเกม / แอปใหม่</span>
             </button>
           </section>
         ) : (
@@ -230,7 +322,10 @@ export function AdminDashboardClient({
                       รูปปก
                     </th>
                     <th scope="col" className="px-5 py-3.5">
-                      ชื่อเกม
+                      ชื่อรายการ
+                    </th>
+                    <th scope="col" className="px-5 py-3.5">
+                      หมวดหมู่
                     </th>
                     <th scope="col" className="px-5 py-3.5">
                       ระบบที่รองรับ
@@ -247,8 +342,10 @@ export function AdminDashboardClient({
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[#ffe4ee] text-sm">
-                  {games.map((game) => {
+                  {filteredGames.map((game) => {
                     const badge = getPlatformBadge(game.platform);
+                    const catBadge = getCategoryBadge(game.category);
+                    const CatIcon = catBadge.Icon;
                     const isConfirmingDelete = confirmDeleteId === game.id;
                     const isDeleting = deletingId === game.id;
 
@@ -268,6 +365,14 @@ export function AdminDashboardClient({
                         </td>
                         <td className="px-5 py-3.5 font-semibold text-[#2d1622]">
                           {game.name}
+                        </td>
+                        <td className="px-5 py-3.5">
+                          <span
+                            className={`inline-flex items-center gap-1 rounded-full border px-3 py-1 text-xs font-semibold ${catBadge.className}`}
+                          >
+                            <CatIcon className="h-3.5 w-3.5 text-[#e11d68]" />
+                            <span>{catBadge.label}</span>
+                          </span>
                         </td>
                         <td className="px-5 py-3.5">
                           <span
@@ -335,8 +440,10 @@ export function AdminDashboardClient({
 
             {/* Mobile Card List */}
             <div className="space-y-3.5 md:hidden">
-              {games.map((game) => {
+              {filteredGames.map((game) => {
                 const badge = getPlatformBadge(game.platform);
+                const catBadge = getCategoryBadge(game.category);
+                const CatIcon = catBadge.Icon;
                 const isConfirmingDelete = confirmDeleteId === game.id;
                 const isDeleting = deletingId === game.id;
 
@@ -357,11 +464,19 @@ export function AdminDashboardClient({
                         <h2 className="truncate text-base font-bold text-[#2d1622]">
                           {game.name}
                         </h2>
-                        <span
-                          className={`mt-1 inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold ${badge.className}`}
-                        >
-                          {badge.label}
-                        </span>
+                        <div className="mt-1 flex flex-wrap items-center gap-1.5">
+                          <span
+                            className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-xs font-semibold ${catBadge.className}`}
+                          >
+                            <CatIcon className="h-3 w-3 text-[#e11d68]" />
+                            <span>{catBadge.label}</span>
+                          </span>
+                          <span
+                            className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold ${badge.className}`}
+                          >
+                            {badge.label}
+                          </span>
+                        </div>
                       </div>
                     </div>
 

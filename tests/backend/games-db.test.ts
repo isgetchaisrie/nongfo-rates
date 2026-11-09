@@ -19,7 +19,7 @@ import {
 } from "@/app/api/games/[id]/route";
 
 describe("validateGameInput", () => {
-  it("validates a game available on both platforms", () => {
+  it("validates a game available on both platforms and defaults category to game", () => {
     const res = validateGameInput({
       name: "  Stardew Valley  ",
       image: " /seed/stardew.svg ",
@@ -32,6 +32,7 @@ describe("validateGameInput", () => {
       expect(res.data).toEqual({
         name: "Stardew Valley",
         image: "/seed/stardew.svg",
+        category: "game",
         platform: "both",
         priceIos: 55,
         priceAndroid: 30,
@@ -39,16 +40,18 @@ describe("validateGameInput", () => {
     }
   });
 
-  it("normalizes priceAndroid to null when platform is ios", () => {
+  it("validates an app category and normalizes priceAndroid to null when platform is ios", () => {
     const res = validateGameInput({
       name: "Procreate Dreams",
       image: "/seed/procreate.svg",
+      category: "app",
       platform: "ios",
       priceIos: 120,
       priceAndroid: 99,
     });
     expect(res.success).toBe(true);
     if (res.success) {
+      expect(res.data.category).toBe("app");
       expect(res.data.priceIos).toBe(120);
       expect(res.data.priceAndroid).toBeNull();
     }
@@ -149,7 +152,7 @@ describe("SQLite games database and seed data", () => {
     }
   });
 
-  it("filters games by platform and case-insensitive search query", () => {
+  it("filters games by platform, category, and case-insensitive search query", () => {
     const iosGames = listGames({ platform: "ios" });
     expect(iosGames).toHaveLength(7);
     expect(iosGames.every((g) => g.platform === "ios" || g.platform === "both")).toBe(
@@ -162,6 +165,16 @@ describe("SQLite games database and seed data", () => {
       androidGames.every((g) => g.platform === "android" || g.platform === "both")
     ).toBe(true);
 
+    const onlyGames = listGames({ category: "game" });
+    expect(onlyGames).toHaveLength(6);
+    expect(onlyGames.every((g) => g.category === "game")).toBe(true);
+
+    const onlyApps = listGames({ category: "app" });
+    expect(onlyApps).toHaveLength(2);
+    expect(onlyApps.map((g) => g.name)).toEqual(
+      expect.arrayContaining(["Procreate Dreams", "Goodnotes 6"])
+    );
+
     const searched = listGames({ query: "papa" });
     expect(searched).toHaveLength(1);
     expect(searched[0]?.name).toBe("Papa's Freezeria To Go!");
@@ -171,21 +184,25 @@ describe("SQLite games database and seed data", () => {
     const created = createGame({
       name: "Slay the Spire",
       image: "/uploads/games/spire.png",
+      category: "game",
       platform: "both",
       priceIos: 69,
       priceAndroid: 49,
     });
     expect(created.id).toBeTruthy();
+    expect(created.category).toBe("game");
     expect(getGameById(created.id)?.name).toBe("Slay the Spire");
 
     const updated = updateGame(created.id, {
       name: "Slay the Spire+",
       image: "/uploads/games/spire.png",
+      category: "app",
       platform: "ios",
       priceIos: 79,
       priceAndroid: null,
     });
     expect(updated?.name).toBe("Slay the Spire+");
+    expect(updated?.category).toBe("app");
     expect(updated?.platform).toBe("ios");
     expect(updated?.priceAndroid).toBeNull();
 

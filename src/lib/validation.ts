@@ -1,5 +1,5 @@
 import { z } from "zod";
-import type { GameRateInput, PlatformType } from "@/types/game";
+import type { CategoryType, GameRateInput, PlatformType } from "@/types/game";
 
 const priceSchema = z
   .number({ message: "ราคาต้องเป็นตัวเลขจำนวนเต็มบวก" })
@@ -20,6 +20,12 @@ const rawInputSchema = z.object({
     .refine((val) => val.startsWith("/") && !val.startsWith("//"), {
       message: "พาธรูปภาพไม่ถูกต้อง กรุณาอัปโหลดรูปภาพจากเครื่อง",
     }),
+  category: z
+    .enum(["game", "app"], {
+      message: "กรุณาเลือกหมวดหมู่ (เกม หรือ แอป)",
+    })
+    .optional()
+    .default("game"),
   platform: z.enum(["both", "ios", "android"], {
     message: "กรุณาเลือกระบบปฏิบัติการ (ทั้งคู่, iOS หรือ Android)",
   }),
@@ -39,7 +45,8 @@ export function validateGameInput(
     };
   }
 
-  const { name, image, platform, priceIos, priceAndroid } = parsed.data;
+  const { name, image, category, platform, priceIos, priceAndroid } = parsed.data;
+  const typedCategory: CategoryType = category;
   const typedPlatform: PlatformType = platform;
 
   let finalIos: number | null = null;
@@ -72,6 +79,7 @@ export function validateGameInput(
     data: {
       name,
       image,
+      category: typedCategory,
       platform: typedPlatform,
       priceIos: finalIos,
       priceAndroid: finalAndroid,

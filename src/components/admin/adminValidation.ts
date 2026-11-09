@@ -1,8 +1,9 @@
-import type { GameRateInput, PlatformType } from "@/types/game";
+import type { CategoryType, GameRateInput, PlatformType } from "@/types/game";
 
 export interface AdminGameFormState {
   name: string;
   image: string;
+  category?: CategoryType;
   platform: PlatformType;
   priceIosInput: string;
   priceAndroidInput: string;
@@ -25,15 +26,15 @@ export function buildGamePayload(
 ): { ok: true; data: GameRateInput } | { ok: false; error: string } {
   const name = form.name.trim();
   if (!name) {
-    return { ok: false, error: "กรุณากรอกชื่อเกม" };
+    return { ok: false, error: "กรุณากรอกชื่อเกมหรือแอป" };
   }
   if (name.length > 120) {
-    return { ok: false, error: "ชื่อเกมต้องมีความยาวไม่เกิน 120 ตัวอักษร" };
+    return { ok: false, error: "ชื่อเกมหรือแอปต้องมีความยาวไม่เกิน 120 ตัวอักษร" };
   }
 
   const image = form.image.trim();
   if (!image || !image.startsWith("/")) {
-    return { ok: false, error: "กรุณาอัปโหลดรูปภาพปกเกมจากเครื่อง" };
+    return { ok: false, error: "กรุณาอัปโหลดรูปภาพปกจากเครื่อง" };
   }
 
   let priceIos: number | null = null;
@@ -58,6 +59,7 @@ export function buildGamePayload(
     data: {
       name,
       image,
+      category: form.category === "app" ? "app" : "game",
       platform: form.platform,
       priceIos,
       priceAndroid,

@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { buildGamePayload } from "@/components/admin/adminValidation";
 
 describe("buildGamePayload (Admin Game Form Validation)", () => {
-  it("builds valid payload for 'both' platform with positive integer prices", () => {
+  it("builds valid payload for 'both' platform with positive integer prices and default game category", () => {
     const res = buildGamePayload({
       name: "  Stardew Valley  ",
       image: "/uploads/games/stardew.png",
@@ -16,6 +16,7 @@ describe("buildGamePayload (Admin Game Form Validation)", () => {
       data: {
         name: "Stardew Valley",
         image: "/uploads/games/stardew.png",
+        category: "game",
         platform: "both",
         priceIos: 55,
         priceAndroid: 30,
@@ -23,10 +24,11 @@ describe("buildGamePayload (Admin Game Form Validation)", () => {
     });
   });
 
-  it("normalizes priceAndroid to null when platform is 'ios'", () => {
+  it("normalizes priceAndroid to null when platform is 'ios' and preserves category 'app'", () => {
     const res = buildGamePayload({
       name: "Procreate Dreams",
       image: "/uploads/games/procreate.webp",
+      category: "app",
       platform: "ios",
       priceIosInput: "120",
       priceAndroidInput: "999",
@@ -37,6 +39,7 @@ describe("buildGamePayload (Admin Game Form Validation)", () => {
       data: {
         name: "Procreate Dreams",
         image: "/uploads/games/procreate.webp",
+        category: "app",
         platform: "ios",
         priceIos: 120,
         priceAndroid: null,
@@ -48,6 +51,7 @@ describe("buildGamePayload (Admin Game Form Validation)", () => {
     const res = buildGamePayload({
       name: "Dave the Diver Mobile",
       image: "/uploads/games/dave.png",
+      category: "game",
       platform: "android",
       priceIosInput: "50",
       priceAndroidInput: "45",
@@ -58,6 +62,7 @@ describe("buildGamePayload (Admin Game Form Validation)", () => {
       data: {
         name: "Dave the Diver Mobile",
         image: "/uploads/games/dave.png",
+        category: "game",
         platform: "android",
         priceIos: null,
         priceAndroid: 45,

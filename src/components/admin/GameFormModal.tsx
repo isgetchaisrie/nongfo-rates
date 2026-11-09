@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useEffect, useId, useRef, useState } from "react";
-import { ImagePlus, Loader2, Upload, X } from "lucide-react";
-import type { GameRate, PlatformType } from "@/types/game";
+import { Gamepad2, ImagePlus, Loader2, Sparkles, Upload, X } from "lucide-react";
+import type { CategoryType, GameRate, PlatformType } from "@/types/game";
 import {
   type AdminGameFormState,
   buildGamePayload,
@@ -14,6 +14,15 @@ export interface GameFormModalProps {
   onClose: () => void;
   onSaved: (savedGame: GameRate, isEdit: boolean) => void;
 }
+
+const CATEGORY_OPTIONS: {
+  value: CategoryType;
+  label: string;
+  Icon: React.ComponentType<{ className?: string }>;
+}[] = [
+  { value: "game", label: "หมวดเกม (Game)", Icon: Gamepad2 },
+  { value: "app", label: "หมวดแอป (App)", Icon: Sparkles },
+];
 
 const PLATFORM_OPTIONS: { value: PlatformType; label: string }[] = [
   { value: "both", label: "ทั้ง iOS & Android" },
@@ -33,6 +42,7 @@ export function GameFormModal({
   const [form, setForm] = useState<AdminGameFormState>({
     name: "",
     image: "",
+    category: "game",
     platform: "both",
     priceIosInput: "",
     priceAndroidInput: "",
@@ -51,6 +61,7 @@ export function GameFormModal({
       setForm({
         name: editingGame.name,
         image: editingGame.image,
+        category: editingGame.category,
         platform: editingGame.platform,
         priceIosInput:
           editingGame.priceIos !== null ? String(editingGame.priceIos) : "",
@@ -63,6 +74,7 @@ export function GameFormModal({
       setForm({
         name: "",
         image: "",
+        category: "game",
         platform: "both",
         priceIosInput: "",
         priceAndroidInput: "",
@@ -174,7 +186,7 @@ export function GameFormModal({
             className="text-xl font-bold text-[#2d1622]"
             style={{ fontFamily: "var(--font-mali), sans-serif" }}
           >
-            {editingGame ? "แก้ไขเรทราคาเกม" : "เพิ่มเกมใหม่"}
+            {editingGame ? "แก้ไขเรทราคาเกม / แอป" : "เพิ่มเกมหรือแอปใหม่"}
           </h2>
           <button
             type="button"
@@ -197,13 +209,48 @@ export function GameFormModal({
             </div>
           )}
 
-          {/* 1. ชื่อเกม */}
+          {/* 0. หมวดหมู่ (เกม / แอป) */}
+          <div>
+            <span className="block text-sm font-semibold text-[#2d1622]">
+              หมวดหมู่รายการ
+            </span>
+            <div
+              role="radiogroup"
+              aria-label="หมวดหมู่รายการ"
+              className="mt-1.5 grid grid-cols-2 gap-2 rounded-2xl border border-[#ffd6e5] bg-[#fff6f9] p-1.5"
+            >
+              {CATEGORY_OPTIONS.map(({ value, label, Icon }) => {
+                const active = (form.category ?? "game") === value;
+                return (
+                  <button
+                    key={value}
+                    type="button"
+                    role="radio"
+                    aria-checked={active}
+                    onClick={() =>
+                      setForm((prev) => ({ ...prev, category: value }))
+                    }
+                    className={`inline-flex items-center justify-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold transition-colors sm:text-sm ${
+                      active
+                        ? "bg-[#2d1622] text-white shadow-[0_4px_12px_rgba(45,22,34,0.25)]"
+                        : "text-[#6e485b] hover:bg-[#ffe4ee] hover:text-[#2d1622]"
+                    }`}
+                  >
+                    <Icon className="h-4 w-4 shrink-0" />
+                    <span>{label}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* 1. ชื่อเกมหรือแอป */}
           <div>
             <label
               htmlFor="game-name-input"
               className="block text-sm font-semibold text-[#2d1622]"
             >
-              ชื่อเกม
+              {form.category === "app" ? "ชื่อแอป" : "ชื่อเกม"}
             </label>
             <input
               id="game-name-input"
@@ -214,7 +261,11 @@ export function GameFormModal({
               onChange={(e) =>
                 setForm((prev) => ({ ...prev, name: e.target.value }))
               }
-              placeholder="เช่น Stardew Valley"
+              placeholder={
+                form.category === "app"
+                  ? "เช่น Goodnotes 6 หรือ Procreate Dreams"
+                  : "เช่น Stardew Valley"
+              }
               className="mt-1.5 w-full rounded-2xl border border-[#ffd6e5] bg-[#fff6f9] px-4 py-2.5 text-base text-[#2d1622] placeholder:text-[#6e485b]/70 focus:border-[#e11d68] focus:bg-white focus:outline-none"
             />
           </div>

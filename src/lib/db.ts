@@ -2,12 +2,13 @@ import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import { DatabaseSync } from "node:sqlite";
-import type { GameRate, GameRateInput, PlatformType } from "@/types/game";
+import type { CategoryType, GameRate, GameRateInput, PlatformType } from "@/types/game";
 
 interface GameRow {
   id: string;
   name: string;
   image: string;
+  category: CategoryType;
   platform: PlatformType;
   price_ios: number | null;
   price_android: number | null;
@@ -20,6 +21,7 @@ const SEED_GAMES: Array<GameRateInput & { id: string }> = [
     id: "seed-stardew-valley",
     name: "Stardew Valley",
     image: "/seed/stardew.svg",
+    category: "game",
     platform: "both",
     priceIos: 55,
     priceAndroid: 30,
@@ -28,6 +30,7 @@ const SEED_GAMES: Array<GameRateInput & { id: string }> = [
     id: "seed-minecraft-pocket",
     name: "Minecraft Pocket",
     image: "/seed/minecraft.svg",
+    category: "game",
     platform: "both",
     priceIos: 25,
     priceAndroid: 20,
@@ -36,6 +39,7 @@ const SEED_GAMES: Array<GameRateInput & { id: string }> = [
     id: "seed-procreate-dreams",
     name: "Procreate Dreams",
     image: "/seed/procreate.svg",
+    category: "app",
     platform: "ios",
     priceIos: 120,
     priceAndroid: null,
@@ -44,6 +48,7 @@ const SEED_GAMES: Array<GameRateInput & { id: string }> = [
     id: "seed-goodnotes-6",
     name: "Goodnotes 6",
     image: "/seed/goodnotes.svg",
+    category: "app",
     platform: "ios",
     priceIos: 99,
     priceAndroid: null,
@@ -52,6 +57,7 @@ const SEED_GAMES: Array<GameRateInput & { id: string }> = [
     id: "seed-terraria",
     name: "Terraria",
     image: "/seed/terraria.svg",
+    category: "game",
     platform: "both",
     priceIos: 55,
     priceAndroid: 30,
@@ -60,6 +66,7 @@ const SEED_GAMES: Array<GameRateInput & { id: string }> = [
     id: "seed-papas-freezeria",
     name: "Papa's Freezeria To Go!",
     image: "/seed/papas.svg",
+    category: "game",
     platform: "both",
     priceIos: 25,
     priceAndroid: 20,
@@ -68,6 +75,7 @@ const SEED_GAMES: Array<GameRateInput & { id: string }> = [
     id: "seed-dave-the-diver",
     name: "Dave the Diver Mobile",
     image: "/seed/diver.svg",
+    category: "game",
     platform: "android",
     priceIos: null,
     priceAndroid: 45,
@@ -76,6 +84,7 @@ const SEED_GAMES: Array<GameRateInput & { id: string }> = [
     id: "seed-human-fall-flat",
     name: "Human: Fall Flat",
     image: "/seed/human.svg",
+    category: "game",
     platform: "both",
     priceIos: 55,
     priceAndroid: 30,
@@ -94,6 +103,7 @@ function mapRow(row: GameRow): GameRate {
     id: row.id,
     name: row.name,
     image: row.image,
+    category: row.category === "app" ? "app" : "game",
     platform: row.platform,
     priceIos: row.price_ios,
     priceAndroid: row.price_android,
@@ -124,6 +134,7 @@ function getDb(): DatabaseSync {
       id TEXT PRIMARY KEY,
       name TEXT NOT NULL,
       image TEXT NOT NULL,
+      category TEXT NOT NULL DEFAULT 'game',
       platform TEXT NOT NULL,
       price_ios INTEGER,
       price_android INTEGER,
@@ -136,6 +147,17 @@ function getDb(): DatabaseSync {
     );
   `);
 
+  const columns = db
+    .prepare("PRAGMA table_info(games)")
+    .all() as unknown as Array<{ name: string }>;
+  const hasCategoryColumn = columns.some((col) => col.name === "category");
+  if (!hasCategoryColumn) {
+    db.exec("ALTER TABLE games ADD COLUMN category TEXT NOT NULL DEFAULT 'game'");
+    db.exec(
+      "UPDATE games SET category = 'app' WHERE id IN ('seed-procreate-dreams', 'seed-goodnotes-6')"
+    );
+  }
+
   const seededRow = db
     .prepare("SELECT value FROM meta WHERE key = 'seeded'")
     .get() as { value: string } | undefined;
@@ -143,8 +165,8 @@ function getDb(): DatabaseSync {
   if (!seededRow) {
     const insertStmt = db.prepare(`
       INSERT OR IGNORE INTO games (
-        id, name, image, platform, price_ios, price_android, created_at, updated_at
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        id, name, image, category, platform, price_ios, price_android, created_at, updated_at
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     `);
 
     const baseTimeMs = Date.now() - SEED_GAMES.length * 1000;
@@ -154,6 +176,7 @@ function getDb(): DatabaseSync {
         item.id,
         item.name,
         item.image,
+        item.category,
         item.platform,
         item.priceIos,
         item.priceAndroid,
@@ -175,6 +198,7 @@ function getDb(): DatabaseSync {
 export function listGames(filter?: {
   query?: string;
   platform?: "all" | PlatformType;
+  category?: "all" | CategoryType;
 }): GameRate[] {
   const db = getDb();
   const rows = db
@@ -182,6 +206,11 @@ export function listGames(filter?: {
     .all() as unknown as GameRow[];
 
   let games = rows.map(mapRow);
+
+  const category = filter?.category;
+  if (category === "game" || category === "app") {
+    games = games.filter((g) => g.category === category);
+  }
 
   const platform = filter?.platform;
   if (platform === "ios") {
@@ -214,6 +243,7 @@ export function createGame(input: GameRateInput): GameRate {
   const db = getDb();
   const id = crypto.randomUUID();
   const now = new Date().toISOString();
+  const category: CategoryType = input.category === "app" ? "app" : "game";
   const priceIos =
     input.platform === "both" || input.platform === "ios"
       ? input.priceIos
@@ -225,12 +255,13 @@ export function createGame(input: GameRateInput): GameRate {
 
   db.prepare(
     `INSERT INTO games (
-      id, name, image, platform, price_ios, price_android, created_at, updated_at
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
+      id, name, image, category, platform, price_ios, price_android, created_at, updated_at
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
   ).run(
     id,
     input.name.trim(),
     input.image.trim(),
+    category,
     input.platform,
     priceIos,
     priceAndroid,
@@ -242,6 +273,7 @@ export function createGame(input: GameRateInput): GameRate {
     id,
     name: input.name.trim(),
     image: input.image.trim(),
+    category,
     platform: input.platform,
     priceIos,
     priceAndroid,
@@ -258,6 +290,7 @@ export function updateGame(id: string, input: GameRateInput): GameRate | null {
   }
 
   const now = new Date().toISOString();
+  const category: CategoryType = input.category === "app" ? "app" : "game";
   const priceIos =
     input.platform === "both" || input.platform === "ios"
       ? input.priceIos
@@ -269,11 +302,12 @@ export function updateGame(id: string, input: GameRateInput): GameRate | null {
 
   db.prepare(
     `UPDATE games
-     SET name = ?, image = ?, platform = ?, price_ios = ?, price_android = ?, updated_at = ?
+     SET name = ?, image = ?, category = ?, platform = ?, price_ios = ?, price_android = ?, updated_at = ?
      WHERE id = ?`
   ).run(
     input.name.trim(),
     input.image.trim(),
+    category,
     input.platform,
     priceIos,
     priceAndroid,
@@ -285,6 +319,7 @@ export function updateGame(id: string, input: GameRateInput): GameRate | null {
     id,
     name: input.name.trim(),
     image: input.image.trim(),
+    category,
     platform: input.platform,
     priceIos,
     priceAndroid,

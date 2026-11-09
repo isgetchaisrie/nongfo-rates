@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { GameRate } from "@/types/game";
 import {
+  computeCategoryCounts,
   computePlatformCounts,
   filterGames,
 } from "@/components/storefront/filterGames";
@@ -10,6 +11,7 @@ const sampleGames: GameRate[] = [
     id: "stardew-valley",
     name: "Stardew Valley",
     image: "/seed/stardew.svg",
+    category: "game",
     platform: "both",
     priceIos: 55,
     priceAndroid: 30,
@@ -20,6 +22,7 @@ const sampleGames: GameRate[] = [
     id: "procreate-dreams",
     name: "Procreate Dreams",
     image: "/seed/procreate.svg",
+    category: "app",
     platform: "ios",
     priceIos: 120,
     priceAndroid: null,
@@ -30,6 +33,7 @@ const sampleGames: GameRate[] = [
     id: "dave-the-diver",
     name: "Dave the Diver Mobile",
     image: "/seed/dave.svg",
+    category: "game",
     platform: "android",
     priceIos: null,
     priceAndroid: 45,
@@ -40,6 +44,7 @@ const sampleGames: GameRate[] = [
     id: "goodnotes-6",
     name: "Goodnotes 6",
     image: "/seed/goodnotes.svg",
+    category: "app",
     platform: "ios",
     priceIos: 99,
     priceAndroid: null,
@@ -75,6 +80,21 @@ describe("filterGames", () => {
     ]);
   });
 
+  it("filters by category ('game' vs 'app') combined with platform and search", () => {
+    expect(filterGames(sampleGames, "", "all", "game").map((g) => g.id)).toEqual([
+      "stardew-valley",
+      "dave-the-diver",
+    ]);
+    expect(filterGames(sampleGames, "", "all", "app").map((g) => g.id)).toEqual([
+      "procreate-dreams",
+      "goodnotes-6",
+    ]);
+    expect(filterGames(sampleGames, "", "ios", "game").map((g) => g.id)).toEqual([
+      "stardew-valley",
+    ]);
+    expect(filterGames(sampleGames, "", "android", "app")).toEqual([]);
+  });
+
   it("matches game names case-insensitively and trims whitespace", () => {
     const result = filterGames(sampleGames, "   sTaRdEw  ", "all");
     expect(result).toHaveLength(1);
@@ -93,7 +113,7 @@ describe("filterGames", () => {
   });
 });
 
-describe("computePlatformCounts", () => {
+describe("computePlatformCounts and computeCategoryCounts", () => {
   it("computes counts across all games when query is omitted or empty", () => {
     expect(computePlatformCounts(sampleGames)).toEqual({
       all: 4,
@@ -107,9 +127,25 @@ describe("computePlatformCounts", () => {
       android: 2,
       both: 1,
     });
+    expect(computeCategoryCounts(sampleGames)).toEqual({
+      all: 4,
+      game: 2,
+      app: 2,
+    });
   });
 
-  it("computes counts filtered by search query", () => {
+  it("computes counts filtered by search query and category/platform", () => {
+    expect(computePlatformCounts(sampleGames, "", "app")).toEqual({
+      all: 2,
+      ios: 2,
+      android: 0,
+      both: 0,
+    });
+    expect(computeCategoryCounts(sampleGames, "", "android")).toEqual({
+      all: 2,
+      game: 2,
+      app: 0,
+    });
     expect(computePlatformCounts(sampleGames, "procreate")).toEqual({
       all: 1,
       ios: 1,

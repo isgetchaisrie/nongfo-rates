@@ -2,11 +2,12 @@ import { NextResponse } from "next/server";
 import { isAdminAuthenticated } from "@/lib/auth";
 import { createGame, listGames } from "@/lib/db";
 import { validateGameInput } from "@/lib/validation";
-import type { PlatformType } from "@/types/game";
+import type { CategoryType, PlatformType } from "@/types/game";
 
 export async function GET(request: Request) {
   let query: string | undefined;
   let platform: "all" | PlatformType | undefined;
+  let category: "all" | CategoryType | undefined;
 
   if (request) {
     const url = new URL(request.url);
@@ -20,9 +21,17 @@ export async function GET(request: Request) {
     ) {
       platform = rawPlatform;
     }
+    const rawCategory = url.searchParams.get("category");
+    if (
+      rawCategory === "all" ||
+      rawCategory === "game" ||
+      rawCategory === "app"
+    ) {
+      category = rawCategory;
+    }
   }
 
-  const games = listGames({ query, platform });
+  const games = listGames({ query, platform, category });
   return NextResponse.json({ games });
 }
 
