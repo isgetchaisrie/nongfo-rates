@@ -6,7 +6,23 @@ import { RateBoardClient } from "@/components/storefront/RateBoardClient";
 
 export const dynamic = "force-dynamic";
 
-export default async function HomePage() {
+export default async function HomePage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ tab?: string; category?: string }>;
+}) {
+  const resolvedParams = searchParams ? await searchParams : undefined;
+  const initialSection =
+    resolvedParams?.tab === "rates" ||
+    resolvedParams?.tab === "contact" ||
+    resolvedParams?.tab === "account"
+      ? resolvedParams.tab
+      : "account";
+  const initialCategory =
+    resolvedParams?.category === "app" || resolvedParams?.category === "game"
+      ? resolvedParams.category
+      : "all";
+
   let games: GameRate[] = [];
   let settings: StoreSettings = DEFAULT_STORE_SETTINGS;
   try {
@@ -21,6 +37,10 @@ export default async function HomePage() {
   }
 
   return (
-    <RateBoardClient initialGames={games} initialSettings={settings} />
+    <RateBoardClient
+      initialGames={games}
+      initialSettings={settings}
+      initialSection={initialSection}
+    />
   );
 }

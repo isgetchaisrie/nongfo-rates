@@ -227,7 +227,7 @@ export function PaymentAccountSection({
 
       {/* Main Pattistore Glass Card */}
       <div className="mx-auto max-w-[430px] space-y-4">
-      <div className="glass-card relative z-10 rounded-[40px] p-3">
+      <div className="gingham-frame relative z-10 rounded-[36px] p-2.5 sm:rounded-[44px] sm:p-3.5 border-3 border-white shadow-[0_12px_36px_rgba(244,143,177,0.3)]">
         <svg
           aria-hidden="true"
           className="anim-float-1 pointer-events-none absolute -top-4 -left-2 z-20 h-9 w-9 text-[#F8BBD0] drop-shadow-xs"
@@ -245,29 +245,9 @@ export function PaymentAccountSection({
           <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
         </svg>
 
-        {/* Animated Dashed Frame + QR Image */}
-        <div className="relative z-10 rounded-[36px] p-2">
-          <svg
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-0 h-full w-full"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <rect
-              x="2"
-              y="2"
-              width="calc(100% - 4px)"
-              height="calc(100% - 4px)"
-              rx="34"
-              ry="34"
-              fill="none"
-              stroke="#F8BBD0"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="animate-dash"
-            />
-          </svg>
-          <div className="relative overflow-hidden rounded-[28px] border-4 border-white bg-white shadow-xs">
+        <div className="relative z-10 rounded-[28px] border-2 border-white bg-white/95 p-3 sm:rounded-[36px] sm:p-4 shadow-xs backdrop-blur-md">
+          {/* QR Image */}
+          <div className="relative overflow-hidden rounded-[22px] border-3 border-white bg-white shadow-xs sm:rounded-[28px]">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={currentSettings.qrImage || "/payment-qr.jpg"}
@@ -279,15 +259,14 @@ export function PaymentAccountSection({
               className="h-auto w-full object-cover"
             />
           </div>
-        </div>
 
-        {/* Save QR Button */}
-        <div className="mt-2 px-2">
-          <button
-            type="button"
-            onClick={handleDownloadQr}
-            className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-full border border-white bg-[#FCE4EC] px-6 py-3 text-sm font-bold text-[#5c4338] shadow-md transition-all hover:bg-[#F8BBD0] active:scale-95"
-          >
+          {/* Save QR Button */}
+          <div className="mt-3 px-1">
+            <button
+              type="button"
+              onClick={handleDownloadQr}
+              className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-full border border-white bg-[#FCE4EC] px-6 py-3 text-sm font-bold text-[#5c4338] shadow-md transition-all hover:bg-[#F8BBD0] active:scale-95"
+            >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -672,6 +651,7 @@ export function PaymentAccountSection({
               </div>
             </div>
           </div>
+        </div>
         </div>
       </div>
 

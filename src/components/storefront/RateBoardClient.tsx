@@ -276,9 +276,10 @@ export function RateBoardClient({
 
         <section
           aria-label="ค้นหาและกรองรายการเกมและแอป"
-          className="glass-card sticky top-2 z-20 mb-4 rounded-[22px] p-2.5 sm:top-3 sm:mb-8 sm:rounded-[28px] sm:p-3.5"
+          className="gingham-frame sticky top-2 z-20 mb-4 rounded-[26px] p-2 sm:top-3 sm:mb-8 sm:rounded-[32px] sm:p-2.5 border-3 border-white shadow-[0_12px_36px_rgba(244,143,177,0.25)]"
         >
-          <div className="flex flex-col gap-2.5">
+          <div className="rounded-[20px] border-2 border-white bg-white/95 p-2 sm:rounded-[26px] sm:p-3 shadow-xs backdrop-blur-md">
+            <div className="flex flex-col gap-2.5">
             <SearchBar value={query} onChange={setQuery} />
 
             <div className="flex flex-wrap items-center justify-between gap-2 border-t border-[#F8BBD0]/40 pt-2 sm:pt-2.5">
@@ -370,6 +371,7 @@ export function RateBoardClient({
               </p>
             </div>
           </div>
+          </div>
         </section>
 
         {visibleGames.length > 0 ? (
@@ -381,8 +383,9 @@ export function RateBoardClient({
                 ))}
               </div>
             ) : (
-              <div className="glass-card overflow-hidden rounded-[24px] border border-[#F8BBD0]/70 sm:rounded-[32px]">
-                <div className="overflow-x-auto">
+              <div className="gingham-frame overflow-hidden rounded-[28px] p-2 sm:rounded-[36px] sm:p-2.5 border-3 border-white shadow-[0_12px_36px_rgba(244,143,177,0.25)]">
+                <div className="overflow-hidden rounded-[22px] border-2 border-white bg-white/95 shadow-xs backdrop-blur-md sm:rounded-[30px]">
+                  <div className="overflow-x-auto">
                   <table className="w-full border-collapse text-left">
                     <thead>
                       <tr className="border-b border-[#F8BBD0]/60 bg-[#FCE4EC]/75 font-[var(--font-mali)] text-xs font-bold text-[#4a352c] sm:text-sm">
@@ -470,14 +473,16 @@ export function RateBoardClient({
                     </tbody>
                   </table>
                 </div>
+                </div>
               </div>
             )}
           </section>
         ) : (
           <section
             aria-label="ไม่พบรายการเกมหรือแอป"
-            className="glass-card flex flex-col items-center justify-center rounded-[36px] px-6 py-16 text-center"
+            className="gingham-frame flex flex-col items-center justify-center rounded-[36px] p-2.5 sm:p-3.5 border-3 border-white shadow-[0_12px_36px_rgba(244,143,177,0.25)] text-center"
           >
+            <div className="flex flex-col items-center justify-center w-full rounded-[28px] border-2 border-white bg-white/95 px-6 py-14 shadow-xs backdrop-blur-md">
             <CatMascot
               variant="empty"
               label="น้องแมวหารายการไม่เจอ"
@@ -497,6 +502,7 @@ export function RateBoardClient({
               <RotateCcw aria-hidden="true" className="h-4 w-4 text-[#b81452]" />
               <span>ดูรายการทั้งหมดเลยน้า</span>
             </button>
+            </div>
           </section>
             )}
           </>

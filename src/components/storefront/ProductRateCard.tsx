@@ -44,7 +44,7 @@ export function ProductRateCard({ game }: ProductRateCardProps) {
   const isApp = game.category === "app";
 
   return (
-    <article className="neko-card group flex flex-col rounded-[24px] p-2.5 sm:rounded-[32px] sm:p-4">
+    <article className="neko-card group flex flex-col rounded-[24px] p-2 sm:rounded-[32px] sm:p-2.5">
       <svg
         aria-hidden="true"
         viewBox="0 0 24 24"
@@ -54,29 +54,8 @@ export function ProductRateCard({ game }: ProductRateCardProps) {
         <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
       </svg>
 
-      <div className="relative p-1 sm:p-1.5">
-        <svg
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0 h-full w-full"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <rect
-            x="2"
-            y="2"
-            width="calc(100% - 4px)"
-            height="calc(100% - 4px)"
-            rx="20"
-            ry="20"
-            fill="none"
-            stroke="#F8BBD0"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="animate-dash"
-          />
-        </svg>
-
-        <div className="relative aspect-square w-full overflow-hidden rounded-[16px] border-2 border-white bg-[#FCE4EC]/40 shadow-xs sm:rounded-[22px] sm:border-[3px]">
+      <div className="relative flex flex-1 flex-col rounded-[18px] border-2 border-white bg-white/95 p-2 sm:rounded-[24px] sm:p-3 shadow-xs backdrop-blur-md">
+        <div className="relative aspect-square w-full overflow-hidden rounded-[14px] border-2 border-white bg-[#FCE4EC]/40 shadow-xs sm:rounded-[20px] sm:border-[2.5px]">
           <img
             src={game.image}
             alt={game.name}
@@ -101,41 +80,41 @@ export function ProductRateCard({ game }: ProductRateCardProps) {
             {PLATFORM_LABELS[game.platform]}
           </span>
         </div>
+
+        <h2 className="mt-2 mb-1.5 line-clamp-2 min-h-[2.5rem] px-0.5 font-[var(--font-mali)] text-sm font-bold leading-snug text-[#4a352c] sm:mt-3 sm:mb-2.5 sm:min-h-[3.25rem] sm:text-lg">
+          {game.name}
+        </h2>
+
+        <dl className="mt-auto grid grid-cols-2 gap-1.5 sm:gap-2">
+          <div className="relative overflow-hidden rounded-xl border border-white bg-gradient-to-br from-[#FCE4EC] to-[#FFF0F6] p-1.5 sm:p-2.5 shadow-xs">
+            <dt className="flex items-center gap-1 text-xs font-bold text-[#6d5246] sm:gap-1.5">
+              <MiniIosIcon />
+              <span>iOS</span>
+            </dt>
+            <dd
+              className={`mt-0.5 font-[var(--font-fredoka)] text-base font-bold tabular-nums sm:mt-1 sm:text-xl ${
+                hasIos ? "text-[#b81452]" : "text-[#84685b]"
+              }`}
+            >
+              {hasIos ? `฿${game.priceIos}` : "—"}
+            </dd>
+          </div>
+
+          <div className="relative overflow-hidden rounded-xl border border-white bg-gradient-to-br from-[#E8F0FE] to-[#E0F2F1] p-1.5 sm:p-2.5 shadow-xs">
+            <dt className="flex items-center gap-1 text-xs font-bold text-[#134e3a] sm:gap-1.5">
+              <MiniAndroidIcon />
+              <span>Android</span>
+            </dt>
+            <dd
+              className={`mt-0.5 font-[var(--font-fredoka)] text-base font-bold tabular-nums sm:mt-1 sm:text-xl ${
+                hasAndroid ? "text-[#0f5137]" : "text-[#4b6e5f]"
+              }`}
+            >
+              {hasAndroid ? `฿${game.priceAndroid}` : "—"}
+            </dd>
+          </div>
+        </dl>
       </div>
-
-      <h2 className="mt-2.5 mb-2 line-clamp-2 min-h-[2.5rem] px-1 font-[var(--font-mali)] text-sm font-bold leading-snug text-[#4a352c] sm:mt-3.5 sm:mb-3 sm:min-h-[3.25rem] sm:text-lg">
-        {game.name}
-      </h2>
-
-      <dl className="mt-auto grid grid-cols-2 gap-1.5 sm:gap-2.5">
-        <div className="relative overflow-hidden rounded-xl border border-white bg-gradient-to-br from-[#FCE4EC] to-[#FFF0F6] p-2 shadow-xs sm:rounded-2xl sm:p-3">
-          <dt className="flex items-center gap-1 text-xs font-bold text-[#6d5246] sm:gap-1.5">
-            <MiniIosIcon />
-            <span>iOS</span>
-          </dt>
-          <dd
-            className={`mt-0.5 font-[var(--font-fredoka)] text-base font-bold tabular-nums sm:mt-1 sm:text-xl ${
-              hasIos ? "text-[#b81452]" : "text-[#84685b]"
-            }`}
-          >
-            {hasIos ? `฿${game.priceIos}` : "—"}
-          </dd>
-        </div>
-
-        <div className="relative overflow-hidden rounded-xl border border-white bg-gradient-to-br from-[#E8F0FE] to-[#E0F2F1] p-2 shadow-xs sm:rounded-2xl sm:p-3">
-          <dt className="flex items-center gap-1 text-xs font-bold text-[#134e3a] sm:gap-1.5">
-            <MiniAndroidIcon />
-            <span>Android</span>
-          </dt>
-          <dd
-            className={`mt-0.5 font-[var(--font-fredoka)] text-base font-bold tabular-nums sm:mt-1 sm:text-xl ${
-              hasAndroid ? "text-[#0f5137]" : "text-[#4b6e5f]"
-            }`}
-          >
-            {hasAndroid ? `฿${game.priceAndroid}` : "—"}
-          </dd>
-        </div>
-      </dl>
     </article>
   );
 }

@@ -53,7 +53,7 @@ export function ContactAdminSection({ settings }: ContactAdminSectionProps) {
       className="mx-auto w-full max-w-[440px] space-y-4 pt-1 pb-6"
     >
       {/* Profile Card (Linktree / Bio style) */}
-      <div className="glass-card relative z-10 overflow-hidden rounded-[36px] p-5 text-center shadow-lg sm:p-6">
+      <div className="gingham-frame relative z-10 overflow-hidden rounded-[36px] p-2.5 sm:p-3.5 border-3 border-white shadow-[0_12px_36px_rgba(244,143,177,0.3)] text-center">
         {/* Ambient cute floating stars & hearts */}
         <div
           aria-hidden="true"
@@ -72,6 +72,7 @@ export function ContactAdminSection({ settings }: ContactAdminSectionProps) {
           </svg>
         </div>
 
+        <div className="relative rounded-[28px] border-2 border-white bg-white/95 p-4 sm:p-6 shadow-xs backdrop-blur-md">
         {/* Center Circular Profile Avatar */}
         <div className="relative mx-auto mt-1 mb-3.5 flex w-fit items-center justify-center">
           <div className="relative">
@@ -170,6 +171,7 @@ export function ContactAdminSection({ settings }: ContactAdminSectionProps) {
               </span>
             </div>
           </a>
+        </div>
         </div>
       </div>
 
