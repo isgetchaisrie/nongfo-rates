@@ -125,59 +125,59 @@ describe("SQLite games database and seed data", () => {
     fs.rmSync(tmpDir, { recursive: true, force: true });
   });
 
-  it("seeds the 8 curated games with existing SVG cover files on initial load", () => {
+  it("seeds the 26 real games and apps with existing logo files on initial load", () => {
     const games = listGames();
-    expect(games).toHaveLength(8);
+    expect(games).toHaveLength(26);
 
     const names = games.map((g) => g.name);
     expect(names).toEqual(
       expect.arrayContaining([
+        "Minecraft (มายคราฟแท้ 100%)",
         "Stardew Valley",
-        "Minecraft Pocket",
-        "Procreate Dreams",
-        "Goodnotes 6",
+        "Procreate (เฉพาะ iPad)",
+        "ibisPaint X (ไอบิสเพนท์)",
         "Terraria",
-        "Papa's Freezeria To Go!",
-        "Dave the Diver Mobile",
+        "Papa's To Go! (ภาคคลาสสิก: Freezeria, Burgeria ฯลฯ)",
+        "Dave the Diver",
         "Human: Fall Flat",
       ])
     );
 
     for (const game of games) {
-      expect(game.image.startsWith("/seed/")).toBe(true);
-      const svgDiskPath = path.join(process.cwd(), "public", game.image);
-      expect(fs.existsSync(svgDiskPath)).toBe(true);
-      const svgContent = fs.readFileSync(svgDiskPath, "utf8");
-      expect(svgContent).toContain("<svg");
+      expect(game.image.startsWith("/logos/")).toBe(true);
+      const logoDiskPath = path.join(process.cwd(), "public", game.image);
+      expect(fs.existsSync(logoDiskPath)).toBe(true);
     }
   });
 
   it("filters games by platform, category, and case-insensitive search query", () => {
     const iosGames = listGames({ platform: "ios" });
-    expect(iosGames).toHaveLength(7);
+    expect(iosGames).toHaveLength(24);
     expect(iosGames.every((g) => g.platform === "ios" || g.platform === "both")).toBe(
       true
     );
 
     const androidGames = listGames({ platform: "android" });
-    expect(androidGames).toHaveLength(6);
+    expect(androidGames).toHaveLength(17);
     expect(
       androidGames.every((g) => g.platform === "android" || g.platform === "both")
     ).toBe(true);
 
     const onlyGames = listGames({ category: "game" });
-    expect(onlyGames).toHaveLength(6);
+    expect(onlyGames).toHaveLength(24);
     expect(onlyGames.every((g) => g.category === "game")).toBe(true);
 
     const onlyApps = listGames({ category: "app" });
     expect(onlyApps).toHaveLength(2);
     expect(onlyApps.map((g) => g.name)).toEqual(
-      expect.arrayContaining(["Procreate Dreams", "Goodnotes 6"])
+      expect.arrayContaining([
+        "Procreate (เฉพาะ iPad)",
+        "ibisPaint X (ไอบิสเพนท์)",
+      ])
     );
 
     const searched = listGames({ query: "papa" });
-    expect(searched).toHaveLength(1);
-    expect(searched[0]?.name).toBe("Papa's Freezeria To Go!");
+    expect(searched).toHaveLength(2);
   });
 
   it("performs create, getById, update, and delete without re-seeding when all rows are deleted", () => {
@@ -220,7 +220,7 @@ describe("SQLite games database and seed data", () => {
     );
     expect(getRes.status).toBe(200);
     const getBody = (await getRes.json()) as { games: unknown[] };
-    expect(getBody.games).toHaveLength(7);
+    expect(getBody.games).toHaveLength(24);
 
     // Unauthenticated POST should fail with 401
     vi.spyOn(auth, "isAdminAuthenticated").mockResolvedValue(false);

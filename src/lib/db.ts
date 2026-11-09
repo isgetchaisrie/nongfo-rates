@@ -18,76 +18,238 @@ interface GameRow {
 
 const SEED_GAMES: Array<GameRateInput & { id: string }> = [
   {
-    id: "seed-stardew-valley",
+    id: "minecraft",
+    name: "Minecraft (มายคราฟแท้ 100%)",
+    image: "/logos/minecraft.png",
+    category: "game",
+    platform: "both",
+    priceIos: 15,
+    priceAndroid: 15,
+  },
+  {
+    id: "hitman",
+    name: "Hitman: Absolution",
+    image: "/logos/hitman.png",
+    category: "game",
+    platform: "both",
+    priceIos: 100,
+    priceAndroid: 65,
+  },
+  {
+    id: "papas_new",
+    name: "Papa's To Go! (ภาคใหม่: Paleteria, Cluckeria, ฯลฯ)",
+    image: "/logos/papas_new.png",
+    category: "game",
+    platform: "both",
+    priceIos: 35,
+    priceAndroid: 30,
+  },
+  {
+    id: "papas_classic",
+    name: "Papa's To Go! (ภาคคลาสสิก: Freezeria, Burgeria ฯลฯ)",
+    image: "/logos/papas_classic.png",
+    category: "game",
+    platform: "both",
+    priceIos: 15,
+    priceAndroid: 15,
+  },
+  {
+    id: "gta_san_classic",
+    name: "Grand Theft Auto: San Andreas (Classic)",
+    image: "/logos/gta_san_classic.png",
+    category: "game",
+    platform: "both",
+    priceIos: 65,
+    priceAndroid: 30,
+  },
+  {
+    id: "gta_3",
+    name: "Grand Theft Auto III",
+    image: "/logos/gta_3.png",
+    category: "game",
+    platform: "both",
+    priceIos: 65,
+    priceAndroid: 30,
+  },
+  {
+    id: "gta_vc",
+    name: "Grand Theft Auto: Vice City",
+    image: "/logos/gta_vc.png",
+    category: "game",
+    platform: "both",
+    priceIos: 65,
+    priceAndroid: 30,
+  },
+  {
+    id: "gta_sa_definitive",
+    name: "GTA: San Andreas - Definitive Edition",
+    image: "/logos/gta_sa_definitive.png",
+    category: "game",
+    platform: "both",
+    priceIos: 115,
+    priceAndroid: 65,
+  },
+  {
+    id: "saints_row_3",
+    name: "Saints Row: The Third Remastered",
+    image: "/logos/saints_row_3.png",
+    category: "game",
+    platform: "ios",
+    priceIos: 130,
+    priceAndroid: null,
+  },
+  {
+    id: "stardew",
     name: "Stardew Valley",
-    image: "/seed/stardew.svg",
+    image: "/logos/stardew.png",
     category: "game",
     platform: "both",
     priceIos: 55,
     priceAndroid: 30,
   },
   {
-    id: "seed-minecraft-pocket",
-    name: "Minecraft Pocket",
-    image: "/seed/minecraft.svg",
+    id: "terraria",
+    name: "Terraria",
+    image: "/logos/terraria.png",
     category: "game",
     platform: "both",
-    priceIos: 25,
-    priceAndroid: 20,
+    priceIos: 55,
+    priceAndroid: 30,
   },
   {
-    id: "seed-procreate-dreams",
-    name: "Procreate Dreams",
-    image: "/seed/procreate.svg",
+    id: "human_fall_flat",
+    name: "Human: Fall Flat",
+    image: "/logos/human_fall_flat.png",
+    category: "game",
+    platform: "both",
+    priceIos: 55,
+    priceAndroid: 30,
+  },
+  {
+    id: "sifu",
+    name: "SIFU",
+    image: "/logos/sifu.png",
+    category: "game",
+    platform: "ios",
+    priceIos: 70,
+    priceAndroid: null,
+  },
+  {
+    id: "grid_legends",
+    name: "GRID Legends: Deluxe Edition",
+    image: "/logos/grid_legends.png",
+    category: "game",
+    platform: "ios",
+    priceIos: 120,
+    priceAndroid: null,
+  },
+  {
+    id: "grid_autosport",
+    name: "GRID Autosport",
+    image: "/logos/grid_autosport.png",
+    category: "game",
+    platform: "ios",
+    priceIos: 80,
+    priceAndroid: null,
+  },
+  {
+    id: "red_dead",
+    name: "Red Dead Redemption",
+    image: "/logos/red_dead.png",
+    category: "game",
+    platform: "android",
+    priceIos: null,
+    priceAndroid: 90,
+  },
+  {
+    id: "dealers_life_2",
+    name: "Dealer's Life 2 (Pawn Shop Tycoon)",
+    image: "/logos/dealers_life_2.png",
+    category: "game",
+    platform: "both",
+    priceIos: 65,
+    priceAndroid: 30,
+  },
+  {
+    id: "tabs",
+    name: "TABS: Pocket Edition (Totally Accurate Battle Simulator)",
+    image: "/logos/tabs.png",
+    category: "game",
+    platform: "ios",
+    priceIos: 55,
+    priceAndroid: null,
+  },
+  {
+    id: "ibispaint",
+    name: "ibisPaint X (ไอบิสเพนท์)",
+    image: "/logos/ibispaint.png",
+    category: "app",
+    platform: "both",
+    priceIos: 120,
+    priceAndroid: 40,
+  },
+  {
+    id: "toasties",
+    name: "Toasties: grilled cheese game",
+    image: "/logos/toasties.png",
+    category: "game",
+    platform: "ios",
+    priceIos: 50,
+    priceAndroid: null,
+  },
+  {
+    id: "procreate",
+    name: "Procreate (เฉพาะ iPad)",
+    image: "/logos/procreate.png",
     category: "app",
     platform: "ios",
     priceIos: 120,
     priceAndroid: null,
   },
   {
-    id: "seed-goodnotes-6",
-    name: "Goodnotes 6",
-    image: "/seed/goodnotes.svg",
-    category: "app",
+    id: "santhai",
+    name: "สารไทย (Santhai)",
+    image: "/logos/santhai.png",
+    category: "game",
     platform: "ios",
-    priceIos: 99,
+    priceIos: 65,
     priceAndroid: null,
   },
   {
-    id: "seed-terraria",
-    name: "Terraria",
-    image: "/seed/terraria.svg",
+    id: "naruto",
+    name: "Naruto (นารูโตะ ผจญภัยโลกนินจา)",
+    image: "/logos/naruto.png",
     category: "game",
     platform: "both",
-    priceIos: 55,
-    priceAndroid: 30,
+    priceIos: 75,
+    priceAndroid: 50,
   },
   {
-    id: "seed-papas-freezeria",
-    name: "Papa's Freezeria To Go!",
-    image: "/seed/papas.svg",
+    id: "shadow_fight_2",
+    name: "Shadow Fight 2: Special Edition",
+    image: "/logos/shadow_fight_2.png",
     category: "game",
     platform: "both",
-    priceIos: 25,
-    priceAndroid: 20,
+    priceIos: 65,
+    priceAndroid: 40,
   },
   {
-    id: "seed-dave-the-diver",
-    name: "Dave the Diver Mobile",
-    image: "/seed/diver.svg",
+    id: "dave_the_diver",
+    name: "Dave the Diver",
+    image: "/logos/dave_the_diver.png",
     category: "game",
     platform: "android",
     priceIos: null,
     priceAndroid: 45,
   },
   {
-    id: "seed-human-fall-flat",
-    name: "Human: Fall Flat",
-    image: "/seed/human.svg",
+    id: "bully",
+    name: "Bully: Anniversary Edition",
+    image: "/logos/bully.png",
     category: "game",
-    platform: "both",
-    priceIos: 55,
-    priceAndroid: 30,
+    platform: "ios",
+    priceIos: 75,
+    priceAndroid: null,
   },
 ];
 
@@ -162,16 +324,20 @@ function getDb(): DatabaseSync {
     .prepare("SELECT value FROM meta WHERE key = 'seeded'")
     .get() as { value: string } | undefined;
 
-  if (!seededRow) {
+  if (!seededRow || seededRow.value !== "2") {
+    db.exec("DELETE FROM games WHERE id LIKE 'seed-%'");
     const insertStmt = db.prepare(`
-      INSERT OR IGNORE INTO games (
+      INSERT OR REPLACE INTO games (
         id, name, image, category, platform, price_ios, price_android, created_at, updated_at
       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     `);
 
     const baseTimeMs = Date.now() - SEED_GAMES.length * 1000;
     SEED_GAMES.forEach((item, index) => {
-      const iso = new Date(baseTimeMs + index * 1000).toISOString();
+      // Ordered so item 0 (Minecraft) has the newest timestamp and appears first
+      const iso = new Date(
+        baseTimeMs + (SEED_GAMES.length - index) * 1000
+      ).toISOString();
       insertStmt.run(
         item.id,
         item.name,
@@ -186,7 +352,7 @@ function getDb(): DatabaseSync {
     });
 
     db.prepare(
-      "INSERT OR REPLACE INTO meta (key, value) VALUES ('seeded', '1')"
+      "INSERT OR REPLACE INTO meta (key, value) VALUES ('seeded', '2')"
     ).run();
   }
 
