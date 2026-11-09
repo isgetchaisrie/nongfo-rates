@@ -13,10 +13,7 @@ import {
 import type { GameRate } from "@/types/game";
 import { CatMascot } from "@/components/mascot/CatMascot";
 import { CatFloatingWidget } from "@/components/mascot/CatFloatingWidget";
-import {
-  KawaiiCatPlayground,
-  KawaiiCatSprite,
-} from "@/components/mascot/KawaiiCatPlayground";
+import { KawaiiCatSprite } from "@/components/mascot/KawaiiCatPlayground";
 import {
   computeCategoryCounts,
   computePlatformCounts,
@@ -242,7 +239,7 @@ export function RateBoardClient({ initialGames }: RateBoardClientProps) {
             {/* Cute Interactive Kawaii Cat Parade Strip */}
             <div className="mt-4 flex flex-wrap items-center justify-center gap-2 border-t border-[#F8BBD0]/45 pt-3 sm:mt-5 sm:gap-2.5 sm:pt-4 md:justify-between">
               <span className="inline-flex items-center gap-1.5 rounded-full border border-white bg-[#FCE4EC] px-3 py-1 text-center text-xs font-bold text-[#4a352c] shadow-xs sm:px-3.5">
-                แก๊งน้องแมว Nongfo พร้อมต้อนรับ (จิ้มทักทายน้องแมวที่เดินทัวร์ได้น้า~)
+                แก๊งน้องแมว Nongfo พร้อมต้อนรับเลือกชมเกมและแอปแท้ราคาน่ารัก~
               </span>
               <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-3">
                 {[
@@ -510,7 +507,6 @@ export function RateBoardClient({ initialGames }: RateBoardClientProps) {
         )}
       </main>
 
-      <KawaiiCatPlayground />
       <CatFloatingWidget />
     </div>
   );
