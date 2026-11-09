@@ -182,94 +182,51 @@ export function RateBoardClient({
 
           <div className="relative rounded-[22px] border-2 border-white bg-white/95 p-3.5 sm:rounded-[36px] sm:p-6 shadow-xs backdrop-blur-md">
 
-            <div className="flex flex-row items-center justify-between gap-3 md:gap-6">
+            <div className="flex flex-row items-center justify-between gap-4 md:gap-6">
               <div className="min-w-0 flex-1 text-left">
-                <h1 className="font-[var(--font-mali)] text-lg font-bold leading-snug text-[#4a352c] sm:text-3xl lg:text-4xl">
+                <div className="inline-flex items-center gap-1.5 rounded-full border border-[#f0e4dc] bg-[#fffaf8] px-3 py-1 text-xs font-semibold text-[#8a6b5c] shadow-2xs mb-2">
+                  <span className="h-2 w-2 rounded-full bg-[#16a34a]" />
+                  <span>เรทราคาพร้อมส่ง อัปเดตล่าสุด</span>
+                </div>
+                <h1 className="font-[var(--font-mali)] text-xl font-bold leading-snug text-[#3d271d] sm:text-3xl lg:text-4xl">
                   ตารางเรทราคา{" "}
-                  <span className="relative inline-block rounded-xl border border-[#F8BBD0] bg-[#FCE4EC] px-2 py-0.5 text-[#b81452] sm:rounded-2xl sm:px-3">
+                  <span className="relative inline-block rounded-xl border border-[#ffd6e5] bg-[#FFF0F6] px-2.5 py-0.5 text-[#9d174d] sm:rounded-2xl sm:px-3.5">
                     เกมและแอปแท้
-                    <svg
-                      aria-hidden="true"
-                      className="absolute -right-2 -top-2 h-4 w-4 text-[#f06292] sm:-right-2.5 sm:-top-2.5 sm:h-5 sm:w-5 drop-shadow-xs"
-                      fill="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-                    </svg>
                   </span>
                 </h1>
-                <p className="mt-1.5 max-w-[65ch] text-xs font-medium leading-relaxed text-[#6d5246] sm:mt-3 sm:text-base">
-                  เช็กเรทราคาเกมและแอปมือถือ iOS & Android ของร้าน Nongfo แท้ 100%
-                  เลือกหมวดหรือสลับตารางจากแถบด้านล่างได้เลยน้า~
+                <p className="mt-2 max-w-[55ch] text-xs font-medium leading-relaxed text-[#6d5246] sm:text-sm">
+                  เช็กเรทราคาเกมและแอปมือถือ iOS & Android ของร้าน Nongfo แท้ 100% สั่งซื้อง่าย ทักแชทสอบถามแอดมินได้ตลอดนะคะ
                 </p>
               </div>
 
-              <div className="relative flex shrink-0 items-center justify-center">
-                <div className="anim-float-1 absolute -left-4 -top-3 z-20 sm:-left-7 sm:-top-6">
-                  <KawaiiCatSprite
-                    col={1}
-                    row={3}
-                    size={40}
-                    label="น้องแมวชมพูพาสเทล Nongfo"
-                    className="sm:scale-125"
+              {/* Real Polaroid Photo with Washi Tape */}
+              <div className="relative shrink-0 pt-2 pr-1">
+                <div className="relative rotate-[-2deg] rounded-lg border border-[#f0e4dc] bg-white p-2 pb-2.5 shadow-[0_4px_16px_rgba(92,67,56,0.12)] transition-transform hover:rotate-0">
+                  {/* Washi Tape Snippet */}
+                  <div className="washi-tape-pink absolute -top-2 left-1/2 -translate-x-1/2 h-3.5 w-12 rounded-2xs border-x border-white/60" />
+                  <img
+                    src="/admin-profile.jpg"
+                    alt="ร้าน Nongfo"
+                    className="h-16 w-16 sm:h-24 sm:w-24 rounded-sm object-cover"
                   />
-                </div>
-                <div className="anim-float-2 absolute -bottom-2 -left-3 z-20 sm:-bottom-4 sm:-left-6">
-                  <KawaiiCatSprite
-                    col={0}
-                    row={3}
-                    size={38}
-                    label="น้องแมวโบว์ม่วงพาสเทล Nongfo"
-                    className="sm:scale-125"
-                  />
-                </div>
-                <div className="anim-float-3 absolute -right-3 -top-3 z-20 sm:-right-6 sm:-top-5">
-                  <KawaiiCatSprite
-                    col={4}
-                    row={3}
-                    size={38}
-                    label="น้องแมวสายรุ้งพาสเทล Nongfo"
-                    className="sm:scale-125"
-                  />
-                </div>
-                <div className="rounded-[20px] border-2 border-white bg-[#FFFDE7]/85 p-1.5 shadow-sm sm:rounded-[28px] sm:border-4 sm:p-2.5">
-                  <CatMascot
-                    variant="hero"
-                    label="น้องแมว Nongfo ต้อนรับสู่ตารางเรทราคาเกม"
-                    className="animate-mascot-float h-16 w-16 sm:h-36 sm:w-36"
-                  />
+                  <div className="mt-1 text-center font-[var(--font-mali)] text-[10px] font-bold text-[#8a6b5c]">
+                    ร้าน Nongfo
+                  </div>
                 </div>
               </div>
             </div>
 
-            {/* Cute Interactive Kawaii Cat Parade Strip */}
-            <div className="mt-4 flex flex-wrap items-center justify-between gap-2.5 border-t border-[#F8BBD0]/45 pt-3.5 sm:mt-5 sm:pt-4">
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-white bg-[#FCE4EC] px-3 py-1 text-center text-xs font-bold text-[#4a352c] shadow-xs sm:px-3.5">
-                แก๊งน้องแมว Nongfo พร้อมต้อนรับเลือกชมเกมและแอปแท้ราคาน่ารัก~
+            {/* Shop Features Pills Strip */}
+            <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-[#f0e4dc] pt-3 sm:mt-4 sm:pt-3.5">
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-[#f0e4dc] bg-[#fffaf8] px-2.5 py-0.5 text-[11px] font-bold text-[#6d5246]">
+                <span>✓ ของแท้ 100%</span>
               </span>
-              <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
-                {[
-                  { col: 0, row: 0, label: "น้องแมวขาวจั๊วะ" },
-                  { col: 0, row: 3, label: "น้องแมวโบว์ม่วง" },
-                  { col: 1, row: 3, label: "น้องแมวซากุระชมพู" },
-                  { col: 2, row: 3, label: "น้องแมวฟ้าพาสเทล" },
-                  { col: 3, row: 3, label: "น้องแมวมินต์กระดิ่งทอง" },
-                  { col: 4, row: 3, label: "น้องแมวสายรุ้งพาสเทล" },
-                  { col: 5, row: 3, label: "น้องแมวกาแล็กซีดาววิ้ง" },
-                ].map((cat, idx) => (
-                  <div
-                    key={`${cat.col}-${cat.row}`}
-                    className={idx % 2 === 0 ? "anim-float-1" : "anim-float-2"}
-                  >
-                    <KawaiiCatSprite
-                      col={cat.col}
-                      row={cat.row}
-                      size={46}
-                      label={cat.label}
-                    />
-                  </div>
-                ))}
-              </div>
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-[#ffd6e5] bg-[#FFF5F8] px-2.5 py-0.5 text-[11px] font-bold text-[#9d174d]">
+                <span>⚡ โอนแล้วส่งไว</span>
+              </span>
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-[#bbf7d0] bg-[#F0FDF4] px-2.5 py-0.5 text-[11px] font-bold text-[#166534]">
+                <span>💬 แอดมินตอบแชทไว</span>
+              </span>
             </div>
           </div>
         </section>
@@ -509,7 +466,6 @@ export function RateBoardClient({
         )}
       </main>
 
-      <CatFloatingWidget />
       <BottomNav
         activeSection={activeSection}
         onSelectSection={setActiveSection}

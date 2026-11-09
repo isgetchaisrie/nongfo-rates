@@ -73,18 +73,17 @@ export function ContactAdminSection({ settings }: ContactAdminSectionProps) {
         </div>
 
         <div className="relative rounded-[28px] border-2 border-white bg-white/95 p-4 sm:p-6 shadow-xs backdrop-blur-md">
-        {/* Center Circular Profile Avatar */}
-        <div className="relative mx-auto mt-1 mb-3.5 flex w-fit items-center justify-center">
-          <div className="relative">
+        {/* Center Polaroid Profile Card */}
+        <div className="relative mx-auto mt-2 mb-4 flex w-fit items-center justify-center">
+          <div className="relative rotate-[-1.5deg] rounded-lg border border-[#f0e4dc] bg-white p-2.5 pb-3 shadow-[0_6px_20px_rgba(92,67,56,0.12)] transition-transform hover:rotate-0">
+            <div className="washi-tape-pink absolute -top-2.5 left-1/2 -translate-x-1/2 h-4 w-14 rounded-2xs border-x border-white/60" />
             <img
               src={currentSettings.adminAvatar || "/admin-profile.jpg"}
               alt={`แอดมิน ${currentSettings.adminName}`}
-              className="relative h-28 w-28 rounded-full border-4 border-white object-cover shadow-[0_8px_24px_rgba(244,143,177,0.35)] sm:h-32 sm:w-32"
+              className="h-28 w-28 rounded-xs object-cover sm:h-32 sm:w-32"
             />
-
-            {/* Little Kawaii Cat Mascot Badge */}
-            <div className="absolute -bottom-1 -right-1 z-10 rounded-full border-2 border-white bg-[#FFFDE7] p-1 shadow-md">
-              <KawaiiCatSprite col={1} row={3} size={28} label="น้องแมวแอดมิน" />
+            <div className="mt-1.5 text-center font-[var(--font-mali)] text-xs font-bold text-[#8a6b5c]">
+              ร้าน Nongfo แท้ 100%
             </div>
           </div>
         </div>
