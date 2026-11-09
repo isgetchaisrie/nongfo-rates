@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" fill="none">
+  <rect width="240" height="240" rx="44" fill="#FFF0F5"/>
+  <circle cx="120" cy="120" r="82" fill="#FFE0EC"/>
+  <path d="M120 55L136 88L172 93L146 118L152 154L120 137L88 154L94 118L68 93L104 88L120 55Z" fill="#FFB347" stroke="#8C3B58" stroke-width="6" stroke-linejoin="round"/>
+  <circle cx="108" cy="108" r="5" fill="#5A2338"/>
+  <circle cx="132" cy="108" r="5" fill="#5A2338"/>
+  <path d="M114 120C117 124 123 124 126 120" stroke="#5A2338" stroke-width="4" stroke-linecap="round"/>
+  <rect x="46" y="176" width="148" height="32" rx="16" fill="#E11D68"/>
+  <text x="120" y="197" text-anchor="middle" fill="#FFFFFF" font-family="sans-serif" font-size="15" font-weight="700">STARDEW VALLEY</text>
+</svg>

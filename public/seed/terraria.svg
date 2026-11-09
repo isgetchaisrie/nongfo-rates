@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" fill="none">
+  <rect width="240" height="240" rx="44" fill="#F2FBF7"/>
+  <rect x="110" y="114" width="20" height="44" rx="6" fill="#B07D62" stroke="#5A2338" stroke-width="5"/>
+  <circle cx="120" cy="86" r="36" fill="#7AE582" stroke="#2D6A4F" stroke-width="6"/>
+  <circle cx="96" cy="96" r="24" fill="#95D5B2" stroke="#2D6A4F" stroke-width="6"/>
+  <circle cx="144" cy="96" r="24" fill="#95D5B2" stroke="#2D6A4F" stroke-width="6"/>
+  <rect x="46" y="176" width="148" height="32" rx="16" fill="#E11D68"/>
+  <text x="120" y="197" text-anchor="middle" fill="#FFFFFF" font-family="sans-serif" font-size="15" font-weight="700">TERRARIA</text>
+</svg>
