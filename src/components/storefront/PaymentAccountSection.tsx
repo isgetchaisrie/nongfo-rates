@@ -1,8 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import { CatMascot } from "@/components/mascot/CatMascot";
-import { KawaiiCatSprite } from "@/components/mascot/KawaiiCatPlayground";
 import { DEFAULT_STORE_SETTINGS, type StoreSettings } from "@/types/settings";
 
 export interface PaymentAccountSectionProps {

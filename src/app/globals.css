@@ -123,20 +123,6 @@ h3,
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
-.cafe-card {
-  position: relative;
-  background: #ffffff;
-  border: 1px solid #f0e4dc;
-  box-shadow: 0 2px 8px -2px rgba(92, 67, 56, 0.06), 0 1px 3px rgba(0, 0, 0, 0.02);
-  transition: transform 240ms var(--ease-out-expo), box-shadow 240ms var(--ease-out-expo), border-color 240ms var(--ease-out-expo);
-}
-
-.cafe-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 24px -6px rgba(244, 143, 177, 0.22), 0 2px 6px rgba(0, 0, 0, 0.04);
-  border-color: #f8bbd0;
-}
-
 .neko-card {
   position: relative;
   background-color: #ffd6e5;
@@ -254,94 +240,6 @@ h3,
   animation: pulseSoft 3.2s ease-in-out infinite;
 }
 
-@keyframes catRoamLtr {
-  0% {
-    left: -90px;
-    transform: scaleX(1);
-  }
-  49% {
-    left: calc(100vw + 20px);
-    transform: scaleX(1);
-  }
-  50% {
-    left: calc(100vw + 20px);
-    transform: scaleX(-1);
-  }
-  99% {
-    left: -90px;
-    transform: scaleX(-1);
-  }
-  100% {
-    left: -90px;
-    transform: scaleX(1);
-  }
-}
-
-@keyframes catRoamRtl {
-  0% {
-    left: calc(100vw + 20px);
-    transform: scaleX(1);
-  }
-  49% {
-    left: -90px;
-    transform: scaleX(1);
-  }
-  50% {
-    left: -90px;
-    transform: scaleX(-1);
-  }
-  99% {
-    left: calc(100vw + 20px);
-    transform: scaleX(-1);
-  }
-  100% {
-    left: calc(100vw + 20px);
-    transform: scaleX(1);
-  }
-}
-
-@keyframes catTrot {
-  0%,
-  100% {
-    transform: translateY(0px) rotate(-3deg);
-  }
-  50% {
-    transform: translateY(-7px) rotate(3deg);
-  }
-}
-
-.cat-roam-ltr {
-  animation-name: catRoamLtr;
-  animation-timing-function: linear;
-  animation-iteration-count: infinite;
-}
-
-.cat-roam-rtl {
-  animation-name: catRoamRtl;
-  animation-timing-function: linear;
-  animation-iteration-count: infinite;
-}
-
-.cat-trot {
-  animation: catTrot 0.65s ease-in-out infinite;
-}
-
-.card-bento {
-  background-color: var(--bg-surface);
-  border: 1px solid var(--border-pastel);
-  box-shadow: var(--shadow-card);
-  transition:
-    transform 280ms var(--ease-out-expo),
-    box-shadow 280ms var(--ease-out-expo),
-    border-color 280ms var(--ease-out-expo);
-}
-
-.card-bento:hover {
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-card-hover);
-  border-color: var(--pink-soft);
-}
-
 @keyframes mascotFloat {
   0%,
   100% {
@@ -426,11 +324,7 @@ h3,
   .anim-float-2,
   .anim-float-3,
   .anim-pulse,
-  .cat-roam-ltr,
-  .cat-roam-rtl,
-  .cat-trot,
-  .neko-card,
-  .card-bento {
+  .neko-card {
     animation: none !important;
     transition: none !important;
   }

@@ -2,7 +2,6 @@
 
 import React from "react";
 import Link from "next/link";
-import { KawaiiCatSprite } from "@/components/mascot/KawaiiCatPlayground";
 import { DEFAULT_STORE_SETTINGS, type StoreSettings } from "@/types/settings";
 
 export function FacebookIcon({ className }: { className?: string }) {

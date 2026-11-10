@@ -4,11 +4,6 @@ import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import * as MascotModule from "../../src/components/mascot/CatMascot";
-import { CatFloatingWidget } from "../../src/components/mascot/CatFloatingWidget";
-import {
-  KawaiiCatPlayground,
-  KawaiiCatSprite,
-} from "../../src/components/mascot/KawaiiCatPlayground";
 
 const ROOT = path.resolve(__dirname, "../..");
 const GLOBALS_CSS_PATH = path.join(ROOT, "src/app/globals.css");
@@ -131,39 +126,5 @@ describe("CatMascot & PawSparkle SVG artwork components", () => {
     );
     expect(html).toContain("<svg");
     expect(html).toContain("paw-accent");
-  });
-});
-
-describe("CatFloatingWidget interactive helper", () => {
-  it("renders fixed bottom-right floating cat helper with Thai rate tips", () => {
-    const html = renderToStaticMarkup(React.createElement(CatFloatingWidget));
-
-    expect(html).toContain("fixed");
-    expect(html).toContain("bottom-5");
-    expect(html).toContain("right-5");
-    expect(html).toContain("z-40");
-    expect(html).toContain("<svg");
-    expect(html).toContain("Nongfo");
-  });
-
-  it("renders full-body transparent KawaiiCatSprite and full-page touring KawaiiCatPlayground cats", () => {
-    const spriteHtml = renderToStaticMarkup(
-      React.createElement(KawaiiCatSprite, {
-        col: 1,
-        row: 3,
-        size: 74,
-        label: "น้องซากุระชมพู",
-      })
-    );
-    expect(spriteHtml).toContain("/cats/cat_3_1.png");
-    expect(spriteHtml).toContain("น้องซากุระชมพู");
-    expect(spriteHtml).not.toContain("rounded-full");
-
-    const playgroundHtml = renderToStaticMarkup(
-      React.createElement(KawaiiCatPlayground)
-    );
-    expect(playgroundHtml).toContain("cat-roam-tour");
-    expect(playgroundHtml).toContain("/cats/cat_3_1.png");
-    expect(playgroundHtml).toContain("/cats/cat_4_0.png");
   });
 });

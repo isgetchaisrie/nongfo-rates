@@ -10,8 +10,6 @@ import {
 } from "lucide-react";
 import type { GameRate } from "@/types/game";
 import { CatMascot } from "@/components/mascot/CatMascot";
-import { CatFloatingWidget } from "@/components/mascot/CatFloatingWidget";
-import { KawaiiCatSprite } from "@/components/mascot/KawaiiCatPlayground";
 import {
   computeCategoryCounts,
   computePlatformCounts,
