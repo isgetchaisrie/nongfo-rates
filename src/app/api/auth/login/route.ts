@@ -30,7 +30,8 @@ export async function POST(request: Request) {
 
   try {
     const body = (await request.json()) as { password?: unknown };
-    const password = typeof body?.password === "string" ? body.password : "";
+    const password =
+      typeof body?.password === "string" ? body.password.trim() : "";
 
     if (!(await verifyAdminPasswordAsync(password))) {
       recordLoginFailure(ip);
