@@ -28,10 +28,11 @@ export async function PUT(
     }
 
     return NextResponse.json({ game }, { status: 200 });
-  } catch {
+  } catch (err) {
+    console.error("PUT /api/games/[id] error:", err);
     return NextResponse.json(
-      { error: "รูปแบบข้อมูลไม่ถูกต้อง" },
-      { status: 400 }
+      { error: err instanceof Error ? err.message : "เกิดข้อผิดพลาดในการแก้ไขข้อมูล" },
+      { status: 500 }
     );
   }
 }

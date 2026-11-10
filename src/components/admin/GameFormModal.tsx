@@ -300,26 +300,43 @@ export function GameFormModal({
                   disabled={uploading || submitting}
                   className="sr-only"
                 />
-                <label
-                  htmlFor="game-image-file"
-                  className="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-[#ffd6e5] bg-white px-3.5 py-2 text-sm font-semibold text-[#2d1622] shadow-[0_2px_8px_rgba(45,22,34,0.06)] transition-colors hover:border-[#e11d68] hover:bg-[#fff0f6]"
-                >
-                  {uploading ? (
-                    <>
-                      <Loader2 className="h-4 w-4 animate-spin text-[#e11d68]" />
-                      <span>กำลังอัปโหลด...</span>
-                    </>
-                  ) : (
-                    <>
-                      <Upload className="h-4 w-4 text-[#e11d68]" />
-                      <span>
-                        {form.image ? "เปลี่ยนรูปจากเครื่อง" : "เลือกรูปจากเครื่อง"}
-                      </span>
-                    </>
-                  )}
-                </label>
+                <div className="flex flex-wrap items-center gap-2">
+                  <label
+                    htmlFor="game-image-file"
+                    className="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-[#ffd6e5] bg-white px-3.5 py-2 text-sm font-semibold text-[#2d1622] shadow-[0_2px_8px_rgba(45,22,34,0.06)] transition-colors hover:border-[#e11d68] hover:bg-[#fff0f6]"
+                  >
+                    {uploading ? (
+                      <>
+                        <Loader2 className="h-4 w-4 animate-spin text-[#e11d68]" />
+                        <span>กำลังอัปโหลด...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Upload className="h-4 w-4 text-[#e11d68]" />
+                        <span>
+                          {form.image ? "เปลี่ยนรูปจากเครื่อง" : "เลือกรูปจากเครื่อง"}
+                        </span>
+                      </>
+                    )}
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setForm((prev) => ({
+                        ...prev,
+                        image:
+                          prev.category === "app"
+                            ? "/logos/procreate.png"
+                            : "/logos/minecraft.png",
+                      }))
+                    }
+                    className="inline-flex items-center gap-1.5 rounded-xl border border-[#ffd6e5] bg-[#fff6f9] px-3 py-2 text-xs font-semibold text-[#6e485b] transition-colors hover:bg-[#ffe4ee] hover:text-[#2d1622] cursor-pointer"
+                  >
+                    <span>ใช้รูปเริ่มต้น</span>
+                  </button>
+                </div>
                 <p className="text-xs text-[#6e485b]">
-                  รองรับไฟล์ PNG, JPG, WEBP, GIF, SVG ไม่เกิน 5 MB
+                  รองรับไฟล์ PNG, JPG, WEBP, GIF, SVG ไม่เกิน 5 MB (หากไม่เลือกรูป ระบบจะใส่รูปเริ่มต้นให้)
                 </p>
               </div>
             </div>

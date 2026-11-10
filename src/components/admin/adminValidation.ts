@@ -10,11 +10,11 @@ export interface AdminGameFormState {
 }
 
 function parsePositiveInt(raw: string): number | null {
-  const trimmed = raw.trim();
-  if (!/^[1-9]\d*$/.test(trimmed)) {
+  const cleaned = raw.replace(/,/g, "").trim();
+  if (!/^[1-9]\d*$/.test(cleaned)) {
     return null;
   }
-  const value = Number.parseInt(trimmed, 10);
+  const value = Number.parseInt(cleaned, 10);
   if (!Number.isSafeInteger(value) || value <= 0) {
     return null;
   }
@@ -33,7 +33,15 @@ export function buildGamePayload(
   }
 
   const image = form.image.trim();
-  if (!image || !image.startsWith("/")) {
+  if (!image) {
+    return { ok: false, error: "กรุณาอัปโหลดรูปภาพปกจากเครื่อง" };
+  }
+
+  const isValidImage =
+    (image.startsWith("/") && !image.startsWith("//")) ||
+    image.startsWith("data:image/");
+
+  if (!isValidImage) {
     return { ok: false, error: "กรุณาอัปโหลดรูปภาพปกจากเครื่อง" };
   }
 

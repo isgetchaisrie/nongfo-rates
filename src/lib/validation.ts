@@ -20,7 +20,7 @@ const rawInputSchema = z.object({
     .refine(
       (val) =>
         (val.startsWith("/") && !val.startsWith("//")) ||
-        /^data:image\/(png|jpeg|webp|gif|svg\+xml);base64,[A-Za-z0-9+/=]+$/i.test(
+        /^data:image\/(png|jpeg|jpg|webp|gif|svg\+xml);base64,[A-Za-z0-9+/=]+$/i.test(
           val
         ),
       {

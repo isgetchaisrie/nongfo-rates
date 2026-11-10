@@ -24,6 +24,22 @@ describe("buildGamePayload (Admin Game Form Validation)", () => {
     });
   });
 
+  it("accepts base64 data image uploaded on serverless platforms", () => {
+    const dataUrl = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wBD";
+    const res = buildGamePayload({
+      name: "Minecraft",
+      image: dataUrl,
+      platform: "both",
+      priceIosInput: "50",
+      priceAndroidInput: "40",
+    });
+
+    expect(res.ok).toBe(true);
+    if (res.ok) {
+      expect(res.data.image).toBe(dataUrl);
+    }
+  });
+
   it("normalizes priceAndroid to null when platform is 'ios' and preserves category 'app'", () => {
     const res = buildGamePayload({
       name: "Procreate Dreams",

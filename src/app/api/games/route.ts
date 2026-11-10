@@ -52,10 +52,11 @@ export async function POST(request: Request) {
 
     const game = await createGameAsync(valid.data);
     return NextResponse.json({ game }, { status: 201 });
-  } catch {
+  } catch (err) {
+    console.error("POST /api/games error:", err);
     return NextResponse.json(
-      { error: "รูปแบบข้อมูลไม่ถูกต้อง" },
-      { status: 400 }
+      { error: err instanceof Error ? err.message : "เกิดข้อผิดพลาดในการบันทึกข้อมูล" },
+      { status: 500 }
     );
   }
 }
