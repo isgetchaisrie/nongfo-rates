@@ -17,7 +17,7 @@ export default async function HomePage({
     resolvedParams?.tab === "contact" ||
     resolvedParams?.tab === "account"
       ? resolvedParams.tab
-      : "account";
+      : "rates";
   const initialCategory =
     resolvedParams?.category === "app" || resolvedParams?.category === "game"
       ? resolvedParams.category
@@ -41,6 +41,7 @@ export default async function HomePage({
       initialGames={games}
       initialSettings={settings}
       initialSection={initialSection}
+      initialCategory={initialCategory}
     />
   );
 }

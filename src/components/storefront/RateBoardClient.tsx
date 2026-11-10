@@ -31,12 +31,14 @@ import {
 export interface RateBoardClientProps {
   initialGames: GameRate[];
   initialSection?: StorefrontSection;
+  initialCategory?: FilterCategory;
   initialSettings?: StoreSettings;
 }
 
 export function RateBoardClient({
   initialGames,
-  initialSection = "account",
+  initialSection = "rates",
+  initialCategory = "all",
   initialSettings,
 }: RateBoardClientProps) {
   const [settings] = useState<StoreSettings>(
@@ -46,7 +48,7 @@ export function RateBoardClient({
     useState<StorefrontSection>(initialSection);
   const [query, setQuery] = useState("");
   const [platform, setPlatform] = useState<FilterPlatform>("all");
-  const [category, setCategory] = useState<FilterCategory>("all");
+  const [category, setCategory] = useState<FilterCategory>(initialCategory);
   const [viewMode, setViewMode] = useState<"grid" | "table">("grid");
 
   const counts = useMemo(

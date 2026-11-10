@@ -158,7 +158,7 @@ export function BottomNav({
   appCount,
 }: BottomNavProps) {
   const isAccountActive = activeSection === "account";
-  const isGameActive = activeSection === "rates" && category === "game";
+  const isGameActive = activeSection === "rates" && (category === "game" || category === "all");
   const isAppActive = activeSection === "rates" && category === "app";
   const isContactActive = activeSection === "contact";
 
@@ -178,20 +178,7 @@ export function BottomNav({
       }}
     >
       <div className="grid grid-cols-4">
-        <button
-          type="button"
-          data-active={isAccountActive}
-          aria-pressed={isAccountActive}
-          onClick={() => {
-            onSelectSection("account");
-            scrollTop();
-          }}
-          className={tabClass}
-        >
-          <TabFace k="home" />
-          <span>บัญชี</span>
-        </button>
-
+        {/* 1. หมวดเกม */}
         <button
           type="button"
           data-active={isGameActive}
@@ -207,6 +194,7 @@ export function BottomNav({
           <span>หมวดเกม</span>
         </button>
 
+        {/* 2. หมวดแอป */}
         <button
           type="button"
           data-active={isAppActive}
@@ -222,6 +210,22 @@ export function BottomNav({
           <span>หมวดแอป</span>
         </button>
 
+        {/* 3. บัญชี */}
+        <button
+          type="button"
+          data-active={isAccountActive}
+          aria-pressed={isAccountActive}
+          onClick={() => {
+            onSelectSection("account");
+            scrollTop();
+          }}
+          className={tabClass}
+        >
+          <TabFace k="home" />
+          <span>บัญชี</span>
+        </button>
+
+        {/* 4. ติดต่อแอดมิน */}
         <button
           type="button"
           data-active={isContactActive}
