@@ -117,21 +117,75 @@ export function RateBoardClient({
       </div>
 
       <header className="relative z-10 border-b border-[#F8BBD0]/60 bg-white/85 backdrop-blur-md">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-2 px-3.5 py-2.5 sm:gap-4 sm:px-6 sm:py-3.5 lg:px-8">
-          <div className="flex items-center gap-2.5 sm:gap-3">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-2 px-3 py-2 sm:gap-4 sm:px-6 sm:py-3 lg:px-8">
+          <div className="flex items-center gap-2 sm:gap-3">
             <CatMascot
               variant="badge"
               label="มาสคอตน้องแมว Nongfo"
               className="h-8 w-8 shrink-0 sm:h-10 sm:w-10"
             />
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="font-[var(--font-mali)] text-base font-bold tracking-tight text-[#4a352c] sm:text-xl">
+            <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+              <span className="font-[var(--font-mali)] text-sm font-bold tracking-tight text-[#4a352c] sm:text-xl">
                 Nongfo Rates
               </span>
-              <span className="inline-flex items-center rounded-full border border-white bg-[#FCE4EC] px-2.5 py-0.5 text-xs font-bold text-[#b81452] shadow-xs tabular-nums sm:px-3">
-                ทั้งหมด {initialGames.length} รายการ
+              <span className="inline-flex items-center rounded-full border border-white bg-[#FCE4EC] px-2 py-0.5 text-[10px] font-bold text-[#b81452] shadow-xs tabular-nums sm:px-3 sm:text-xs">
+                {initialGames.length} รายการ
               </span>
             </div>
+          </div>
+
+          {/* Desktop Navigation Links */}
+          <div className="hidden md:flex items-center gap-1 rounded-full border border-[#F8BBD0]/60 bg-[#FFFDF9] p-1 shadow-xs">
+            <button
+              type="button"
+              onClick={() => {
+                setActiveSection("rates");
+                setCategory("game");
+              }}
+              className={`px-3 py-1 text-xs font-bold rounded-full transition-all cursor-pointer ${
+                activeSection === "rates" && (category === "game" || category === "all")
+                  ? "bg-[#FCE4EC] text-[#b81452] shadow-xs"
+                  : "text-[#6d5246] hover:text-[#4a352c] hover:bg-white"
+              }`}
+            >
+              หมวดเกม
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setActiveSection("rates");
+                setCategory("app");
+              }}
+              className={`px-3 py-1 text-xs font-bold rounded-full transition-all cursor-pointer ${
+                activeSection === "rates" && category === "app"
+                  ? "bg-[#FCE4EC] text-[#b81452] shadow-xs"
+                  : "text-[#6d5246] hover:text-[#4a352c] hover:bg-white"
+              }`}
+            >
+              หมวดแอป
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveSection("account")}
+              className={`px-3 py-1 text-xs font-bold rounded-full transition-all cursor-pointer ${
+                activeSection === "account"
+                  ? "bg-[#FCE4EC] text-[#b81452] shadow-xs"
+                  : "text-[#6d5246] hover:text-[#4a352c] hover:bg-white"
+              }`}
+            >
+              บัญชีชำระเงิน
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveSection("contact")}
+              className={`px-3 py-1 text-xs font-bold rounded-full transition-all cursor-pointer ${
+                activeSection === "contact"
+                  ? "bg-[#FCE4EC] text-[#b81452] shadow-xs"
+                  : "text-[#6d5246] hover:text-[#4a352c] hover:bg-white"
+              }`}
+            >
+              ติดต่อแอดมิน
+            </button>
           </div>
 
           <Link
@@ -180,36 +234,36 @@ export function RateBoardClient({
             <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
           </svg>
 
-          <div className="relative rounded-[22px] border-2 border-white bg-white/95 p-3.5 sm:rounded-[36px] sm:p-6 shadow-xs backdrop-blur-md">
+          <div className="relative rounded-[22px] border-2 border-white bg-white/95 p-3 sm:rounded-[36px] sm:p-6 shadow-xs backdrop-blur-md">
 
-            <div className="flex flex-row items-center justify-between gap-4 md:gap-6">
+            <div className="flex flex-row items-center justify-between gap-3 sm:gap-6">
               <div className="min-w-0 flex-1 text-left">
-                <div className="inline-flex items-center gap-1.5 rounded-full border border-[#f0e4dc] bg-[#fffaf8] px-3 py-1 text-xs font-semibold text-[#8a6b5c] shadow-2xs mb-2">
+                <div className="inline-flex items-center gap-1.5 rounded-full border border-[#f0e4dc] bg-[#fffaf8] px-2.5 py-0.5 text-[11px] sm:text-xs font-semibold text-[#8a6b5c] shadow-2xs mb-1.5 sm:mb-2">
                   <span className="h-2 w-2 rounded-full bg-[#16a34a]" />
                   <span>เรทราคาพร้อมส่ง อัปเดตล่าสุด</span>
                 </div>
-                <h1 className="font-[var(--font-mali)] text-xl font-bold leading-snug text-[#3d271d] sm:text-3xl lg:text-4xl">
+                <h1 className="font-[var(--font-mali)] text-lg font-bold leading-snug text-[#3d271d] sm:text-3xl lg:text-4xl">
                   ตารางเรทราคา{" "}
-                  <span className="relative inline-block rounded-xl border border-[#ffd6e5] bg-[#FFF0F6] px-2.5 py-0.5 text-[#9d174d] sm:rounded-2xl sm:px-3.5">
+                  <span className="relative inline-block rounded-xl border border-[#ffd6e5] bg-[#FFF0F6] px-2 py-0.5 text-[#9d174d] sm:rounded-2xl sm:px-3.5">
                     เกมและแอปแท้
                   </span>
                 </h1>
-                <p className="mt-2 max-w-[55ch] text-xs font-medium leading-relaxed text-[#6d5246] sm:text-sm">
+                <p className="mt-1.5 max-w-[55ch] text-[11px] font-medium leading-relaxed text-[#6d5246] sm:mt-2 sm:text-sm">
                   เช็กเรทราคาเกมและแอปมือถือ iOS & Android ของร้าน Nongfo แท้ 100% สั่งซื้อง่าย ทักแชทสอบถามแอดมินได้ตลอดนะคะ
                 </p>
               </div>
 
               {/* Real Polaroid Photo with Washi Tape */}
-              <div className="relative shrink-0 pt-2 pr-1">
-                <div className="relative rotate-[-2deg] rounded-lg border border-[#f0e4dc] bg-white p-2 pb-2.5 shadow-[0_4px_16px_rgba(92,67,56,0.12)] transition-transform hover:rotate-0">
+              <div className="relative shrink-0 pt-1 pr-0.5">
+                <div className="relative rotate-[-2deg] rounded-lg border border-[#f0e4dc] bg-white p-1.5 pb-2 sm:p-2 sm:pb-2.5 shadow-[0_4px_16px_rgba(92,67,56,0.12)] transition-transform hover:rotate-0">
                   {/* Washi Tape Snippet */}
-                  <div className="washi-tape-pink absolute -top-2 left-1/2 -translate-x-1/2 h-3.5 w-12 rounded-2xs border-x border-white/60" />
+                  <div className="washi-tape-pink absolute -top-2 left-1/2 -translate-x-1/2 h-3 w-10 sm:h-3.5 sm:w-12 rounded-2xs border-x border-white/60" />
                   <img
                     src="/admin-profile.jpg"
                     alt="ร้าน Nongfo"
-                    className="h-16 w-16 sm:h-24 sm:w-24 rounded-sm object-cover"
+                    className="h-14 w-14 sm:h-24 sm:w-24 rounded-sm object-cover"
                   />
-                  <div className="mt-1 text-center font-[var(--font-mali)] text-[10px] font-bold text-[#8a6b5c]">
+                  <div className="mt-0.5 text-center font-[var(--font-mali)] text-[9px] sm:text-[10px] font-bold text-[#8a6b5c]">
                     ร้าน Nongfo
                   </div>
                 </div>
@@ -217,14 +271,14 @@ export function RateBoardClient({
             </div>
 
             {/* Shop Features Pills Strip */}
-            <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-[#f0e4dc] pt-3 sm:mt-4 sm:pt-3.5">
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-[#f0e4dc] bg-[#fffaf8] px-2.5 py-0.5 text-[11px] font-bold text-[#6d5246]">
+            <div className="mt-2.5 flex flex-wrap items-center gap-1.5 border-t border-[#f0e4dc] pt-2.5 sm:mt-4 sm:pt-3.5 sm:gap-2">
+              <span className="inline-flex items-center gap-1 rounded-full border border-[#f0e4dc] bg-[#fffaf8] px-2 py-0.5 text-[10px] sm:text-[11px] font-bold text-[#6d5246]">
                 <span>✓ ของแท้ 100%</span>
               </span>
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-[#ffd6e5] bg-[#FFF5F8] px-2.5 py-0.5 text-[11px] font-bold text-[#9d174d]">
+              <span className="inline-flex items-center gap-1 rounded-full border border-[#ffd6e5] bg-[#FFF5F8] px-2 py-0.5 text-[10px] sm:text-[11px] font-bold text-[#9d174d]">
                 <span>⚡ โอนแล้วส่งไว</span>
               </span>
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-[#bbf7d0] bg-[#F0FDF4] px-2.5 py-0.5 text-[11px] font-bold text-[#166534]">
+              <span className="inline-flex items-center gap-1 rounded-full border border-[#bbf7d0] bg-[#F0FDF4] px-2 py-0.5 text-[10px] sm:text-[11px] font-bold text-[#166534]">
                 <span>💬 แอดมินตอบแชทไว</span>
               </span>
             </div>
@@ -236,14 +290,14 @@ export function RateBoardClient({
           className="gingham-frame sticky top-2 z-20 mb-4 rounded-[26px] p-2 sm:top-3 sm:mb-8 sm:rounded-[32px] sm:p-2.5 border-3 border-white shadow-[0_8px_24px_rgba(244,143,177,0.2)]"
         >
           <div className="rounded-[20px] border-2 border-white bg-white/95 p-2 sm:rounded-[26px] sm:p-3 shadow-xs backdrop-blur-md">
-            <div className="flex flex-col gap-2.5">
+            <div className="flex flex-col gap-2">
             <SearchBar value={query} onChange={setQuery} />
 
-            <div className="flex flex-wrap items-center justify-between gap-2 border-t border-[#F8BBD0]/40 pt-2 sm:pt-2.5">
+            <div className="flex flex-col gap-2 border-t border-[#F8BBD0]/40 pt-2 sm:flex-row sm:items-center sm:justify-between sm:pt-2.5">
               <div
                 role="group"
                 aria-label="หมวดตัวกรอง ทั้งหมด ตาราง iOS และ Android"
-                className="flex flex-wrap items-center gap-1.5 sm:gap-2"
+                className="grid grid-cols-4 gap-1 sm:flex sm:flex-wrap sm:gap-2"
               >
                 {/* 1. ทั้งหมด */}
                 <button
@@ -253,13 +307,13 @@ export function RateBoardClient({
                     setViewMode("grid");
                     setPlatform("all");
                   }}
-                  className={`inline-flex h-9 items-center gap-1.5 rounded-full border px-3 text-xs font-bold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#e11d68] sm:h-10 sm:gap-2 sm:px-4 sm:text-sm ${
+                  className={`inline-flex h-8 sm:h-10 items-center justify-center gap-1 rounded-full border px-1.5 sm:px-4 text-[11px] sm:text-sm font-bold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#e11d68] cursor-pointer ${
                     viewMode === "grid" && platform === "all"
-                      ? "border-white bg-[#FCE4EC] text-[#4a352c] shadow-[0_6px_16px_-4px_rgba(244,143,177,0.55)]"
+                      ? "border-white bg-[#FCE4EC] text-[#4a352c] shadow-[0_4px_12px_-2px_rgba(244,143,177,0.55)]"
                       : "border-[#F8BBD0]/60 bg-[#FFFDF9] text-[#6d5246] hover:bg-[#FCE4EC]/50 hover:text-[#4a352c]"
                   }`}
                 >
-                  <LayoutGrid className="h-3.5 w-3.5 shrink-0 text-[#d81b60] sm:h-4 sm:w-4" />
+                  <LayoutGrid className="h-3 w-3 shrink-0 text-[#d81b60] sm:h-4 sm:w-4" />
                   <span>ทั้งหมด</span>
                 </button>
 
@@ -273,13 +327,13 @@ export function RateBoardClient({
                     );
                     setPlatform("all");
                   }}
-                  className={`inline-flex h-9 items-center gap-1.5 rounded-full border px-3 text-xs font-bold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#e11d68] sm:h-10 sm:gap-2 sm:px-4 sm:text-sm ${
+                  className={`inline-flex h-8 sm:h-10 items-center justify-center gap-1 rounded-full border px-1.5 sm:px-4 text-[11px] sm:text-sm font-bold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#e11d68] cursor-pointer ${
                     viewMode === "table"
-                      ? "border-white bg-[#FCE4EC] text-[#4a352c] shadow-[0_6px_16px_-4px_rgba(244,143,177,0.55)]"
+                      ? "border-white bg-[#FCE4EC] text-[#4a352c] shadow-[0_4px_12px_-2px_rgba(244,143,177,0.55)]"
                       : "border-[#F8BBD0]/60 bg-[#FFFDF9] text-[#6d5246] hover:bg-[#FCE4EC]/50 hover:text-[#4a352c]"
                   }`}
                 >
-                  <Table2 className="h-3.5 w-3.5 shrink-0 text-[#d81b60] sm:h-4 sm:w-4" />
+                  <Table2 className="h-3 w-3 shrink-0 text-[#d81b60] sm:h-4 sm:w-4" />
                   <span>ตาราง</span>
                 </button>
 
@@ -291,13 +345,13 @@ export function RateBoardClient({
                     setViewMode("grid");
                     setPlatform("ios");
                   }}
-                  className={`inline-flex h-9 items-center gap-1.5 rounded-full border px-3 text-xs font-bold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#e11d68] sm:h-10 sm:gap-2 sm:px-4 sm:text-sm ${
+                  className={`inline-flex h-8 sm:h-10 items-center justify-center gap-1 rounded-full border px-1.5 sm:px-4 text-[11px] sm:text-sm font-bold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#e11d68] cursor-pointer ${
                     viewMode === "grid" && platform === "ios"
-                      ? "border-white bg-[#FCE4EC] text-[#4a352c] shadow-[0_6px_16px_-4px_rgba(244,143,177,0.55)]"
+                      ? "border-white bg-[#FCE4EC] text-[#4a352c] shadow-[0_4px_12px_-2px_rgba(244,143,177,0.55)]"
                       : "border-[#F8BBD0]/60 bg-[#FFFDF9] text-[#6d5246] hover:bg-[#FCE4EC]/50 hover:text-[#4a352c]"
                   }`}
                 >
-                  <AppleIcon className="h-3.5 w-3.5 shrink-0 text-[#d81b60] sm:h-4 sm:w-4" />
+                  <AppleIcon className="h-3 w-3 shrink-0 text-[#d81b60] sm:h-4 sm:w-4" />
                   <span>iOS</span>
                 </button>
 
@@ -309,23 +363,25 @@ export function RateBoardClient({
                     setViewMode("grid");
                     setPlatform("android");
                   }}
-                  className={`inline-flex h-9 items-center gap-1.5 rounded-full border px-3 text-xs font-bold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#e11d68] sm:h-10 sm:gap-2 sm:px-4 sm:text-sm ${
+                  className={`inline-flex h-8 sm:h-10 items-center justify-center gap-1 rounded-full border px-1.5 sm:px-4 text-[11px] sm:text-sm font-bold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#e11d68] cursor-pointer ${
                     viewMode === "grid" && platform === "android"
-                      ? "border-white bg-[#FCE4EC] text-[#4a352c] shadow-[0_6px_16px_-4px_rgba(244,143,177,0.55)]"
+                      ? "border-white bg-[#FCE4EC] text-[#4a352c] shadow-[0_4px_12px_-2px_rgba(244,143,177,0.55)]"
                       : "border-[#F8BBD0]/60 bg-[#FFFDF9] text-[#6d5246] hover:bg-[#FCE4EC]/50 hover:text-[#4a352c]"
                   }`}
                 >
-                  <AndroidIcon className="h-3.5 w-3.5 shrink-0 text-[#d81b60] sm:h-4 sm:w-4" />
+                  <AndroidIcon className="h-3 w-3 shrink-0 text-[#d81b60] sm:h-4 sm:w-4" />
                   <span>Android</span>
                 </button>
               </div>
 
-              <p
-                aria-live="polite"
-                className="shrink-0 rounded-full border border-[#F8BBD0]/60 bg-white px-2.5 py-1 text-xs font-bold text-[#6d5246] tabular-nums sm:px-3"
-              >
-                {visibleGames.length} รายการ
-              </p>
+              <div className="flex items-center justify-between sm:justify-end">
+                <p
+                  aria-live="polite"
+                  className="shrink-0 rounded-full border border-[#F8BBD0]/60 bg-white px-2.5 py-0.5 text-[11px] sm:text-xs font-bold text-[#6d5246] tabular-nums"
+                >
+                  พบ {visibleGames.length} รายการ
+                </p>
+              </div>
             </div>
           </div>
           </div>

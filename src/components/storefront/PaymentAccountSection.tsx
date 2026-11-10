@@ -240,444 +240,441 @@ export function PaymentAccountSection({
       </div>
 
       {/* Main Pattistore Glass Card */}
-      <div className="mx-auto max-w-[430px] space-y-4">
-      <div className="gingham-frame relative z-10 rounded-[36px] p-2.5 sm:rounded-[44px] sm:p-3.5 border-3 border-white shadow-[0_8px_28px_rgba(244,143,177,0.22)]">
-        <svg
-          aria-hidden="true"
-          className="pointer-events-none absolute -top-3 -left-1.5 z-20 h-7 w-7 text-[#F8BBD0] drop-shadow-xs"
-          fill="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-        </svg>
-        <svg
-          aria-hidden="true"
-          className="pointer-events-none absolute top-[25%] -right-2 z-20 h-6 w-6 text-[#F8BBD0] drop-shadow-xs"
-          fill="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
-        </svg>
+      <div className="mx-auto w-full max-w-md lg:max-w-4xl space-y-4">
+        <div className="gingham-frame relative z-10 rounded-[36px] p-2.5 sm:rounded-[44px] sm:p-4 border-3 border-white shadow-[0_8px_28px_rgba(244,143,177,0.22)]">
+          <svg
+            aria-hidden="true"
+            className="pointer-events-none absolute -top-3 -left-1.5 z-20 h-7 w-7 text-[#F8BBD0] drop-shadow-xs"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+          </svg>
+          <svg
+            aria-hidden="true"
+            className="pointer-events-none absolute top-[25%] -right-2 z-20 h-6 w-6 text-[#F8BBD0] drop-shadow-xs"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
+          </svg>
 
-        <div className="relative z-10 rounded-[28px] border-2 border-white bg-white/95 p-3 sm:rounded-[36px] sm:p-4 shadow-xs backdrop-blur-md">
-          {/* QR Image */}
-          <div className="relative overflow-hidden rounded-[22px] border-3 border-white bg-white shadow-xs sm:rounded-[28px]">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={currentSettings.qrImage || "/payment-qr.jpg"}
-              onError={(e) => {
-                e.currentTarget.src =
-                  "https://i.postimg.cc/85TRr9bv/line-oa-chat-261013-123006.jpg";
-              }}
-              alt={`QR ชำระเงิน บัญชี ${currentSettings.accountName}`}
-              className="h-auto w-full object-cover"
-            />
-          </div>
+          <div className="relative z-10 rounded-[28px] border-2 border-white bg-white/95 p-3.5 sm:rounded-[36px] sm:p-5 shadow-xs backdrop-blur-md">
+            <div className="grid grid-cols-1 lg:grid-cols-12 lg:gap-7 items-start">
+              {/* Left Column: QR Code + Callout */}
+              <div className="lg:col-span-5 space-y-3">
+                {/* QR Image */}
+                <div className="relative mx-auto max-w-[280px] lg:max-w-none overflow-hidden rounded-[22px] border-3 border-white bg-white shadow-xs sm:rounded-[28px]">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={currentSettings.qrImage || "/payment-qr.jpg"}
+                    onError={(e) => {
+                      e.currentTarget.src =
+                        "https://i.postimg.cc/85TRr9bv/line-oa-chat-261013-123006.jpg";
+                    }}
+                    alt={`QR ชำระเงิน บัญชี ${currentSettings.accountName}`}
+                    className="h-auto w-full object-cover"
+                  />
+                </div>
 
-          {/* Save QR Button */}
-          <div className="mt-3 px-1">
-            <button
-              type="button"
-              onClick={handleDownloadQr}
-              className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-full border border-white bg-[#FCE4EC] px-6 py-3 text-sm font-bold text-[#5c4338] shadow-md transition-all hover:bg-[#F8BBD0] active:scale-95"
-            >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={2.5}
-              stroke="currentColor"
-              className="h-5 w-5 text-[#5c4338]"
-              aria-hidden="true"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3"
-              />
-            </svg>
-            <span>บันทึกแล้วสแกนได้เลยน้า</span>
-          </button>
-        </div>
-
-        <div className="space-y-4 p-3.5 pt-4">
-          {/* Account Name Callout */}
-          <div className="space-y-3 text-center">
-            <p className="text-sm font-semibold leading-relaxed text-[#5c4338]">
-              <span className="inline-flex items-center justify-center gap-1">
-                <span>เลขบัญชีตามนี้เลยค่า</span>
-                <svg
-                  className="anim-pulse h-4 w-4 text-[#F8BBD0]"
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
-                  aria-hidden="true"
-                >
-                  <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
-                </svg>
-              </span>
-              <br />
-              <span>ชื่อบัญชี </span>
-              <span className="relative inline-block rounded-lg border border-[#F8BBD0]/40 bg-[#FCE4EC] px-2.5 py-0.5 font-bold text-[#4a352c]">
-                {currentSettings.accountName}
-                <svg
-                  className="absolute -top-1.5 -right-2 h-3.5 w-3.5 text-[#F8BBD0]"
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
-                  aria-hidden="true"
-                >
-                  <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-                </svg>
-              </span>
-              <span> (โปรดตรวจสอบก่อนโอนน้า)</span>
-            </p>
-
-            <div className="inline-flex items-center justify-center gap-1.5 rounded-full border border-[#F8BBD0] bg-white px-4 py-2 text-xs font-semibold text-[#5c4338] shadow-xs">
-              <span>เซฟรูปเพื่อสแกน หรือจิ้มคัดลอกเลขบัญชีได้เลยนะคะ</span>
-            </div>
-          </div>
-
-          {/* Section Divider */}
-          <div className="flex items-center gap-3 py-1">
-            <div className="h-px flex-1 bg-[#F8BBD0]/40" />
-            <span className="text-xs font-bold tracking-wider text-[#6d5246] uppercase">
-              เลือกช่องทางชำระเงิน
-            </span>
-            <div className="h-px flex-1 bg-[#F8BBD0]/40" />
-          </div>
-
-          <div className="space-y-3.5">
-            {/* Bank Accounts (Multi-bank, editable) */}
-            {bankAccounts.map((bank, index) => {
-              const bankRaw = bank.accountNumber.replace(/\D/g, "");
-              const copyKey = `bank-${bank.id || index}`;
-              const isCopied = copiedKey === copyKey;
-              const style = getBankStyle(bank.bankName);
-              const accountHolder =
-                bank.accountName?.trim() || currentSettings.accountName;
-
-              return (
-                <button
-                  key={bank.id || `bank-${index}`}
-                  type="button"
-                  onClick={() =>
-                    handleCopy(
-                      bankRaw,
-                      copyKey,
-                      `คัดลอกเลขบัญชี ${bank.bankName} ${bank.accountNumber} แล้ว`
-                    )
-                  }
-                  className={`group relative w-full cursor-pointer overflow-hidden rounded-[24px] border border-white bg-gradient-to-br ${style.gradient} p-5 text-left shadow-md transition-all hover:-translate-y-0.5 active:scale-98`}
-                >
-                  <svg
-                    aria-hidden="true"
-                    className="pointer-events-none absolute -right-6 -bottom-6 h-32 w-32 -rotate-12 text-white opacity-35"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
+                {/* Save QR Button */}
+                <div className="px-1">
+                  <button
+                    type="button"
+                    onClick={handleDownloadQr}
+                    className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-full border border-white bg-[#FCE4EC] px-4 py-2.5 sm:py-3 text-xs sm:text-sm font-bold text-[#5c4338] shadow-md transition-all hover:bg-[#F8BBD0] active:scale-95"
                   >
-                    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
-                  </svg>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={2.5}
+                      stroke="currentColor"
+                      className="h-4 w-4 sm:h-5 sm:w-5 text-[#5c4338]"
+                      aria-hidden="true"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3"
+                      />
+                    </svg>
+                    <span>บันทึกแล้วสแกนได้เลยน้า</span>
+                  </button>
+                </div>
 
-                  <div className="relative z-10 flex flex-col gap-3">
-                    <div className="flex items-center justify-between">
-                      <div className="rounded-full border border-white/60 bg-white/60 px-3 py-1 backdrop-blur-xs">
-                        <span className="text-sm font-bold tracking-wider text-[#4a352c]">
-                          {style.badgeLabel}
-                        </span>
-                      </div>
-                      <span
-                        className={`inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-bold text-[#4a352c] shadow-xs transition-colors ${
-                          isCopied ? "bg-white/50" : "bg-white"
-                        }`}
+                {/* Account Name Callout */}
+                <div className="space-y-2 rounded-2xl border border-[#F8BBD0]/50 bg-[#FFF5F8]/50 p-3 text-center">
+                  <p className="text-xs sm:text-sm font-semibold leading-relaxed text-[#5c4338]">
+                    <span className="inline-flex items-center justify-center gap-1">
+                      <span>เลขบัญชีตามนี้เลยค่า</span>
+                      <svg
+                        className="anim-pulse h-3.5 w-3.5 text-[#F8BBD0]"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
                       >
-                        {isCopied ? (
-                          <>
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              strokeWidth={2.5}
-                              stroke="currentColor"
-                              className="h-4 w-4 text-[#0f5137]"
-                              aria-hidden="true"
+                        <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
+                      </svg>
+                    </span>
+                    <br />
+                    <span>ชื่อบัญชี </span>
+                    <span className="relative inline-block rounded-lg border border-[#F8BBD0]/40 bg-[#FCE4EC] px-2 py-0.5 font-bold text-[#4a352c]">
+                      {currentSettings.accountName}
+                    </span>
+                    <span className="block text-[11px] sm:text-xs text-[#84685b] mt-0.5">(โปรดตรวจสอบก่อนโอนน้า)</span>
+                  </p>
+
+                  <div className="inline-flex items-center justify-center gap-1 rounded-full border border-[#F8BBD0]/60 bg-white px-3 py-1 text-[11px] font-semibold text-[#5c4338] shadow-xs">
+                    <span>เซฟรูปสแกน หรือแตะคัดลอกได้เลยค่ะ</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Column: Bank Accounts + Wallet + Notes */}
+              <div className="lg:col-span-7 space-y-3.5 pt-3 lg:pt-0">
+                {/* Section Divider */}
+                <div className="flex items-center gap-3 py-0.5">
+                  <div className="h-px flex-1 bg-[#F8BBD0]/40" />
+                  <span className="text-xs font-bold tracking-wider text-[#6d5246] uppercase">
+                    เลือกช่องทางชำระเงิน
+                  </span>
+                  <div className="h-px flex-1 bg-[#F8BBD0]/40" />
+                </div>
+
+                <div className="space-y-3">
+                  {/* Bank Accounts (Multi-bank, editable) */}
+                  {bankAccounts.map((bank, index) => {
+                    const bankRaw = bank.accountNumber.replace(/\D/g, "");
+                    const copyKey = `bank-${bank.id || index}`;
+                    const isCopied = copiedKey === copyKey;
+                    const style = getBankStyle(bank.bankName);
+                    const accountHolder =
+                      bank.accountName?.trim() || currentSettings.accountName;
+
+                    return (
+                      <button
+                        key={bank.id || `bank-${index}`}
+                        type="button"
+                        onClick={() =>
+                          handleCopy(
+                            bankRaw,
+                            copyKey,
+                            `คัดลอกเลขบัญชี ${bank.bankName} ${bank.accountNumber} แล้ว`
+                          )
+                        }
+                        className={`group relative w-full cursor-pointer overflow-hidden rounded-[22px] border border-white bg-gradient-to-br ${style.gradient} p-4 sm:p-5 text-left shadow-md transition-all hover:-translate-y-0.5 active:scale-98`}
+                      >
+                        <svg
+                          aria-hidden="true"
+                          className="pointer-events-none absolute -right-6 -bottom-6 h-32 w-32 -rotate-12 text-white opacity-35"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                        >
+                          <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
+                        </svg>
+
+                        <div className="relative z-10 flex flex-col gap-2.5">
+                          <div className="flex items-center justify-between">
+                            <div className="rounded-full border border-white/60 bg-white/60 px-2.5 py-0.5 backdrop-blur-xs">
+                              <span className="text-xs sm:text-sm font-bold tracking-wider text-[#4a352c]">
+                                {style.badgeLabel}
+                              </span>
+                            </div>
+                            <span
+                              className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold text-[#4a352c] shadow-xs transition-colors ${
+                                isCopied ? "bg-white/50" : "bg-white"
+                              }`}
                             >
-                              <path
+                              {isCopied ? (
+                                <>
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    strokeWidth={2.5}
+                                    stroke="currentColor"
+                                    className="h-3.5 w-3.5 text-[#0f5137]"
+                                    aria-hidden="true"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      d="M4.5 12.75l6 6 9-13.5"
+                                    />
+                                  </svg>
+                                  <span>สำเร็จ</span>
+                                </>
+                              ) : (
+                                <>
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="13"
+                                    height="13"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    aria-hidden="true"
+                                  >
+                                    <rect
+                                      width="14"
+                                      height="14"
+                                      x="8"
+                                      y="8"
+                                      rx="2"
+                                      ry="2"
+                                    />
+                                    <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+                                  </svg>
+                                  <span>คัดลอก</span>
+                                </>
+                              )}
+                            </span>
+                          </div>
+                          <div>
+                            <div className="mb-0.5 text-[11px] sm:text-xs font-bold text-[#6d5246]">
+                              {bank.bankName} ({accountHolder})
+                            </div>
+                            <div className="font-[var(--font-fredoka)] text-xl sm:text-2xl font-bold tracking-wider sm:tracking-widest text-[#4a352c] tabular-nums">
+                              {bank.accountNumber}
+                            </div>
+                          </div>
+                        </div>
+                      </button>
+                    );
+                  })}
+
+                  {/* TrueMoney Wallet Card */}
+                  <button
+                    type="button"
+                    onClick={() =>
+                      handleCopy(
+                        trueRaw,
+                        "true",
+                        `คัดลอกเบอร์วอเลท ${currentSettings.trueNumber} แล้ว`
+                      )
+                    }
+                    className="group relative w-full cursor-pointer overflow-hidden rounded-[22px] border border-white bg-gradient-to-br from-[#FFFDE7] to-[#FCE4EC] p-4 sm:p-5 text-left shadow-md transition-all hover:-translate-y-0.5 active:scale-98"
+                  >
+                    <svg
+                      aria-hidden="true"
+                      className="pointer-events-none absolute -top-6 -left-6 h-32 w-32 rotate-12 text-white opacity-45"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                    >
+                      <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
+                    </svg>
+
+                    <div className="relative z-10 flex flex-col gap-2.5">
+                      <div className="flex items-center justify-between">
+                        <div className="rounded-full border border-white/60 bg-white/60 px-2.5 py-0.5 backdrop-blur-xs">
+                          <span className="text-xs sm:text-sm font-bold tracking-wider text-[#4a352c]">
+                            TrueMoney Wallet
+                          </span>
+                        </div>
+                        <span
+                          className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold text-[#4a352c] shadow-xs transition-colors ${
+                            copiedKey === "true" ? "bg-white/50" : "bg-white"
+                          }`}
+                        >
+                          {copiedKey === "true" ? (
+                            <>
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                strokeWidth={2.5}
+                                stroke="currentColor"
+                                className="h-3.5 w-3.5 text-[#b81452]"
+                                aria-hidden="true"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  d="M4.5 12.75l6 6 9-13.5"
+                                />
+                              </svg>
+                              <span>สำเร็จ</span>
+                            </>
+                          ) : (
+                            <>
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="13"
+                                height="13"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
                                 strokeLinecap="round"
                                 strokeLinejoin="round"
-                                d="M4.5 12.75l6 6 9-13.5"
-                              />
-                            </svg>
-                            <span>สำเร็จ</span>
-                          </>
-                        ) : (
-                          <>
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="14"
-                              height="14"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              aria-hidden="true"
-                            >
-                              <rect
-                                width="14"
-                                height="14"
-                                x="8"
-                                y="8"
-                                rx="2"
-                                ry="2"
-                              />
-                              <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
-                            </svg>
-                            <span>คัดลอก</span>
-                          </>
-                        )}
-                      </span>
-                    </div>
-                    <div className="mt-1">
-                      <div className="mb-1 text-xs font-bold text-[#6d5246]">
-                        {bank.bankName} ({accountHolder})
+                                aria-hidden="true"
+                              >
+                                <rect
+                                  width="14"
+                                  height="14"
+                                  x="8"
+                                  y="8"
+                                  rx="2"
+                                  ry="2"
+                                />
+                                <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+                              </svg>
+                              <span>คัดลอก</span>
+                            </>
+                          )}
+                        </span>
                       </div>
-                      <div className="font-[var(--font-fredoka)] text-2xl font-bold tracking-widest text-[#4a352c] tabular-nums">
-                        {bank.accountNumber}
+                      <div>
+                        <div className="mb-0.5 text-[11px] sm:text-xs font-bold text-[#6d5246]">
+                          วอเลท ({currentSettings.accountName})
+                        </div>
+                        <div className="font-[var(--font-fredoka)] text-xl sm:text-2xl font-bold tracking-wider sm:tracking-widest text-[#4a352c] tabular-nums">
+                          {currentSettings.trueNumber}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </button>
-              );
-            })}
+                  </button>
 
-            {/* TrueMoney Wallet Card */}
-            <button
-              type="button"
-              onClick={() =>
-                handleCopy(
-                  trueRaw,
-                  "true",
-                  `คัดลอกเบอร์วอเลท ${currentSettings.trueNumber} แล้ว`
-                )
-              }
-              className="group relative w-full cursor-pointer overflow-hidden rounded-[24px] border border-white bg-gradient-to-br from-[#FFFDE7] to-[#FCE4EC] p-5 text-left shadow-md transition-all hover:-translate-y-0.5 active:scale-98"
-            >
-              <svg
-                aria-hidden="true"
-                className="pointer-events-none absolute -top-6 -left-6 h-32 w-32 rotate-12 text-white opacity-45"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-              >
-                <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
-              </svg>
-
-              <div className="relative z-10 flex flex-col gap-3">
-                <div className="flex items-center justify-between">
-                  <div className="rounded-full border border-white/60 bg-white/60 px-3 py-1 backdrop-blur-xs">
-                    <span className="text-sm font-bold tracking-wider text-[#4a352c]">
-                      TrueMoney Wallet
-                    </span>
-                  </div>
-                  <span
-                    className={`inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-bold text-[#4a352c] shadow-xs transition-colors ${
-                      copiedKey === "true" ? "bg-white/50" : "bg-white"
-                    }`}
-                  >
-                    {copiedKey === "true" ? (
-                      <>
+                  {/* Slip Note Important Card */}
+                  <div className="relative z-10 overflow-hidden rounded-[20px] border-2 border-dashed border-[#F8BBD0] bg-gradient-to-br from-[#FFFDFC] to-white p-3.5 shadow-xs">
+                    <div className="relative z-10 flex items-start gap-3">
+                      <div className="mt-1 shrink-0 rounded-full bg-[#F8C8DC] p-1.5 text-[#5c4338] shadow-xs">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           fill="none"
                           viewBox="0 0 24 24"
-                          strokeWidth={2.5}
+                          strokeWidth={3}
                           stroke="currentColor"
-                          className="h-4 w-4 text-[#b81452]"
+                          className="h-3.5 w-3.5"
                           aria-hidden="true"
                         >
                           <path
                             strokeLinecap="round"
                             strokeLinejoin="round"
-                            d="M4.5 12.75l6 6 9-13.5"
+                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
                           />
                         </svg>
-                        <span>สำเร็จ</span>
-                      </>
-                    ) : (
-                      <>
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="14"
-                          height="14"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
+                      </div>
+                      <div className="flex-1 text-left text-xs leading-relaxed text-[#5c4338]">
+                        <span className="mb-1.5 inline-block rounded-full border border-[#F8BBD0]/40 bg-[#F8C8DC] px-2.5 py-0.5 text-xs font-bold text-[#4a352c]">
+                          สำคัญ
+                        </span>
+                        <br />
+                        <span className="font-semibold">โน้ตสลิปทุกครั้ง </span>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            handleCopy(
+                              currentSettings.slipNote,
+                              "fb",
+                              "คัดลอกข้อความโน้ตสลิปแล้วนะคะ"
+                            )
+                          }
+                          className={`mt-1 inline-flex cursor-pointer items-center gap-1.5 rounded-xl border border-[#F8BBD0]/50 px-2.5 py-1 shadow-xs transition-all hover:bg-[#FFFDE7] active:scale-95 ${
+                            copiedKey === "fb" ? "bg-[#FFFDE7]" : "bg-white"
+                          }`}
+                        >
+                          <span className="font-bold text-[#b81452]">
+                            &ldquo;{currentSettings.slipNote}&rdquo;
+                          </span>
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="12"
+                            height="12"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="text-[#6d5246]"
+                            aria-hidden="true"
+                          >
+                            <rect
+                              width="14"
+                              height="14"
+                              x="8"
+                              y="8"
+                              rx="2"
+                              ry="2"
+                            />
+                            <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+                          </svg>
+                        </button>
+                        <span className="mt-1.5 block text-xs text-[#6d5246]">
+                          หากลืมโน้ต โอนเพิ่ม 1฿ พร้อมกำกับสลิปน้า
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Warning 1: Check Account before transfer */}
+                  <div className="flex items-start gap-3 rounded-2xl border border-[#9e8877]/20 bg-white/80 p-3 text-left shadow-xs">
+                    <div className="shrink-0 rounded-full border border-[#9e8877]/15 bg-white p-1.5 text-[#5c4338] shadow-xs">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={2.5}
+                        stroke="currentColor"
+                        className="h-4 w-4"
+                        aria-hidden="true"
+                      >
+                        <path
                           strokeLinecap="round"
                           strokeLinejoin="round"
-                          aria-hidden="true"
-                        >
-                          <rect
-                            width="14"
-                            height="14"
-                            x="8"
-                            y="8"
-                            rx="2"
-                            ry="2"
-                          />
-                          <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
-                        </svg>
-                        <span>คัดลอก</span>
-                      </>
-                    )}
-                  </span>
-                </div>
-                <div className="mt-1">
-                  <div className="mb-1 text-xs font-bold text-[#6d5246]">
-                    วอเลท ({currentSettings.accountName})
+                          d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                        />
+                      </svg>
+                    </div>
+                    <div className="text-xs leading-relaxed font-semibold text-[#5c4338]">
+                      โอนผิด โอนใหม่ ไม่โอนคืน
+                      <br />
+                      <span className="font-normal text-[#6d5246]">
+                        เช็คบัญชีและชื่อผู้รับก่อนโอนทุกครั้งนะคะ
+                      </span>
+                    </div>
                   </div>
-                  <div className="font-[var(--font-fredoka)] text-2xl font-bold tracking-widest text-[#4a352c] tabular-nums">
-                    {currentSettings.trueNumber}
+
+                  {/* Warning 2: Send slip every time */}
+                  <div className="flex items-start gap-3 rounded-2xl border border-[#F8BBD0]/40 bg-white/80 p-3 text-left shadow-xs">
+                    <div className="shrink-0 rounded-full border border-[#F8BBD0]/20 bg-white p-1.5 text-[#5c4338] shadow-xs">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={2.5}
+                        stroke="currentColor"
+                        className="h-4 w-4"
+                        aria-hidden="true"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"
+                        />
+                      </svg>
+                    </div>
+                    <div className="text-xs leading-relaxed font-semibold text-[#5c4338]">
+                      โอนแล้วรบกวน{" "}
+                      <span className="font-bold underline decoration-[#F8BBD0]">
+                        แปะสลิปทุกครั้ง
+                      </span>{" "}
+                      ด้วยน้า
+                      <br />
+                      <span className="font-normal text-[#6d5246]">
+                        เค้าจะได้รีบเช็คยอดให้ไว ๆ ค่ะ
+                      </span>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </button>
-
-            {/* Slip Note Important Card */}
-            <div className="relative z-10 overflow-hidden rounded-[20px] border-2 border-dashed border-[#F8BBD0] bg-gradient-to-br from-[#FFFDFC] to-white p-3.5 shadow-xs">
-              <div className="relative z-10 flex items-start gap-3">
-                <div className="mt-1 shrink-0 rounded-full bg-[#F8C8DC] p-1.5 text-[#5c4338] shadow-xs">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={3}
-                    stroke="currentColor"
-                    className="h-3.5 w-3.5"
-                    aria-hidden="true"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-                    />
-                  </svg>
-                </div>
-                <div className="flex-1 text-left text-xs leading-relaxed text-[#5c4338]">
-                  <span className="mb-1.5 inline-block rounded-full border border-[#F8BBD0]/40 bg-[#F8C8DC] px-2.5 py-0.5 text-xs font-bold text-[#4a352c]">
-                    สำคัญ
-                  </span>
-                  <br />
-                  <span className="font-semibold">โน้ตสลิปทุกครั้ง </span>
-                  <button
-                    type="button"
-                    onClick={() =>
-                      handleCopy(
-                        currentSettings.slipNote,
-                        "fb",
-                        "คัดลอกข้อความโน้ตสลิปแล้วนะคะ"
-                      )
-                    }
-                    className={`mt-1 inline-flex cursor-pointer items-center gap-1.5 rounded-xl border border-[#F8BBD0]/50 px-2.5 py-1 shadow-xs transition-all hover:bg-[#FFFDE7] active:scale-95 ${
-                      copiedKey === "fb" ? "bg-[#E8F0FE]/70" : "bg-white"
-                    }`}
-                  >
-                    <span className="text-xs font-bold text-[#4a352c]">
-                      {copiedKey === "fb"
-                        ? '"คัดลอกสำเร็จ!"'
-                        : `"${currentSettings.slipNote}"`}
-                    </span>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="13"
-                      height="13"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="text-[#e11d68]"
-                      aria-hidden="true"
-                    >
-                      <rect
-                        width="14"
-                        height="14"
-                        x="8"
-                        y="8"
-                        rx="2"
-                        ry="2"
-                      />
-                      <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
-                    </svg>
-                  </button>
-                  <span className="mt-1.5 block text-xs text-[#6d5246]">
-                    หากลืมโน้ต โอนเพิ่ม 1฿ พร้อมกำกับสลิปน้า
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            {/* Warning 1: Check Account before transfer */}
-            <div className="flex items-start gap-3 rounded-2xl border border-[#9e8877]/20 bg-white/80 p-3 text-left shadow-xs">
-              <div className="shrink-0 rounded-full border border-[#9e8877]/15 bg-white p-1.5 text-[#5c4338] shadow-xs">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={2.5}
-                  stroke="currentColor"
-                  className="h-4 w-4"
-                  aria-hidden="true"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-                  />
-                </svg>
-              </div>
-              <div className="text-xs leading-relaxed font-semibold text-[#5c4338]">
-                โอนผิด โอนใหม่ ไม่โอนคืน
-                <br />
-                <span className="font-normal text-[#6d5246]">
-                  เช็คบัญชีและชื่อผู้รับก่อนโอนทุกครั้งนะคะ
-                </span>
-              </div>
-            </div>
-
-            {/* Warning 2: Send slip every time */}
-            <div className="flex items-start gap-3 rounded-2xl border border-[#F8BBD0]/40 bg-white/80 p-3 text-left shadow-xs">
-              <div className="shrink-0 rounded-full border border-[#F8BBD0]/20 bg-white p-1.5 text-[#5c4338] shadow-xs">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={2.5}
-                  stroke="currentColor"
-                  className="h-4 w-4"
-                  aria-hidden="true"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"
-                  />
-                </svg>
-              </div>
-              <div className="text-xs leading-relaxed font-semibold text-[#5c4338]">
-                โอนแล้วรบกวน{" "}
-                <span className="font-bold underline decoration-[#F8BBD0]">
-                  แปะสลิปทุกครั้ง
-                </span>{" "}
-                ด้วยน้า
-                <br />
-                <span className="font-normal text-[#6d5246]">
-                  เค้าจะได้รีบเช็คยอดให้ไว ๆ ค่ะ
-                </span>
               </div>
             </div>
           </div>
-        </div>
         </div>
       </div>
 
@@ -712,7 +709,6 @@ export function PaymentAccountSection({
             <span aria-hidden="true">→</span>
           </button>
         )}
-      </div>
       </div>
     </section>
   );

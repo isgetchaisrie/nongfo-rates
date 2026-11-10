@@ -612,7 +612,7 @@ export function AdminDashboardClient({
 
                 {/* Bank Accounts Section (Multi-bank, freely editable) */}
                 <div className="space-y-3 rounded-2xl border border-[#F8BBD0]/60 bg-[#FFF5F8]/40 p-3.5">
-                  <div className="flex items-center justify-between">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                     <div>
                       <label className="block text-xs font-bold text-[#4a352c]">
                         บัญชีธนาคารรับเงิน (แก้ไขได้ ไม่จำกัดธนาคาร)
@@ -624,7 +624,7 @@ export function AdminDashboardClient({
                     <button
                       type="button"
                       onClick={handleAddBankAccount}
-                      className="inline-flex items-center gap-1 rounded-xl border border-[#F8BBD0] bg-white px-2.5 py-1 text-xs font-bold text-[#b81452] shadow-xs hover:bg-[#FCE4EC] active:scale-95 transition-all cursor-pointer"
+                      className="inline-flex items-center justify-center gap-1 rounded-xl border border-[#F8BBD0] bg-white px-2.5 py-1.5 text-xs font-bold text-[#b81452] shadow-xs hover:bg-[#FCE4EC] active:scale-95 transition-all cursor-pointer self-start sm:self-auto"
                     >
                       <Plus className="h-3.5 w-3.5" />
                       <span>เพิ่มธนาคาร</span>

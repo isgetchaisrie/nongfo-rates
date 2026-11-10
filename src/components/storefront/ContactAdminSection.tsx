@@ -49,7 +49,7 @@ export function ContactAdminSection({ settings }: ContactAdminSectionProps) {
   return (
     <section
       aria-label="โปรไฟล์ติดต่อแอดมิน Nongfo"
-      className="mx-auto w-full max-w-[440px] space-y-4 pt-1 pb-6"
+      className="mx-auto w-full max-w-md sm:max-w-xl space-y-4 pt-1 pb-6"
     >
       {/* Profile Card (Linktree / Bio style) */}
       <div className="gingham-frame relative z-10 overflow-hidden rounded-[36px] p-2.5 sm:p-3.5 border-3 border-white shadow-[0_8px_28px_rgba(244,143,177,0.22)] text-center">
