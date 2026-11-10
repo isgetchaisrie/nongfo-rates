@@ -11,6 +11,7 @@ import { BottomNav } from "@/components/storefront/BottomNav";
 import { PaymentAccountSection } from "@/components/storefront/PaymentAccountSection";
 import { ContactAdminSection } from "@/components/storefront/ContactAdminSection";
 import { RateBoardClient } from "@/components/storefront/RateBoardClient";
+import { DEFAULT_STORE_SETTINGS } from "@/types/settings";
 
 const sampleGames: GameRate[] = [
   {
@@ -212,6 +213,37 @@ describe("BottomNav, PaymentAccountSection, and ContactAdminSection", () => {
     expect(contactHtml).toContain("https://lin.ee/T8apadZU");
     expect(contactHtml).toContain("@709qwuff");
     expect(contactHtml).not.toContain("Pat Pattida");
+  });
+
+  it("renders multiple bank accounts dynamically with custom bank names and numbers", () => {
+    const customSettings = {
+      ...DEFAULT_STORE_SETTINGS,
+      accountName: "คุณน้องโฟ",
+      bankAccounts: [
+        {
+          id: "bank-1",
+          bankName: "ไทยพาณิชย์ (SCB)",
+          accountNumber: "408-1-23456-7",
+          accountName: "คุณน้องโฟ",
+        },
+        {
+          id: "bank-2",
+          bankName: "กรุงไทย (KTB Next)",
+          accountNumber: "012-3-45678-9",
+          accountName: "คุณน้องโฟ (บัญชีสำรอง)",
+        },
+      ],
+    };
+
+    const paymentHtml = renderToStaticMarkup(
+      React.createElement(PaymentAccountSection, { settings: customSettings }),
+    );
+
+    expect(paymentHtml).toContain("ไทยพาณิชย์ (SCB)");
+    expect(paymentHtml).toContain("408-1-23456-7");
+    expect(paymentHtml).toContain("กรุงไทย (KTB Next)");
+    expect(paymentHtml).toContain("012-3-45678-9");
+    expect(paymentHtml).toContain("คุณน้องโฟ (บัญชีสำรอง)");
   });
 
   it("renders the 4 concise filters: ทั้งหมด, ตาราง, iOS, and Android", () => {

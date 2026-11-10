@@ -1,11 +1,72 @@
 "use client";
 
 import React, { useState } from "react";
-import { DEFAULT_STORE_SETTINGS, type StoreSettings } from "@/types/settings";
+import {
+  DEFAULT_STORE_SETTINGS,
+  resolveBankAccounts,
+  type BankAccountItem,
+  type StoreSettings,
+} from "@/types/settings";
 
 export interface PaymentAccountSectionProps {
   onExploreRates?: () => void;
   settings?: StoreSettings;
+}
+
+function getBankStyle(bankName: string) {
+  const lower = (bankName || "").toLowerCase();
+  if (lower.includes("กสิกร") || lower.includes("kbank") || lower.includes("k-plus")) {
+    return {
+      gradient: "from-[#E8F0FE] to-[#E0F2F1]",
+      badgeLabel: "K-Plus / กสิกร",
+    };
+  }
+  if (lower.includes("ไทยพาณิชย์") || lower.includes("scb")) {
+    return {
+      gradient: "from-[#F3E8FF] to-[#EDE9FE]",
+      badgeLabel: "SCB / ไทยพาณิชย์",
+    };
+  }
+  if (lower.includes("กรุงเทพ") || lower.includes("bbl")) {
+    return {
+      gradient: "from-[#E0F2FE] to-[#E1F5FE]",
+      badgeLabel: "BBL / กรุงเทพ",
+    };
+  }
+  if (lower.includes("กรุงไทย") || lower.includes("ktb") || lower.includes("next")) {
+    return {
+      gradient: "from-[#E0F7FA] to-[#E1F5FE]",
+      badgeLabel: "KTB / กรุงไทย",
+    };
+  }
+  if (lower.includes("กรุงศรี") || lower.includes("bay")) {
+    return {
+      gradient: "from-[#FEF3C7] to-[#FFFBEB]",
+      badgeLabel: "BAY / กรุงศรี",
+    };
+  }
+  if (lower.includes("ออมสิน") || lower.includes("gsb")) {
+    return {
+      gradient: "from-[#FCE4EC] to-[#FEE2E2]",
+      badgeLabel: "GSB / ออมสิน",
+    };
+  }
+  if (lower.includes("ทหารไทย") || lower.includes("ttb")) {
+    return {
+      gradient: "from-[#E0E7FF] to-[#FFE4E6]",
+      badgeLabel: "ttb / ทหารไทยธนชาต",
+    };
+  }
+  if (lower.includes("พร้อมเพย์") || lower.includes("promptpay")) {
+    return {
+      gradient: "from-[#E2E8F0] to-[#EFF6FF]",
+      badgeLabel: "พร้อมเพย์",
+    };
+  }
+  return {
+    gradient: "from-[#E8F0FE] to-[#F1F5F9]",
+    badgeLabel: bankName?.trim() || "ธนาคาร",
+  };
 }
 
 export function PaymentAccountSection({
@@ -13,13 +74,11 @@ export function PaymentAccountSection({
   settings,
 }: PaymentAccountSectionProps) {
   const currentSettings = { ...DEFAULT_STORE_SETTINGS, ...settings };
-  const kbankRaw = currentSettings.kbankNumber.replace(/\D/g, "");
+  const bankAccounts = resolveBankAccounts(currentSettings);
   const trueRaw = currentSettings.trueNumber.replace(/\D/g, "");
 
   const [toastMessage, setToastMessage] = useState<string | null>(null);
-  const [copiedKey, setCopiedKey] = useState<"kbank" | "true" | "fb" | null>(
-    null
-  );
+  const [copiedKey, setCopiedKey] = useState<string | null>(null);
 
   const showToast = (msg: string) => {
     setToastMessage(msg);
@@ -30,7 +89,7 @@ export function PaymentAccountSection({
 
   const handleCopy = async (
     text: string,
-    key: "kbank" | "true" | "fb",
+    key: string,
     successMessage: string
   ) => {
     try {
@@ -287,97 +346,109 @@ export function PaymentAccountSection({
           </div>
 
           <div className="space-y-3.5">
-            {/* K-Plus Card */}
-            <button
-              type="button"
-              onClick={() =>
-                handleCopy(
-                  kbankRaw,
-                  "kbank",
-                  `คัดลอกเลขบัญชีกสิกร ${currentSettings.kbankNumber} แล้ว`
-                )
-              }
-              className="group relative w-full cursor-pointer overflow-hidden rounded-[24px] border border-white bg-gradient-to-br from-[#E8F0FE] to-[#E0F2F1] p-5 text-left shadow-md transition-all hover:-translate-y-0.5 active:scale-98"
-            >
-              <svg
-                aria-hidden="true"
-                className="pointer-events-none absolute -right-6 -bottom-6 h-32 w-32 -rotate-12 text-white opacity-35"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-              >
-                <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
-              </svg>
+            {/* Bank Accounts (Multi-bank, editable) */}
+            {bankAccounts.map((bank, index) => {
+              const bankRaw = bank.accountNumber.replace(/\D/g, "");
+              const copyKey = `bank-${bank.id || index}`;
+              const isCopied = copiedKey === copyKey;
+              const style = getBankStyle(bank.bankName);
+              const accountHolder =
+                bank.accountName?.trim() || currentSettings.accountName;
 
-              <div className="relative z-10 flex flex-col gap-3">
-                <div className="flex items-center justify-between">
-                  <div className="rounded-full border border-white/60 bg-white/60 px-3 py-1 backdrop-blur-xs">
-                    <span className="text-sm font-bold tracking-wider text-[#4a352c]">
-                      K-Plus
-                    </span>
-                  </div>
-                  <span
-                    className={`inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-bold text-[#4a352c] shadow-xs transition-colors ${
-                      copiedKey === "kbank" ? "bg-white/50" : "bg-white"
-                    }`}
+              return (
+                <button
+                  key={bank.id || `bank-${index}`}
+                  type="button"
+                  onClick={() =>
+                    handleCopy(
+                      bankRaw,
+                      copyKey,
+                      `คัดลอกเลขบัญชี ${bank.bankName} ${bank.accountNumber} แล้ว`
+                    )
+                  }
+                  className={`group relative w-full cursor-pointer overflow-hidden rounded-[24px] border border-white bg-gradient-to-br ${style.gradient} p-5 text-left shadow-md transition-all hover:-translate-y-0.5 active:scale-98`}
+                >
+                  <svg
+                    aria-hidden="true"
+                    className="pointer-events-none absolute -right-6 -bottom-6 h-32 w-32 -rotate-12 text-white opacity-35"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
                   >
-                    {copiedKey === "kbank" ? (
-                      <>
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          strokeWidth={2.5}
-                          stroke="currentColor"
-                          className="h-4 w-4 text-[#0f5137]"
-                          aria-hidden="true"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M4.5 12.75l6 6 9-13.5"
-                          />
-                        </svg>
-                        <span>สำเร็จ</span>
-                      </>
-                    ) : (
-                      <>
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="14"
-                          height="14"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          aria-hidden="true"
-                        >
-                          <rect
-                            width="14"
-                            height="14"
-                            x="8"
-                            y="8"
-                            rx="2"
-                            ry="2"
-                          />
-                          <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
-                        </svg>
-                        <span>คัดลอก</span>
-                      </>
-                    )}
-                  </span>
-                </div>
-                <div className="mt-1">
-                  <div className="mb-1 text-xs font-bold text-[#6d5246]">
-                    กสิกร ({currentSettings.accountName})
+                    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
+                  </svg>
+
+                  <div className="relative z-10 flex flex-col gap-3">
+                    <div className="flex items-center justify-between">
+                      <div className="rounded-full border border-white/60 bg-white/60 px-3 py-1 backdrop-blur-xs">
+                        <span className="text-sm font-bold tracking-wider text-[#4a352c]">
+                          {style.badgeLabel}
+                        </span>
+                      </div>
+                      <span
+                        className={`inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-bold text-[#4a352c] shadow-xs transition-colors ${
+                          isCopied ? "bg-white/50" : "bg-white"
+                        }`}
+                      >
+                        {isCopied ? (
+                          <>
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              strokeWidth={2.5}
+                              stroke="currentColor"
+                              className="h-4 w-4 text-[#0f5137]"
+                              aria-hidden="true"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M4.5 12.75l6 6 9-13.5"
+                              />
+                            </svg>
+                            <span>สำเร็จ</span>
+                          </>
+                        ) : (
+                          <>
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="14"
+                              height="14"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              aria-hidden="true"
+                            >
+                              <rect
+                                width="14"
+                                height="14"
+                                x="8"
+                                y="8"
+                                rx="2"
+                                ry="2"
+                              />
+                              <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+                            </svg>
+                            <span>คัดลอก</span>
+                          </>
+                        )}
+                      </span>
+                    </div>
+                    <div className="mt-1">
+                      <div className="mb-1 text-xs font-bold text-[#6d5246]">
+                        {bank.bankName} ({accountHolder})
+                      </div>
+                      <div className="font-[var(--font-fredoka)] text-2xl font-bold tracking-widest text-[#4a352c] tabular-nums">
+                        {bank.accountNumber}
+                      </div>
+                    </div>
                   </div>
-                  <div className="font-[var(--font-fredoka)] text-2xl font-bold tracking-widest text-[#4a352c] tabular-nums">
-                    {currentSettings.kbankNumber}
-                  </div>
-                </div>
-              </div>
-            </button>
+                </button>
+              );
+            })}
 
             {/* TrueMoney Wallet Card */}
             <button

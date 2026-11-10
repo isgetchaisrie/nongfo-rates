@@ -370,5 +370,36 @@ describe("SQLite games database and seed data", () => {
     // 5. Subsequent getStoreSettings reflects the updated values
     const current = getStoreSettings();
     expect(current.accountName).toBe("ทิธิมา น้องโฟ");
+
+    // 6. Admin can update multiple custom bank accounts
+    vi.spyOn(auth, "isAdminAuthenticated").mockResolvedValueOnce(true);
+    const multiBankPut = await putSettingsRoute(
+      new Request("http://localhost:3000/api/settings", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          bankAccounts: [
+            {
+              id: "b1",
+              bankName: "ไทยพาณิชย์ (SCB)",
+              accountNumber: "111-2-33333-4",
+              accountName: "ทิธิมา น้องโฟ",
+            },
+            {
+              id: "b2",
+              bankName: "กรุงไทย (KTB)",
+              accountNumber: "555-6-77777-8",
+              accountName: "ทิธิมา น้องโฟ",
+            },
+          ],
+        }),
+      })
+    );
+    expect(multiBankPut.status).toBe(200);
+    const multiBankBody = (await multiBankPut.json()) as { settings: typeof initial };
+    expect(multiBankBody.settings.bankAccounts).toHaveLength(2);
+    expect(multiBankBody.settings.bankAccounts?.[0].bankName).toBe("ไทยพาณิชย์ (SCB)");
+    expect(multiBankBody.settings.bankAccounts?.[1].bankName).toBe("กรุงไทย (KTB)");
+    expect(multiBankBody.settings.kbankNumber).toBe("111-2-33333-4");
   });
 });

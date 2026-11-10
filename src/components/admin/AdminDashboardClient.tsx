@@ -25,7 +25,13 @@ import {
   X,
 } from "lucide-react";
 import type { CategoryType, GameRate, PlatformType } from "@/types/game";
-import { DEFAULT_STORE_SETTINGS, type StoreSettings } from "@/types/settings";
+import {
+  COMMON_THAI_BANKS,
+  DEFAULT_STORE_SETTINGS,
+  resolveBankAccounts,
+  type BankAccountItem,
+  type StoreSettings,
+} from "@/types/settings";
 import { CatMascot } from "@/components/mascot/CatMascot";
 import { GameFormModal } from "@/components/admin/GameFormModal";
 import {
@@ -103,6 +109,49 @@ export function AdminDashboardClient({
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordError, setPasswordError] = useState<string | null>(null);
   const [savingPassword, setSavingPassword] = useState(false);
+
+  const bankAccounts = resolveBankAccounts(settings);
+
+  const handleUpdateBankAccount = (
+    index: number,
+    patch: Partial<BankAccountItem>
+  ) => {
+    const currentAccounts = resolveBankAccounts(settings);
+    const updated = currentAccounts.map((item, idx) =>
+      idx === index ? { ...item, ...patch } : item
+    );
+    setSettings((prev) => ({
+      ...prev,
+      bankAccounts: updated,
+      kbankNumber: updated[0]?.accountNumber || "",
+    }));
+  };
+
+  const handleAddBankAccount = () => {
+    const currentAccounts = resolveBankAccounts(settings);
+    const newAccount: BankAccountItem = {
+      id: `bank-${Date.now()}`,
+      bankName: "ไทยพาณิชย์ (SCB)",
+      accountNumber: "",
+      accountName: settings.accountName || "",
+    };
+    const updated = [...currentAccounts, newAccount];
+    setSettings((prev) => ({
+      ...prev,
+      bankAccounts: updated,
+    }));
+  };
+
+  const handleRemoveBankAccount = (index: number) => {
+    const currentAccounts = resolveBankAccounts(settings);
+    if (currentAccounts.length <= 1) return;
+    const updated = currentAccounts.filter((_, idx) => idx !== index);
+    setSettings((prev) => ({
+      ...prev,
+      bankAccounts: updated,
+      kbankNumber: updated[0]?.accountNumber || "",
+    }));
+  };
 
   const counts = useMemo(() => {
     let gameCount = 0;
@@ -561,23 +610,105 @@ export function AdminDashboardClient({
                   />
                 </div>
 
-                {/* KBank Number */}
-                <div>
-                  <label className="block text-xs font-bold text-[#4a352c] mb-1">
-                    เลขบัญชีธนาคารกสิกรไทย (K-Plus)
-                  </label>
-                  <input
-                    type="text"
-                    value={settings.kbankNumber}
-                    onChange={(e) =>
-                      setSettings((prev) => ({
-                        ...prev,
-                        kbankNumber: e.target.value,
-                      }))
-                    }
-                    placeholder="เช่น 151-8-83098-4"
-                    className="w-full rounded-2xl border border-[#F8BBD0] bg-white px-4 py-2.5 text-sm font-semibold text-[#4a352c] focus:border-[#e11d68] focus:outline-none focus:ring-2 focus:ring-[#e11d68]/20"
-                  />
+                {/* Bank Accounts Section (Multi-bank, freely editable) */}
+                <div className="space-y-3 rounded-2xl border border-[#F8BBD0]/60 bg-[#FFF5F8]/40 p-3.5">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <label className="block text-xs font-bold text-[#4a352c]">
+                        บัญชีธนาคารรับเงิน (แก้ไขได้ ไม่จำกัดธนาคาร)
+                      </label>
+                      <p className="text-[11px] text-[#84685b]">
+                        เลือกหรือพิมพ์ชื่อธนาคาร และระบุเลขบัญชี สามารถเพิ่มได้หลายบัญชี
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={handleAddBankAccount}
+                      className="inline-flex items-center gap-1 rounded-xl border border-[#F8BBD0] bg-white px-2.5 py-1 text-xs font-bold text-[#b81452] shadow-xs hover:bg-[#FCE4EC] active:scale-95 transition-all cursor-pointer"
+                    >
+                      <Plus className="h-3.5 w-3.5" />
+                      <span>เพิ่มธนาคาร</span>
+                    </button>
+                  </div>
+
+                  <div className="space-y-3">
+                    {bankAccounts.map((account, index) => (
+                      <div
+                        key={account.id || index}
+                        className="relative rounded-xl border border-white bg-white/90 p-3 shadow-xs space-y-2.5"
+                      >
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="inline-flex items-center gap-1 rounded-md bg-[#FCE4EC] px-2 py-0.5 text-[11px] font-bold text-[#b81452]">
+                            ธนาคาร #{index + 1}
+                          </span>
+                          {bankAccounts.length > 1 && (
+                            <button
+                              type="button"
+                              onClick={() => handleRemoveBankAccount(index)}
+                              className="inline-flex items-center gap-1 rounded-lg px-2 py-1 text-[11px] font-bold text-red-500 hover:bg-red-50 active:scale-95 transition-all cursor-pointer"
+                              title="ลบบัญชีนี้"
+                            >
+                              <Trash2 className="h-3.5 w-3.5" />
+                              <span>ลบ</span>
+                            </button>
+                          )}
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                          <div>
+                            <label className="block text-[11px] font-bold text-[#6d5246] mb-1">
+                              ชื่อธนาคาร
+                            </label>
+                            <input
+                              type="text"
+                              list={`bank-presets-${index}`}
+                              value={account.bankName}
+                              onChange={(e) =>
+                                handleUpdateBankAccount(index, { bankName: e.target.value })
+                              }
+                              placeholder="เช่น กสิกรไทย (K-Plus), ไทยพาณิชย์ (SCB)"
+                              className="w-full rounded-xl border border-[#F8BBD0] bg-white px-3 py-1.5 text-xs font-semibold text-[#4a352c] focus:border-[#e11d68] focus:outline-none focus:ring-1 focus:ring-[#e11d68]/20"
+                            />
+                            <datalist id={`bank-presets-${index}`}>
+                              {COMMON_THAI_BANKS.map((b) => (
+                                <option key={b} value={b} />
+                              ))}
+                            </datalist>
+                          </div>
+
+                          <div>
+                            <label className="block text-[11px] font-bold text-[#6d5246] mb-1">
+                              เลขที่บัญชี
+                            </label>
+                            <input
+                              type="text"
+                              value={account.accountNumber}
+                              onChange={(e) =>
+                                handleUpdateBankAccount(index, { accountNumber: e.target.value })
+                              }
+                              placeholder="เช่น 151-8-83098-4"
+                              className="w-full rounded-xl border border-[#F8BBD0] bg-white px-3 py-1.5 text-xs font-bold text-[#4a352c] focus:border-[#e11d68] focus:outline-none focus:ring-1 focus:ring-[#e11d68]/20"
+                            />
+                          </div>
+                        </div>
+
+                        <div>
+                          <label className="block text-[11px] font-semibold text-[#84685b] mb-1">
+                            ชื่อเจ้าของบัญชีนี้ (ถ้าต่างจากชื่อร้านหลัก &quot;{settings.accountName || "ภัทรธิดา"}&quot;)
+                          </label>
+                          <input
+                            type="text"
+                            value={account.accountName ?? ""}
+                            onChange={(e) =>
+                              handleUpdateBankAccount(index, { accountName: e.target.value })
+                            }
+                            placeholder={`ใช้ตามชื่อร้านหลัก: ${settings.accountName || "ภัทรธิดา"}`}
+                            className="w-full rounded-xl border border-[#F8BBD0]/70 bg-white/70 px-3 py-1.5 text-xs text-[#4a352c] focus:border-[#e11d68] focus:outline-none focus:ring-1 focus:ring-[#e11d68]/20"
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
 
                 {/* TrueMoney Wallet */}
@@ -657,11 +788,21 @@ export function AdminDashboardClient({
                     <p className="mt-3 text-xs font-bold text-[#4a352c]">
                       ชื่อบัญชี: <span className="text-[#b81452]">{settings.accountName || "—"}</span>
                     </p>
-                    <p className="mt-1 text-xs font-medium text-[#6d5246]">
-                      กสิกร: {settings.kbankNumber || "—"}
-                    </p>
-                    <p className="text-xs font-medium text-[#6d5246]">
-                      วอเลท: {settings.trueNumber || "—"}
+                    <div className="mt-1 space-y-0.5 w-full">
+                      {bankAccounts.map((b, i) => (
+                        <p key={i} className="text-xs font-medium text-[#6d5246] truncate">
+                          {b.bankName || "ธนาคาร"}:{" "}
+                          <span className="font-bold text-[#4a352c]">
+                            {b.accountNumber || "—"}
+                          </span>
+                          {b.accountName && b.accountName !== settings.accountName && (
+                            <span className="text-[10px] text-[#84685b]"> ({b.accountName})</span>
+                          )}
+                        </p>
+                      ))}
+                    </div>
+                    <p className="text-xs font-medium text-[#6d5246] mt-1">
+                      วอเลท: <span className="font-bold text-[#4a352c]">{settings.trueNumber || "—"}</span>
                     </p>
 
                     <div className="mt-3 w-full rounded-xl border border-amber-200 bg-[#FFFDE7] p-2 text-left">

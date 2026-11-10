@@ -570,9 +570,31 @@ export function getStoreSettings(): StoreSettings {
 
 export function updateStoreSettings(patch: Partial<StoreSettings>): StoreSettings {
   const current = getStoreSettings();
+  const nextPatch = { ...patch };
+  if (Array.isArray(nextPatch.bankAccounts) && nextPatch.bankAccounts.length > 0) {
+    if (!nextPatch.kbankNumber) {
+      nextPatch.kbankNumber = nextPatch.bankAccounts[0].accountNumber;
+    }
+  } else if (nextPatch.kbankNumber && !nextPatch.bankAccounts) {
+    const existingAccounts = current.bankAccounts || [];
+    if (existingAccounts.length > 0) {
+      nextPatch.bankAccounts = existingAccounts.map((acc, idx) =>
+        idx === 0 ? { ...acc, accountNumber: nextPatch.kbankNumber! } : acc
+      );
+    } else {
+      nextPatch.bankAccounts = [
+        {
+          id: "bank-default",
+          bankName: "กสิกรไทย (K-Plus)",
+          accountNumber: nextPatch.kbankNumber,
+          accountName: nextPatch.accountName || current.accountName,
+        },
+      ];
+    }
+  }
   const updated: StoreSettings = {
     ...current,
-    ...patch,
+    ...nextPatch,
     updatedAt: new Date().toISOString(),
   };
   const db = getDb();
@@ -893,9 +915,31 @@ export async function updateStoreSettingsAsync(
     return updateStoreSettings(patch);
   }
   const current = await getStoreSettingsAsync();
+  const nextPatch = { ...patch };
+  if (Array.isArray(nextPatch.bankAccounts) && nextPatch.bankAccounts.length > 0) {
+    if (!nextPatch.kbankNumber) {
+      nextPatch.kbankNumber = nextPatch.bankAccounts[0].accountNumber;
+    }
+  } else if (nextPatch.kbankNumber && !nextPatch.bankAccounts) {
+    const existingAccounts = current.bankAccounts || [];
+    if (existingAccounts.length > 0) {
+      nextPatch.bankAccounts = existingAccounts.map((acc, idx) =>
+        idx === 0 ? { ...acc, accountNumber: nextPatch.kbankNumber! } : acc
+      );
+    } else {
+      nextPatch.bankAccounts = [
+        {
+          id: "bank-default",
+          bankName: "กสิกรไทย (K-Plus)",
+          accountNumber: nextPatch.kbankNumber,
+          accountName: nextPatch.accountName || current.accountName,
+        },
+      ];
+    }
+  }
   const updated: StoreSettings = {
     ...current,
-    ...patch,
+    ...nextPatch,
     updatedAt: new Date().toISOString(),
   };
   const { meta } = await getMongoCollections();
